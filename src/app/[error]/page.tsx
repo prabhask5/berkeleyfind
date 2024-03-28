@@ -8,7 +8,7 @@ export default function PageNotFound() {
 
   return (
     <div style={{ textAlign: "center", marginTop: "17%" }}>
-      <Heading variant="logo" size="lg" style={{ marginBottom: "50px" }}>
+      <Heading variant="logo" size="lg" className="mb-12">
         BerkeleyFind
       </Heading>
       <Stack spacing={5}>
