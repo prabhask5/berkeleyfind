@@ -1,0 +1,41 @@
+{
+  "name": "berkeleyfind",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@auth/mongodb-adapter": "^2.5.1",
+    "@chakra-ui/anatomy": "^2.2.2",
+    "@chakra-ui/next-js": "^2.2.0",
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.0",
+    "@fontsource/baloo-thambi-2": "^5.0.17",
+    "axios": "^1.6.8",
+    "bcrypt": "^5.1.1",
+    "cloudinary": "^2.0.3",
+    "framer-motion": "^11.0.20",
+    "mongodb": "^6.5.0",
+    "mongoose": "^8.2.3",
+    "next": "14.1.4",
+    "next-auth": "^4.24.7",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-hook-form": "^7.51.1"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.1.4",
+    "eslint-plugin-unused-imports": "^3.1.0",
+    "typescript": "^5"
+  }
+}
