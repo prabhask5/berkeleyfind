@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className="flex w-screen h-screen">
         <Providers>{children}</Providers>
       </body>
     </html>

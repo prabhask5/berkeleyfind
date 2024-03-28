@@ -109,7 +109,7 @@ export default function Login() {
       redirect("/temp");
     } else if (response?.error) {
       const errorJson: { error: string; code: number } = JSON.parse(
-        response?.error,
+        response?.error
       );
 
       if (errorJson.error === "User not found") {
@@ -143,40 +143,62 @@ export default function Login() {
   };
 
   return (
-    <>
-      <Heading variant="logo" size="lg" style={{ marginBottom: "50px" }}>
+    <Stack spacing={[10, 10, 20, 20, 20, 20]}>
+      <Heading variant="logo" size={["sm", "lg", "lg", "lg", "lg", "lg"]}>
         BerkeleyFind
       </Heading>
       <form onSubmit={handleSubmit(handleSubmitForm)}>
-        <Stack spacing={5}>
+        <Stack spacing={[3, 3, 5, 5, 5, 5]}>
           <Heading size="2xl">Log in.</Heading>
-          <Text variant="underText">Enter your details to get signed in</Text>
-          <FormControl
-            style={{ width: "75%", marginLeft: "auto", marginRight: "auto" }}
-            isInvalid={!!errors?.email}
+          <Text
+            fontSize={["10px", "xs", "sm", "sm", "sm", "sm"]}
+            variant="underText"
           >
-            <Input {...register("email")} id="email" placeholder="Email" />
+            Enter your details to get signed in
+          </Text>
+          <FormControl isInvalid={!!errors?.email}>
+            <Input
+              className="w-11/12 sm:w-3/4 mx-auto"
+              {...register("email")}
+              id="email"
+              placeholder="Email"
+              size={["sm", "sm", "md", "md", "md", "md"]}
+            />
             {!!errors?.email ? (
-              <FormErrorMessage
-                style={{ margin: "0px", padding: "0px" }}
-              ></FormErrorMessage>
+              <FormErrorMessage className="m-0 p-0"></FormErrorMessage>
             ) : null}
           </FormControl>
           <FormControl isInvalid={!!errors?.password}>
-            <InputGroup
-              style={{ width: "75%", marginLeft: "auto", marginRight: "auto" }}
-            >
+            <InputGroup className="w-11/12 sm:w-3/4 mx-auto">
               <Input
                 id="password"
                 type={show ? "text" : "password"}
                 placeholder="Password"
                 {...register("password")}
+                size={["sm", "sm", "md", "md", "md", "md"]}
               />
-              <InputRightElement width="4.5rem">
+              <InputRightElement
+                width={[
+                  "3.8rem",
+                  "3.8rem",
+                  "4.5rem",
+                  "4.5rem",
+                  "4.5rem",
+                  "4.5rem",
+                ]}
+                h="full"
+              >
                 <Button
-                  style={{ borderRadius: "9999px" }}
-                  h="1.75rem"
-                  size="sm"
+                  className="rounded-full"
+                  h={[
+                    "1.25rem",
+                    "1.25rem",
+                    "1.75rem",
+                    "1.75rem",
+                    "1.75rem",
+                    "1.75rem",
+                  ]}
+                  size={["xs", "xs", "sm", "sm", "sm", "sm"]}
                   onClick={() => setShow(!show)}
                 >
                   {show ? "Hide" : "Show"}
@@ -184,21 +206,20 @@ export default function Login() {
               </InputRightElement>
             </InputGroup>
             {!!errors?.password ? (
-              <FormErrorMessage
-                style={{ margin: "0px", padding: "0px" }}
-              ></FormErrorMessage>
+              <FormErrorMessage className="m-0 p-0"></FormErrorMessage>
             ) : null}
           </FormControl>
           <Button
-            style={{ width: "75%", marginLeft: "auto", marginRight: "auto" }}
+            className="w-11/12 sm:w-3/4 mx-auto"
             type="submit"
             variant="websiteTheme"
             onClick={checkForErrors}
+            size={["sm", "sm", "md", "md", "md", "md"]}
           >
             Log In
           </Button>
         </Stack>
       </form>
-    </>
+    </Stack>
   );
 }

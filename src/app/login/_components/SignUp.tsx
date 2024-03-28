@@ -142,7 +142,7 @@ export default function SignUp() {
       redirect("/temp");
     } else if (response?.error) {
       const errorJson: { error: string; code: number } = JSON.parse(
-        response?.error,
+        response?.error
       );
 
       if (errorJson.error === "User already exists") {
@@ -166,45 +166,66 @@ export default function SignUp() {
   };
 
   return (
-    <div>
-      <Heading variant="logo" size="lg" style={{ marginBottom: "50px" }}>
+    <Stack spacing={[10, 10, 20, 20, 20, 20]}>
+      <Heading variant="logo" size={["sm", "lg", "lg", "lg", "lg", "lg"]}>
         BerkeleyFind
       </Heading>
       <form onSubmit={handleSubmit(handleSubmitForm)}>
-        <Stack spacing={5}>
-          <Heading size="2xl">Create your account.</Heading>
-          <Text variant="underText">Enter your details to get started</Text>
-          <FormControl
-            style={{ width: "75%", marginLeft: "auto", marginRight: "auto" }}
-            isInvalid={!!errors.email}
+        <Stack spacing={[3, 3, 5, 5, 5, 5]}>
+          <Heading size={["lg", "2xl", "2xl", "2xl", "2xl", "2xl"]}>
+            Create your account.
+          </Heading>
+          <Text
+            fontSize={["10px", "xs", "sm", "sm", "sm", "sm"]}
+            variant="underText"
           >
+            Enter your details to get started
+          </Text>
+          <FormControl isInvalid={!!errors.email}>
             <Input
+              className="w-11/12 sm:w-3/4 mx-auto"
               {...register("email")}
               id="email"
               placeholder="youremail@example.com"
+              size={["sm", "sm", "md", "md", "md", "md"]}
             />
             {!!errors.email !== null ? (
-              <FormErrorMessage
-                style={{ margin: "0px", padding: "0px" }}
-              ></FormErrorMessage>
+              <FormErrorMessage className="m-0 p-0"></FormErrorMessage>
             ) : null}
           </FormControl>
           <FormControl
-            style={{ width: "75%", marginLeft: "auto", marginRight: "auto" }}
             isInvalid={!!errors.password || !!errors.confirmPassword}
           >
-            <InputGroup>
+            <InputGroup className="w-11/12 sm:w-3/4 mx-auto">
               <Input
                 id="password"
                 type={show ? "text" : "password"}
                 placeholder="Password"
                 {...register("password")}
+                size={["sm", "sm", "md", "md", "md", "md"]}
               />
-              <InputRightElement width="4.5rem">
+              <InputRightElement
+                width={[
+                  "3.8rem",
+                  "3.8rem",
+                  "4.5rem",
+                  "4.5rem",
+                  "4.5rem",
+                  "4.5rem",
+                ]}
+                h="full"
+              >
                 <Button
-                  style={{ borderRadius: "9999px" }}
-                  h="1.75rem"
-                  size="sm"
+                  className="rounded-full"
+                  h={[
+                    "1.25rem",
+                    "1.25rem",
+                    "1.75rem",
+                    "1.75rem",
+                    "1.75rem",
+                    "1.75rem",
+                  ]}
+                  size={["xs", "xs", "sm", "sm", "sm", "sm"]}
                   onClick={() => setShow(!show)}
                 >
                   {show ? "Hide" : "Show"}
@@ -212,49 +233,61 @@ export default function SignUp() {
               </InputRightElement>
             </InputGroup>
             {!!errors.password || !!errors.confirmPassword ? (
-              <FormErrorMessage
-                style={{ margin: "0px", padding: "0px" }}
-              ></FormErrorMessage>
+              <FormErrorMessage className="m-0 p-0"></FormErrorMessage>
             ) : null}
           </FormControl>
-          <FormControl
-            style={{ width: "75%", marginLeft: "auto", marginRight: "auto" }}
-            isInvalid={!!errors.confirmPassword}
-          >
-            <InputGroup>
+          <FormControl isInvalid={!!errors.confirmPassword}>
+            <InputGroup className="w-11/12 sm:w-3/4 mx-auto">
               <Input
                 id="confirmPassword"
                 type={show ? "text" : "password"}
                 placeholder="Confirm Password"
                 {...register("confirmPassword")}
+                size={["sm", "sm", "md", "md", "md", "md"]}
               />
-              <InputRightElement width="4.5rem">
+              <InputRightElement
+                width={[
+                  "3.8rem",
+                  "3.8rem",
+                  "4.5rem",
+                  "4.5rem",
+                  "4.5rem",
+                  "4.5rem",
+                ]}
+                h="full"
+              >
                 <Button
-                  style={{ borderRadius: "9999px" }}
-                  h="1.75rem"
-                  size="sm"
-                  onClick={() => setConfirmShow(!confirmShow)}
+                  className="rounded-full"
+                  h={[
+                    "1.25rem",
+                    "1.25rem",
+                    "1.75rem",
+                    "1.75rem",
+                    "1.75rem",
+                    "1.75rem",
+                  ]}
+                  size={["xs", "xs", "sm", "sm", "sm", "sm"]}
+                  onClick={() => setShow(!show)}
                 >
-                  {confirmShow ? "Hide" : "Show"}
+                  {show ? "Hide" : "Show"}
                 </Button>
               </InputRightElement>
             </InputGroup>
             {!!errors.confirmPassword ? (
-              <FormErrorMessage
-                style={{ margin: "0px", padding: "0px" }}
-              ></FormErrorMessage>
+              <FormErrorMessage className="m-0 p-0"></FormErrorMessage>
             ) : null}
           </FormControl>
           <Button
             type="submit"
-            style={{ width: "75%", marginLeft: "auto", marginRight: "auto" }}
+            className="w-11/12 sm:w-3/4 mx-auto"
             variant="websiteTheme"
             onClick={checkForErrors}
+            size={["sm", "sm", "md", "md", "md", "md"]}
           >
             Sign Up
           </Button>
         </Stack>
       </form>
-    </div>
+    </Stack>
   );
 }

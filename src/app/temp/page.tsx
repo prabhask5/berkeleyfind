@@ -7,6 +7,7 @@ import { useState } from "react";
 
 export default function RedirectPage() {
   const [showError, setShowError] = useState<boolean>(false);
+
   const router = useRouter();
 
   getSession().then((session) => {
@@ -18,29 +19,37 @@ export default function RedirectPage() {
   setTimeout(() => setShowError(true), 2500);
 
   return (
-    <div style={{ textAlign: "center", marginTop: "17%" }}>
-      <Heading variant="logo" size="lg" style={{ marginBottom: "50px" }}>
+    <Stack spacing={[1, 3, 5, 5, 5, 5]} className="w-11/12 text-center m-auto">
+      <Heading variant="logo" size={["xs", "md", "lg", "lg", "lg", "lg"]}>
         BerkeleyFind
       </Heading>
-      <Stack spacing={5}>
-        <HStack style={{ margin: "auto" }} spacing={5}>
-          <Heading size="2xl">Please wait to be redirected.</Heading>
-          <Spinner
-            size="xl"
-            thickness="5px"
-            speed="0.65s"
-            emptyColor="gray.200"
-            color="#A73CFC"
-          />
-        </HStack>
-        {showError && (
-          <Text variant="underText">
-            If you are seeing this, something went wrong! Click{" "}
-            <Link onClick={() => router.back()}>here</Link> to go back to the
-            previous page.
-          </Text>
-        )}
+      <Stack
+        direction={["column", "column", "column", "row", "row", "row"]}
+        className="m-auto"
+        spacing={[1, 3, 5, 5, 5, 5]}
+      >
+        <Heading size={["lg", "2xl", "2xl", "2xl", "2xl", "2xl"]}>
+          Please wait to be redirected.
+        </Heading>
+        <Spinner
+          size={["md", "lg", "xl", "xl", "xl", "xl"]}
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="#A73CFC"
+          className="m-auto"
+        />
       </Stack>
-    </div>
+      {showError && (
+        <Text
+          fontSize={["6px", "8px", "xs", "sm", "sm", "sm"]}
+          variant="underText"
+        >
+          If you are seeing this, something went wrong! Click{" "}
+          <Link onClick={() => router.back()}>here</Link> to go back to the
+          previous page.
+        </Text>
+      )}
+    </Stack>
   );
 }

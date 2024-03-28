@@ -23,30 +23,25 @@ export default function LoginPage() {
   };
 
   return (
-    <div>
-      <div
-        style={{
-          marginTop: viewState === "login" ? "12%" : "11%",
-          marginLeft: "auto",
-          marginRight: "auto",
-          width: "60%",
-          textAlign: "center",
-        }}
-      >
-        <Stack spacing={5}>
-          {viewState == "login" ? <Login /> : <SignUp />}
-          {viewState == "login" ? (
-            <Text variant="underText">
-              Don&apos;t have an account?{" "}
-              <Link onClick={swapViews}>Sign up</Link>
-            </Text>
-          ) : (
-            <Text variant="underText">
-              Already have an account? <Link onClick={swapViews}>Log in</Link>
-            </Text>
-          )}
-        </Stack>
-      </div>
+    <div className="w-full sm:w-11/12 xl:w-7/12 text-center m-auto">
+      <Stack spacing={[5, 5, 5, 5, 5, 5]}>
+        {viewState == "login" ? <Login /> : <SignUp />}
+        {viewState == "login" ? (
+          <Text
+            fontSize={["10px", "xs", "sm", "sm", "sm", "sm"]}
+            variant="underText"
+          >
+            Don&apos;t have an account? <Link onClick={swapViews}>Sign up</Link>
+          </Text>
+        ) : (
+          <Text
+            fontSize={["10px", "xs", "sm", "sm", "sm", "sm"]}
+            variant="underText"
+          >
+            Already have an account? <Link onClick={swapViews}>Log in</Link>
+          </Text>
+        )}
+      </Stack>
     </div>
   );
 }
