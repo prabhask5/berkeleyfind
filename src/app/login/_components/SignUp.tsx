@@ -167,12 +167,12 @@ export default function SignUp() {
 
   return (
     <Stack spacing={[10, 10, 20, 20, 20, 20]}>
-      <Heading variant="logo" size={["sm", "lg", "lg", "lg", "lg", "lg"]}>
+      <Heading variant="logo" size={["md", "lg", "lg", "lg", "lg", "lg"]}>
         BerkeleyFind
       </Heading>
       <form onSubmit={handleSubmit(handleSubmitForm)}>
         <Stack spacing={[3, 3, 5, 5, 5, 5]}>
-          <Heading size={["lg", "2xl", "2xl", "2xl", "2xl", "2xl"]}>
+          <Heading size={["xl", "2xl", "2xl", "2xl", "2xl", "2xl"]}>
             Create your account.
           </Heading>
           <Text
