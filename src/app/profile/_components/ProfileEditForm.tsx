@@ -11,7 +11,6 @@ import {
   Input,
   Modal,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
   ModalOverlay,
   Stack,
@@ -26,10 +25,11 @@ import {
 } from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
 import React, { useEffect } from "react";
-import { ActionMeta, Select, SingleValue } from "chakra-react-select";
+import { Select } from "chakra-react-select";
 import fbIcon from "@/media/fbIcon.svg";
 import igIcon from "@/media/igIcon.svg";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export interface ProfileEditFormProps {
   profileImage: string;
@@ -65,12 +65,8 @@ interface IUserBasicInfo {
   igURL: string;
 }
 
-type onChangeSelectFunction =
-  | ((_newValue: SingleValue<Option>, _actionMeta: ActionMeta<Option>) => void)
-  | undefined;
-
 const majorOptions: Option[] = berkeleyData.majors.map(
-  (m) => ({ label: m.major, value: m.major } as Option)
+  (m) => ({ label: m.major, value: m.major }) as Option,
 );
 
 const pronounsOptions: Option[] = berkeleyData.pronouns;
@@ -102,12 +98,18 @@ export function ProfileEditForm({
   passInCancel,
   fetchedSavedData,
 }: ProfileEditFormProps) {
+  const router = useRouter();
   const toast = useToast();
   const toastLoadingRef = React.useRef<ToastId>();
+  const toastRef = React.useRef<ToastId>();
 
   useEffect(() => {
-    if (fetchedSavedData != undefined) {
-      toast({
+    router.prefetch("/temp");
+  }, [router]);
+
+  useEffect(() => {
+    if (fetchedSavedData != undefined && !toastRef.current) {
+      toastRef.current = toast({
         title: fetchedSavedData
           ? "Fetched profile data"
           : "Error fetching profile data",
@@ -126,11 +128,10 @@ export function ProfileEditForm({
     trigger,
     handleSubmit,
     setValue,
-    getValues,
+    watch,
     formState: { errors },
   } = useForm<IUserBasicInfo>({
-    mode: "all",
-    shouldUnregister: true,
+    mode: "onBlur",
     defaultValues: {
       profileImageFile: profileImage,
       firstName: firstName,
@@ -161,14 +162,21 @@ export function ProfileEditForm({
     },
   });
 
-  const { onChange: onMajorChange, onBlur: onMajorBlur } = register("major", {
+  register("major", {
     required: "Major is required.",
   });
 
-  const { onChange: onPronounsChange } = register("pronouns");
-
   register("gradYear", {
     required: "Grad year is required.",
+    validate: (val: string) => {
+      if (
+        Number.isNaN(Number(val)) ||
+        Number(val) < 2000 ||
+        Number(val) > 2100
+      ) {
+        return "Please enter a valid graduation year.";
+      }
+    },
   });
 
   register("userBio", {
@@ -213,11 +221,6 @@ export function ProfileEditForm({
     if (toastLoadingRef.current) {
       toast.close(toastLoadingRef.current);
     }
-  };
-
-  const resolveName = () => {
-    const { firstName, lastName } = getValues();
-    return firstName + " " + lastName === " " ? "" : firstName + " " + lastName;
   };
 
   const checkForErrors = async () => {
@@ -307,6 +310,7 @@ export function ProfileEditForm({
         duration: 2000,
         isClosable: false,
       });
+      if (isStart) router.push("/temp");
     } else {
       const errorMsg = await response.json();
 
@@ -322,50 +326,52 @@ export function ProfileEditForm({
 
   const buttonLayout = () => {
     const submitButton = (
-      <Button type="submit" onClick={checkForErrors} colorScheme="messenger">
+      <Button
+        className="md:w-1/4 md:max-w-40"
+        type="submit"
+        onClick={checkForErrors}
+        colorScheme="messenger"
+      >
         Save
       </Button>
     );
 
-    const cancelButton = (
-      <Button
-        onClick={() => {
-          reset();
-          if (passInCancel) passInCancel();
-        }}
-        colorScheme="gray"
-      >
-        Cancel
-      </Button>
-    );
+    if (isStart) return submitButton;
 
     return (
       <ButtonGroup gap={4}>
         {submitButton}
-        {!isStart && cancelButton}
+        <Button
+          onClick={() => {
+            reset();
+            if (passInCancel) passInCancel();
+          }}
+          colorScheme="gray"
+        >
+          Cancel
+        </Button>
       </ButtonGroup>
     );
   };
 
   return (
     <form onSubmit={handleSubmit(handleSubmitForm)}>
-      <Stack spacing={[5, 5, 5, 5, 5, 5]}>
+      <Stack spacing={[5, 5, 5, 7, 7, 7]}>
         <Heading size="lg">My Profile</Heading>
-        <Stack spacing={[3, 3, 3, 3, 3, 3]}>
+        <Stack spacing={[2, 3, 3, 5, 5, 5]}>
           <Stack
             direction={["row", "row", "row", "row", "row", "row"]}
-            spacing={[5, 5, 5, 5, 5, 5]}
+            spacing={[3, 5, 5, 7, 7, 7]}
           >
             <Avatar
               className="rounded-full w-20 h-20 sm:w-32 sm:h-32 cursor-pointer"
-              name={resolveName()}
               draggable="false"
-              src={getValues().profileImageFile}
+              src={watch("profileImageFile")}
               onClick={onOpen}
             />
-            <Stack className="w-full" spacing={4}>
+            <Stack className="w-full" spacing={[2, 3, 3, 5, 5, 5]}>
               <FormControl isInvalid={!!errors?.major}>
-                <FormLabel className="mb-0 text-sm">
+                <FormLabel className="mb-0 text-sm sm:text-base">
                   Major{" "}
                   <Text as="span" className="text-red-700">
                     *
@@ -379,8 +385,8 @@ export function ProfileEditForm({
                   chakraStyles={inputStyling}
                   size={["xs", "sm", "sm", "sm", "sm", "sm"]}
                   placeholder="Major"
-                  onBlur={onMajorBlur}
-                  onChange={onMajorChange as unknown as onChangeSelectFunction}
+                  onBlur={(_e) => trigger("major")}
+                  onChange={(e) => setValue("major", e === null ? "" : e.value)}
                   className="text-[#1c1c1c]"
                 />
                 {!!errors?.major ? (
@@ -388,10 +394,7 @@ export function ProfileEditForm({
                 ) : null}
               </FormControl>
               <FormControl isInvalid={!!errors.gradYear}>
-                <FormLabel
-                  size={["sm", "sm", "sm", "sm", "sm", "sm"]}
-                  className="mb-0"
-                >
+                <FormLabel className="mb-0 text-sm sm:text-base">
                   Graduation Year{" "}
                   <Text as="span" className="text-red-700">
                     *
@@ -410,22 +413,16 @@ export function ProfileEditForm({
           </Stack>
           <Modal isOpen={isOpen} onClose={onClose} isCentered>
             <ModalOverlay />
-            <ModalContent maxW="1200px">
-              <ModalCloseButton />
+            <ModalContent className="w-9/12 aspect-square p-2">
               <ModalBody>
                 <Box
-                  className="m-5 mt-10"
-                  w="95%"
                   {...getRootProps()}
-                  display="grid"
-                  placeItems={"center"}
-                  minW="20rem"
-                  minH="15rem"
+                  className="flex w-full h-full p-4"
                   border="1px dashed black"
                   cursor="pointer"
                 >
                   <input {...getInputProps()} />
-                  <Text>
+                  <Text className="text-center m-auto">
                     {isDragActive
                       ? "Release here to upload your image."
                       : "Drop an image here, or click to select a file."}
@@ -436,10 +433,7 @@ export function ProfileEditForm({
           </Modal>
           <div>
             <FormControl isInvalid={!!errors.firstName}>
-              <FormLabel
-                size={["sm", "sm", "sm", "sm", "sm", "sm"]}
-                className="mb-0"
-              >
+              <FormLabel className="mb-0 text-sm sm:text-base">
                 First Name{" "}
                 <Text as="span" className="text-red-700">
                   *
@@ -457,10 +451,7 @@ export function ProfileEditForm({
           </div>
           <div>
             <FormControl isInvalid={!!errors.lastName}>
-              <FormLabel
-                size={["sm", "sm", "sm", "sm", "sm", "sm"]}
-                className="mb-0"
-              >
+              <FormLabel className="mb-0 text-sm sm:text-base">
                 Last Name{" "}
                 <Text as="span" className="text-red-700">
                   *
@@ -478,10 +469,7 @@ export function ProfileEditForm({
           </div>
           <div>
             <FormControl isInvalid={!!errors.email}>
-              <FormLabel
-                size={["sm", "sm", "sm", "sm", "sm", "sm"]}
-                className="mb-0"
-              >
+              <FormLabel className="mb-0 text-sm sm:text-base">
                 Email{" "}
                 <Text as="span" className="text-red-700">
                   *
@@ -499,19 +487,14 @@ export function ProfileEditForm({
           </div>
           <div>
             <FormControl isInvalid={!!errors.userBio}>
-              <FormLabel
-                size={["sm", "sm", "sm", "sm", "sm", "sm"]}
-                className="mb-0"
-              >
-                Bio
-              </FormLabel>
+              <FormLabel className="mb-0 text-sm sm:text-base">Bio</FormLabel>
               <Textarea
                 className="rounded-[10px] text-[#1c1c1c] font-[510]"
                 {...register("userBio")}
                 resize="none"
                 size={["xs", "sm", "sm", "sm", "sm", "sm"]}
                 placeholder={
-                  "Enter a short biography, introducing yourself and highlighting your academic and nonacademic interests. Keep your bio under 50 words."
+                  "Introduce yourself! Keep your bio under 50 words."
                 }
               />
               {!!errors?.userBio ? (
@@ -521,24 +504,22 @@ export function ProfileEditForm({
           </div>
           <div>
             <FormControl>
-              <FormLabel
-                size={["sm", "sm", "sm", "sm", "sm", "sm"]}
-                className="mb-0"
-              >
+              <FormLabel className="mb-0 text-sm sm:text-base">
                 Pronouns
               </FormLabel>
               <Select
                 useBasicStyles
+                chakraStyles={inputStyling}
                 defaultInputValue={pronouns}
                 isClearable={true}
                 options={pronounsOptions}
-                onChange={onPronounsChange as never as onChangeSelectFunction}
+                onChange={(e) => setValue("pronouns", e === null ? "" : e.value)}
                 size={["xs", "sm", "sm", "sm", "sm", "sm"]}
                 placeholder={"Pronouns"}
               />
             </FormControl>
           </div>
-          <Text className="text-sm" variant="underText">
+          <Text className="text-xs sm:text-sm lg:text-base" variant="underText">
             Copy paste your social media profiles to link your account.
           </Text>
           <Stack

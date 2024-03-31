@@ -23,14 +23,14 @@ export async function POST(request: Request) {
       friendsList: ObjectId[];
     } = (await User.findById(
       sesssionCheck._id,
-      "incomingRequestsList friendsList"
+      "incomingRequestsList friendsList",
     )) ?? { incomingRequestsList: [], friendsList: [] };
     const newFriendRequestLists: {
       outgoingRequestsList: ObjectId[];
       friendsList: ObjectId[];
     } = (await User.findById(
       otherUserId,
-      "outgoingRequestsList friendsList"
+      "outgoingRequestsList friendsList",
     )) ?? { outgoingRequestsList: [], friendsList: [] };
 
     myRequestLists.incomingRequestsList =
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     myRequestLists.friendsList = [...myRequestLists.friendsList, otherUserId];
     newFriendRequestLists.outgoingRequestsList =
       newFriendRequestLists.outgoingRequestsList.filter(
-        (d) => d != sesssionCheck._id
+        (d) => d != sesssionCheck._id,
       );
     newFriendRequestLists.friendsList = [
       ...newFriendRequestLists.friendsList,
@@ -62,7 +62,7 @@ export async function POST(request: Request) {
   } catch (e) {
     return Response.json(
       { error: "Error in accepting friend request" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -80,13 +80,13 @@ export async function DELETE(request: Request) {
 
     const myRequestList: { friendsList: ObjectId[] } = (await User.findById(
       session.user._id,
-      "friendsList"
+      "friendsList",
     )) ?? { friendsList: [] };
     const prevFriendRequestList: { friendsList: ObjectId[] } =
       (await User.findById(otherUserId, "friendsList")) ?? { friendsList: [] };
 
     myRequestList.friendsList = myRequestList.friendsList.filter(
-      (d) => d != otherUserId
+      (d) => d != otherUserId,
     );
     prevFriendRequestList.friendsList =
       prevFriendRequestList.friendsList.filter((d) => d != session.user._id);
@@ -106,7 +106,7 @@ export async function DELETE(request: Request) {
   } catch (e) {
     return Response.json(
       { error: "Error in deleting friend" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

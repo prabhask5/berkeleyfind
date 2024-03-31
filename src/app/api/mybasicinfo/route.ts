@@ -25,7 +25,7 @@ export async function GET() {
 
     const user: UserBasicInfoType | null = await User.findById(
       sesssionCheck._id,
-      "email profileImage profileImagePublicID firstName lastName major gradYear userBio pronouns fbURL igURL userStatus"
+      "email profileImage profileImagePublicID firstName lastName major gradYear userBio pronouns fbURL igURL userStatus",
     );
 
     if (!user)
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
       if (getOldUserResponse.status === 500)
         return Response.json(
           { error: "Error in fetching old user." },
-          { status: 500 }
+          { status: 500 },
         );
       else if (getOldUserResponse.status === 404)
         return Response.json({ error: "User not found." }, { status: 404 });
@@ -107,12 +107,12 @@ export async function POST(request: Request) {
 
     return Response.json(
       { profileImage: updateData.profileImage ?? oldUser.profileImage },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (e) {
     return Response.json(
       { error: "Error in modifying user basic info." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

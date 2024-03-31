@@ -19,7 +19,7 @@ export async function GET() {
 
     const courseList: Course[] | null = await User.findById(
       sesssionCheck._id,
-      "courseList"
+      "courseList",
     );
 
     if (!courseList)
@@ -28,7 +28,7 @@ export async function GET() {
   } catch (e) {
     return Response.json(
       { error: "Error in fetching course list" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
   } catch (e) {
     return Response.json(
       { error: "Error in modifying user course list" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

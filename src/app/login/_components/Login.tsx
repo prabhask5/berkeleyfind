@@ -114,7 +114,7 @@ export default function Login() {
       router.push("/temp");
     } else if (response?.error) {
       const errorJson: { error: string; code: number } = JSON.parse(
-        response?.error
+        response?.error,
       );
 
       if (errorJson.error === "User not found") {

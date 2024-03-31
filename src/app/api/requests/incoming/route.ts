@@ -29,7 +29,7 @@ export async function DELETE(request: Request) {
       myRequestList.incomingRequestsList.filter((d) => d != otherUserId);
     otherUserRequestList.outgoingRequestsList =
       otherUserRequestList.outgoingRequestsList.filter(
-        (d) => d != sesssionCheck._id
+        (d) => d != sesssionCheck._id,
       );
 
     await User.findByIdAndUpdate(sesssionCheck._id, {
@@ -47,7 +47,7 @@ export async function DELETE(request: Request) {
   } catch (e) {
     return Response.json(
       { error: "Error in deleting incoming request" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

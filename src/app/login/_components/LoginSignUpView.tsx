@@ -34,8 +34,11 @@ export default function LoginSignUpView({
   };
 
   return (
-    <div className="w-full sm:w-11/12 xl:w-7/12 text-center m-auto">
-      <Stack spacing={[5, 5, 5, 5, 5, 5]}>
+    <div className="flex w-screen h-screen">
+      <Stack
+        className="w-full sm:w-11/12 xl:w-7/12 text-center m-auto"
+        spacing={[5, 5, 5, 5, 5, 5]}
+      >
         {viewState == "login" ? <Login /> : <SignUp />}
         {viewState == "login" ? (
           <Text

@@ -22,14 +22,14 @@ export async function GET(request: Request) {
 
     const me: ProfileMatchMyData | null = await User.findById(
       sesssionCheck._id,
-      "major pronouns courseList userStudyPreferences"
+      "major pronouns courseList userStudyPreferences",
     );
 
     if (!me) return Response.json({ error: "User not found" }, { status: 404 });
 
     const users: StrangerUserType[] | null = await User.find(
       { _id: { $ne: sesssionCheck._id }, userStatus: "explore" },
-      StangerUserDataQuery
+      StangerUserDataQuery,
     );
 
     const sortedExploreUsers: ExploreUserType[] = (users ?? [])

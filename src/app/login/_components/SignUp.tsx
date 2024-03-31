@@ -34,7 +34,7 @@ export default function SignUp() {
   const toastLoadingRef = React.useRef<ToastId>();
 
   useEffect(() => {
-    router.prefetch("/start/profile");
+    router.prefetch("/temp");
   }, [router]);
 
   const {
@@ -144,10 +144,10 @@ export default function SignUp() {
         isClosable: false,
       });
 
-      router.push("/start/profile");
+      router.push("/temp");
     } else if (response?.error) {
       const errorJson: { error: string; code: number } = JSON.parse(
-        response?.error
+        response?.error,
       );
 
       if (errorJson.error === "User already exists") {

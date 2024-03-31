@@ -19,7 +19,7 @@ export interface AuthResError {
 
 type LoginFn = (
   _email: string,
-  _password: string
+  _password: string,
 ) => Promise<AuthResSuccess | AuthResError>;
 
 export const login: LoginFn = async (email, password) => {
@@ -65,13 +65,13 @@ export interface SessionCheckResponse {
 }
 
 export const checkSession = async (
-  allowedStatuses: UserType["userStatus"][] = ["explore"]
+  allowedStatuses: UserType["userStatus"][] = ["explore"],
 ): Promise<SessionCheckResponse> => {
   const session = await getServerSession(authOptions);
   if (!session || !allowedStatuses.includes(session.user.userStatus))
     return new Promise((resolve, _reject) => resolve({ ok: false }));
 
   return new Promise((resolve, _reject) =>
-    resolve({ ok: true, _id: session.user._id })
+    resolve({ ok: true, _id: session.user._id }),
   );
 };

@@ -2,7 +2,17 @@ import { extendTheme } from "@chakra-ui/react";
 import "@fontsource/baloo-thambi-2";
 import { inputTheme } from "./input";
 
+const breakpoints = {
+  base: "0px",
+  sm: "320px",
+  md: "768px",
+  lg: "1024px",
+  xl: "1280px",
+  "2xl": "1536px",
+};
+
 const customTheme = extendTheme({
+  breakpoints,
   components: {
     Heading: {
       baseStyle: {
