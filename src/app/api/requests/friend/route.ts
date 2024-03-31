@@ -5,11 +5,12 @@ import dbConnect from "@/lib/dbConnect";
 import { User } from "@/models/User";
 import { ObjectId } from "mongodb";
 import { GET as GetAllRequests } from "../route";
+import { SessionCheckResponse, checkSession } from "@/lib/auth";
 
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions);
+  const sesssionCheck: SessionCheckResponse = await checkSession();
 
-  if (!session || session?.user.userStatus !== "explore")
+  if (!sesssionCheck.ok)
     return Response.json({ error: "Not authorized" }, { status: 401 });
 
   const { otherUserId }: ModifyRequestsRequestData = await request.json();
@@ -21,15 +22,15 @@ export async function POST(request: Request) {
       incomingRequestsList: ObjectId[];
       friendsList: ObjectId[];
     } = (await User.findById(
-      session.user._id,
-      "incomingRequestsList friendsList",
+      sesssionCheck._id,
+      "incomingRequestsList friendsList"
     )) ?? { incomingRequestsList: [], friendsList: [] };
     const newFriendRequestLists: {
       outgoingRequestsList: ObjectId[];
       friendsList: ObjectId[];
     } = (await User.findById(
       otherUserId,
-      "outgoingRequestsList friendsList",
+      "outgoingRequestsList friendsList"
     )) ?? { outgoingRequestsList: [], friendsList: [] };
 
     myRequestLists.incomingRequestsList =
@@ -37,14 +38,14 @@ export async function POST(request: Request) {
     myRequestLists.friendsList = [...myRequestLists.friendsList, otherUserId];
     newFriendRequestLists.outgoingRequestsList =
       newFriendRequestLists.outgoingRequestsList.filter(
-        (d) => d != session.user._id,
+        (d) => d != sesssionCheck._id
       );
     newFriendRequestLists.friendsList = [
       ...newFriendRequestLists.friendsList,
-      session.user._id,
+      sesssionCheck._id as ObjectId,
     ];
 
-    await User.findByIdAndUpdate(session.user._id, {
+    await User.findByIdAndUpdate(sesssionCheck._id, {
       $set: {
         incomingRequestsList: myRequestLists.incomingRequestsList,
         friendsList: myRequestLists.friendsList,
@@ -61,7 +62,7 @@ export async function POST(request: Request) {
   } catch (e) {
     return Response.json(
       { error: "Error in accepting friend request" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
@@ -79,13 +80,13 @@ export async function DELETE(request: Request) {
 
     const myRequestList: { friendsList: ObjectId[] } = (await User.findById(
       session.user._id,
-      "friendsList",
+      "friendsList"
     )) ?? { friendsList: [] };
     const prevFriendRequestList: { friendsList: ObjectId[] } =
       (await User.findById(otherUserId, "friendsList")) ?? { friendsList: [] };
 
     myRequestList.friendsList = myRequestList.friendsList.filter(
-      (d) => d != otherUserId,
+      (d) => d != otherUserId
     );
     prevFriendRequestList.friendsList =
       prevFriendRequestList.friendsList.filter((d) => d != session.user._id);
@@ -105,7 +106,7 @@ export async function DELETE(request: Request) {
   } catch (e) {
     return Response.json(
       { error: "Error in deleting friend" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

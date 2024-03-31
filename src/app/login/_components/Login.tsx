@@ -14,8 +14,8 @@ import {
   ToastId,
 } from "@chakra-ui/react";
 import { signIn } from "next-auth/react";
-import { redirect } from "next/navigation";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -27,8 +27,13 @@ interface IUserLogin {
 export default function Login() {
   const [show, setShow] = useState(false);
 
+  const router = useRouter();
   const toast = useToast();
   const toastLoadingRef = React.useRef<ToastId>();
+
+  useEffect(() => {
+    router.prefetch("/temp");
+  }, [router]);
 
   const {
     register,
@@ -106,10 +111,10 @@ export default function Login() {
         isClosable: false,
       });
 
-      redirect("/temp");
+      router.push("/temp");
     } else if (response?.error) {
       const errorJson: { error: string; code: number } = JSON.parse(
-        response?.error,
+        response?.error
       );
 
       if (errorJson.error === "User not found") {

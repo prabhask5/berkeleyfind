@@ -1,15 +1,14 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/route";
 import { ModifyRequestsRequestData } from "@/types/RequestDataTypes";
 import dbConnect from "@/lib/dbConnect";
 import { ObjectId } from "mongodb";
 import { User } from "@/models/User";
 import { GET as GetAllRequests } from "../route";
+import { SessionCheckResponse, checkSession } from "@/lib/auth";
 
 export async function DELETE(request: Request) {
-  const session = await getServerSession(authOptions);
+  const sesssionCheck: SessionCheckResponse = await checkSession();
 
-  if (!session || session?.user.userStatus !== "explore")
+  if (!sesssionCheck.ok)
     return Response.json({ error: "Not authorized" }, { status: 401 });
 
   const { otherUserId }: ModifyRequestsRequestData = await request.json();
@@ -18,7 +17,7 @@ export async function DELETE(request: Request) {
     await dbConnect();
 
     const myRequestList: { incomingRequestsList: ObjectId[] } =
-      (await User.findById(session.user._id, "incomingRequestsList")) ?? {
+      (await User.findById(sesssionCheck._id, "incomingRequestsList")) ?? {
         incomingRequestsList: [],
       };
     const otherUserRequestList: { outgoingRequestsList: ObjectId[] } =
@@ -30,10 +29,10 @@ export async function DELETE(request: Request) {
       myRequestList.incomingRequestsList.filter((d) => d != otherUserId);
     otherUserRequestList.outgoingRequestsList =
       otherUserRequestList.outgoingRequestsList.filter(
-        (d) => d != session.user._id,
+        (d) => d != sesssionCheck._id
       );
 
-    await User.findByIdAndUpdate(session.user._id, {
+    await User.findByIdAndUpdate(sesssionCheck._id, {
       $set: {
         incomingRequestsList: myRequestList.incomingRequestsList,
       },
@@ -48,7 +47,7 @@ export async function DELETE(request: Request) {
   } catch (e) {
     return Response.json(
       { error: "Error in deleting incoming request" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

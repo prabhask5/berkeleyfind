@@ -1,19 +1,18 @@
 import { User } from "@/models/User";
 import type { UserType } from "@/types/UserModelTypes";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getServerSession } from "next-auth";
 import dbConnect from "@/lib/dbConnect";
+import { SessionCheckResponse, checkSession } from "@/lib/auth";
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
+  const sesssionCheck: SessionCheckResponse = await checkSession();
 
-  if (!session || session?.user?.userStatus !== "explore")
+  if (!sesssionCheck.ok)
     return Response.json({ error: "Not authorized" }, { status: 401 });
 
   try {
     await dbConnect();
 
-    const user: UserType | null = await User.findById(session.user._id);
+    const user: UserType | null = await User.findById(sesssionCheck._id);
 
     if (!user)
       return Response.json({ error: "User not found" }, { status: 404 });

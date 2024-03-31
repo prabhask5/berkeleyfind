@@ -4,16 +4,15 @@ import {
   StangerUserDataQuery,
   type StrangerUserType,
 } from "@/types/UserModelTypes";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getServerSession } from "next-auth";
 import dbConnect from "@/lib/dbConnect";
 import { type ProfileMatchMyData, profileMatch } from "@/lib/matcher";
 import { GETExploreRequestData } from "@/types/RequestDataTypes";
+import { type SessionCheckResponse, checkSession } from "@/lib/auth";
 
 export async function GET(request: Request) {
-  const session = await getServerSession(authOptions);
+  const sesssionCheck: SessionCheckResponse = await checkSession();
 
-  if (!session || session?.user.userStatus !== "explore")
+  if (!sesssionCheck.ok)
     return Response.json({ error: "Not authorized" }, { status: 401 });
 
   const { firstIndex, lastIndex }: GETExploreRequestData = await request.json();
@@ -22,15 +21,15 @@ export async function GET(request: Request) {
     await dbConnect();
 
     const me: ProfileMatchMyData | null = await User.findById(
-      session.user._id,
-      "major pronouns courseList userStudyPreferences",
+      sesssionCheck._id,
+      "major pronouns courseList userStudyPreferences"
     );
 
     if (!me) return Response.json({ error: "User not found" }, { status: 404 });
 
     const users: StrangerUserType[] | null = await User.find(
-      { _id: { $ne: session.user._id }, userStatus: "explore" },
-      StangerUserDataQuery,
+      { _id: { $ne: sesssionCheck._id }, userStatus: "explore" },
+      StangerUserDataQuery
     );
 
     const sortedExploreUsers: ExploreUserType[] = (users ?? [])

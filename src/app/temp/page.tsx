@@ -1,22 +1,24 @@
 "use client";
 
-import { Heading, Link, Stack, Text, HStack, Spinner } from "@chakra-ui/react";
+import { Heading, Link, Stack, Text, Spinner } from "@chakra-ui/react";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { statusToURL } from "@/types/UserModelTypes";
 
 export default function RedirectPage() {
   const [showError, setShowError] = useState<boolean>(false);
 
   const router = useRouter();
 
-  getSession().then((session) => {
-    if (session && session.user.userStatus) {
-      router.push(`/${session.user.userStatus}`);
-    } else router.push("/login");
-  });
+  useEffect(() => {
+    getSession().then((session) => {
+      if (!session) return router.push("/login?redirect=true");
+      router.push(statusToURL[session.user.userStatus]);
+    });
+  }, [router]);
 
-  setTimeout(() => setShowError(true), 2500);
+  setTimeout(() => setShowError(true), 7500);
 
   return (
     <Stack spacing={[1, 3, 5, 5, 5, 5]} className="w-11/12 text-center m-auto">

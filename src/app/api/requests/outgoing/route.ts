@@ -5,11 +5,12 @@ import dbConnect from "@/lib/dbConnect";
 import { User } from "@/models/User";
 import { ObjectId } from "mongodb";
 import { GET as GetAllRequests } from "../route";
+import { SessionCheckResponse, checkSession } from "@/lib/auth";
 
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions);
+  const sesssionCheck: SessionCheckResponse = await checkSession();
 
-  if (!session || session?.user.userStatus !== "explore")
+  if (!sesssionCheck.ok)
     return Response.json({ error: "Not authorized" }, { status: 401 });
 
   const { otherUserId }: ModifyRequestsRequestData = await request.json();
@@ -19,7 +20,7 @@ export async function POST(request: Request) {
 
     const myRequestList: {
       outgoingRequestsList: ObjectId[];
-    } = (await User.findById(session.user._id, "outgoingRequestsList")) ?? {
+    } = (await User.findById(sesssionCheck._id, "outgoingRequestsList")) ?? {
       outgoingRequestsList: [],
     };
     const receivingUserRequestList: {
@@ -34,10 +35,10 @@ export async function POST(request: Request) {
     ];
     receivingUserRequestList.incomingRequestsList = [
       ...receivingUserRequestList.incomingRequestsList,
-      session.user._id,
+      sesssionCheck._id as ObjectId,
     ];
 
-    await User.findByIdAndUpdate(session.user._id, {
+    await User.findByIdAndUpdate(sesssionCheck._id, {
       $set: {
         outgoingRequestsList: myRequestList.outgoingRequestsList,
       },
@@ -52,7 +53,7 @@ export async function POST(request: Request) {
   } catch (e) {
     return Response.json(
       { error: "Error in sending friend request" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
@@ -81,7 +82,7 @@ export async function DELETE(request: Request) {
       myRequestList.outgoingRequestsList.filter((d) => d != otherUserId);
     otherUserRequestList.incomingRequestsList =
       otherUserRequestList.incomingRequestsList.filter(
-        (d) => d != session.user._id,
+        (d) => d != session.user._id
       );
 
     await User.findByIdAndUpdate(session.user._id, {
@@ -99,7 +100,7 @@ export async function DELETE(request: Request) {
   } catch (e) {
     return Response.json(
       { error: "Error in deleting incoming request" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

@@ -2,6 +2,13 @@ import { Course } from "./CourseModelTypes";
 import { StudyPreferences } from "./UserPreferenceModelTypes";
 import { ObjectId } from "mongoose";
 
+export const statusToURL = {
+  startprofile: "/start/profile",
+  startcourses: "/start/courses",
+  startstudypref: "/start/studytimes",
+  explore: "/explore",
+};
+
 export interface UserType {
   _id: ObjectId;
   email: string;

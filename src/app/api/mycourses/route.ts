@@ -4,19 +4,22 @@ import { POSTCoursesRequestData } from "@/types/RequestDataTypes";
 import dbConnect from "@/lib/dbConnect";
 import { User } from "@/models/User";
 import { Course } from "@/types/CourseModelTypes";
+import { SessionCheckResponse, checkSession } from "@/lib/auth";
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
+  const sesssionCheck: SessionCheckResponse = await checkSession([
+    "startcourses",
+  ]);
 
-  if (!session || session?.user?.userStatus !== "startcourses")
+  if (!sesssionCheck.ok)
     return Response.json({ error: "Not authorized" }, { status: 401 });
 
   try {
     await dbConnect();
 
     const courseList: Course[] | null = await User.findById(
-      session.user._id,
-      "courseList",
+      sesssionCheck._id,
+      "courseList"
     );
 
     if (!courseList)
@@ -25,7 +28,7 @@ export async function GET() {
   } catch (e) {
     return Response.json(
       { error: "Error in fetching course list" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
@@ -57,7 +60,7 @@ export async function POST(request: Request) {
   } catch (e) {
     return Response.json(
       { error: "Error in modifying user course list" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

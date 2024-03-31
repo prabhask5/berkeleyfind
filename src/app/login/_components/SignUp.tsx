@@ -13,8 +13,8 @@ import {
   useToast,
   ToastId,
 } from "@chakra-ui/react";
-import { redirect } from "next/navigation";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
@@ -29,8 +29,13 @@ export default function SignUp() {
   const [show, setShow] = useState(false);
   const [confirmShow, setConfirmShow] = useState(false);
 
+  const router = useRouter();
   const toast = useToast();
   const toastLoadingRef = React.useRef<ToastId>();
+
+  useEffect(() => {
+    router.prefetch("/start/profile");
+  }, [router]);
 
   const {
     register,
@@ -139,7 +144,7 @@ export default function SignUp() {
         isClosable: false,
       });
 
-      redirect("/temp");
+      router.push("/start/profile");
     } else if (response?.error) {
       const errorJson: { error: string; code: number } = JSON.parse(
         response?.error
@@ -240,7 +245,7 @@ export default function SignUp() {
             <InputGroup className="w-11/12 sm:w-3/4 mx-auto">
               <Input
                 id="confirmPassword"
-                type={show ? "text" : "password"}
+                type={confirmShow ? "text" : "password"}
                 placeholder="Confirm Password"
                 {...register("confirmPassword")}
                 size={["sm", "sm", "md", "md", "md", "md"]}
@@ -267,9 +272,9 @@ export default function SignUp() {
                     "1.75rem",
                   ]}
                   size={["xs", "xs", "sm", "sm", "sm", "sm"]}
-                  onClick={() => setShow(!show)}
+                  onClick={() => setConfirmShow(!confirmShow)}
                 >
-                  {show ? "Hide" : "Show"}
+                  {confirmShow ? "Hide" : "Show"}
                 </Button>
               </InputRightElement>
             </InputGroup>

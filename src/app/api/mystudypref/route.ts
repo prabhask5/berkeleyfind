@@ -4,31 +4,34 @@ import { POSTStudyPrefRequestData } from "@/types/RequestDataTypes";
 import dbConnect from "@/lib/dbConnect";
 import { User } from "@/models/User";
 import { StudyPreferences } from "@/types/UserPreferenceModelTypes";
+import { SessionCheckResponse, checkSession } from "@/lib/auth";
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
+  const sesssionCheck: SessionCheckResponse = await checkSession([
+    "startstudypref",
+  ]);
 
-  if (!session || session?.user?.userStatus !== "startstudypref")
+  if (!sesssionCheck.ok)
     return Response.json({ error: "Not authorized" }, { status: 401 });
 
   try {
     await dbConnect();
 
     const userStudyPreferences: StudyPreferences | null = await User.findById(
-      session.user._id,
-      "userStudyPreferences",
+      sesssionCheck._id,
+      "userStudyPreferences"
     );
 
     if (!userStudyPreferences)
       return Response.json(
         { error: "User study preferences not found" },
-        { status: 404 },
+        { status: 404 }
       );
     return Response.json({ userStudyPreferences }, { status: 200 });
   } catch (e) {
     return Response.json(
       { error: "Error in fetching user study preferences" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
@@ -61,7 +64,7 @@ export async function POST(request: Request) {
   } catch (e) {
     return Response.json(
       { error: "Error in modifying user course list" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

@@ -1,3 +1,10 @@
+const pronouns = [
+  { label: "he/him", value: "he/him" },
+  { label: "she/her", value: "she/her" },
+  { label: "they/them", value: "they/them" },
+  { label: "Other", value: "Other" },
+];
+
 const majors = [
   { major: "Aerospace Engineering", cluster: "0" },
   { major: "African American Studies", cluster: "1" },
@@ -51254,6 +51261,7 @@ const berkeleyData = {
   selectionCourseOptions: selectionCourseOptions,
   selectionCourseAbrFilterOptions: selectionCourseAbrFilterOptions,
   libraries: libraries,
+  pronouns: pronouns,
 };
 
 export default berkeleyData;

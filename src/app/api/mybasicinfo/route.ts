@@ -1,10 +1,9 @@
 import { User } from "@/models/User";
 import type { UserBasicInfoType } from "@/types/UserModelTypes";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getServerSession } from "next-auth";
 import dbConnect from "@/lib/dbConnect";
 import { POSTMyBasicInfoRequestData } from "@/types/RequestDataTypes";
 import { v2 as cloudinary } from "cloudinary";
+import { SessionCheckResponse, checkSession } from "@/lib/auth";
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -13,21 +12,20 @@ cloudinary.config({
 });
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
+  const sesssionCheck: SessionCheckResponse = await checkSession([
+    "explore",
+    "startprofile",
+  ]);
 
-  if (
-    !session ||
-    (session?.user?.userStatus !== "startprofile" &&
-      session?.user?.userStatus !== "explore")
-  )
+  if (!sesssionCheck.ok)
     return Response.json({ error: "Not authorized" }, { status: 401 });
 
   try {
     await dbConnect();
 
     const user: UserBasicInfoType | null = await User.findById(
-      session.user._id,
-      "_id email profileImage profileImagePublicID firstName lastName major gradYear userBio pronouns fbURL igURL userStatus",
+      sesssionCheck._id,
+      "email profileImage profileImagePublicID firstName lastName major gradYear userBio pronouns fbURL igURL userStatus"
     );
 
     if (!user)
@@ -57,11 +55,11 @@ export async function POST(request: Request) {
     if (getOldUserResponse.status >= 400) {
       if (getOldUserResponse.status === 500)
         return Response.json(
-          { error: "Error in fetching old user" },
-          { status: 500 },
+          { error: "Error in fetching old user." },
+          { status: 500 }
         );
       else if (getOldUserResponse.status === 404)
-        return Response.json({ error: "Old user not found" }, { status: 404 });
+        return Response.json({ error: "User not found." }, { status: 404 });
       return getOldUserResponse;
     }
 
@@ -109,12 +107,12 @@ export async function POST(request: Request) {
 
     return Response.json(
       { profileImage: updateData.profileImage ?? oldUser.profileImage },
-      { status: 200 },
+      { status: 200 }
     );
   } catch (e) {
     return Response.json(
-      { error: "Error in modifying user basic info" },
-      { status: 500 },
+      { error: "Error in modifying user basic info." },
+      { status: 500 }
     );
   }
 }

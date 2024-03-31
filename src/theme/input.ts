@@ -4,12 +4,12 @@ import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(inputAnatomy.keys);
 
-const baseStyle = definePartsStyle({
+const baseInputStyle = definePartsStyle({
   field: {
     color: "#1c1c1c",
     fontWeight: "510",
-    borderRadius: "full",
+    borderRadius: "10px",
   },
 });
 
-export const inputTheme = defineMultiStyleConfig({ baseStyle });
+export const inputTheme = defineMultiStyleConfig({ baseStyle: baseInputStyle });
