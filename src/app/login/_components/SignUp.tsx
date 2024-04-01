@@ -18,6 +18,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
+import { stopLoading } from "@/lib/utils";
 
 interface IUserSignup {
   email: string;
@@ -44,7 +45,7 @@ export default function SignUp() {
     watch,
     formState: { errors },
   } = useForm<IUserSignup>({
-    mode: "all",
+    mode: "onBlur",
     defaultValues: {
       email: "",
       password: "",
@@ -81,12 +82,6 @@ export default function SignUp() {
     },
   });
 
-  const stopLoading = () => {
-    if (toastLoadingRef.current) {
-      toast.close(toastLoadingRef.current);
-    }
-  };
-
   const checkForErrors = async () => {
     const emailValid = await trigger("email");
     const passwordValid = await trigger("password");
@@ -112,7 +107,7 @@ export default function SignUp() {
 
     if (errorMsg != null) {
       toast({
-        title: "Error with Inputted Information",
+        title: "Error with inputted information",
         description: errorMsg,
         status: "error",
         duration: 2000,
@@ -134,11 +129,11 @@ export default function SignUp() {
       redirect: false,
     });
 
-    stopLoading();
+    stopLoading(toast, toastLoadingRef);
 
     if (response?.ok) {
       toast({
-        title: "Sign Up Successful",
+        title: "Sign up successful",
         status: "success",
         duration: 2000,
         isClosable: false,
@@ -152,7 +147,7 @@ export default function SignUp() {
 
       if (errorJson.error === "User already exists") {
         toast({
-          title: "User with This Email Already Exists",
+          title: "User with this email already exists",
           description: "Please use another email address.",
           status: "error",
           duration: 2000,
@@ -160,7 +155,7 @@ export default function SignUp() {
         });
       } else if (errorJson.code === 500) {
         toast({
-          title: "Unexpected Server Error",
+          title: "Unexpected server error",
           description: "Please try again.",
           status: "error",
           duration: 2000,

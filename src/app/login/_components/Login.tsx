@@ -1,5 +1,6 @@
 "use client";
 
+import { stopLoading } from "@/lib/utils";
 import {
   Heading,
   Text,
@@ -41,7 +42,7 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm<IUserLogin>({
-    mode: "all",
+    mode: "onBlur",
     defaultValues: {
       email: "",
       password: "",
@@ -60,12 +61,6 @@ export default function Login() {
     },
   });
 
-  const stopLoading = () => {
-    if (toastLoadingRef.current) {
-      toast.close(toastLoadingRef.current);
-    }
-  };
-
   const checkForErrors = async () => {
     const emailValid = await trigger("email");
     const passwordValid = await trigger("password");
@@ -79,7 +74,7 @@ export default function Login() {
 
     if (errorMsg != null) {
       toast({
-        title: "Error with Inputted Information",
+        title: "Error with inputted information",
         description: errorMsg,
         status: "error",
         duration: 2000,
@@ -101,11 +96,11 @@ export default function Login() {
       redirect: false,
     });
 
-    stopLoading();
+    stopLoading(toast, toastLoadingRef);
 
     if (response?.ok) {
       toast({
-        title: "Login Successful",
+        title: "Login successful",
         status: "success",
         duration: 2000,
         isClosable: false,
@@ -119,7 +114,7 @@ export default function Login() {
 
       if (errorJson.error === "User not found") {
         toast({
-          title: "User Not Found",
+          title: "User not found",
           description:
             "A user with this email could not be found. Please try again.",
           status: "error",
@@ -128,7 +123,7 @@ export default function Login() {
         });
       } else if (errorJson.error === "Incorrect password") {
         toast({
-          title: "Incorrect Password",
+          title: "Incorrect password",
           description:
             "This email password combination is incorrect. Please try again.",
           status: "error",
@@ -137,7 +132,7 @@ export default function Login() {
         });
       } else if (errorJson.code === 500) {
         toast({
-          title: "Unexpected Server Error",
+          title: "Unexpected server error",
           description: "Please try again.",
           status: "error",
           duration: 2000,

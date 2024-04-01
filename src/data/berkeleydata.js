@@ -138,7 +138,7 @@ const majors = [
   { major: "Urban Studies", cluster: "113" },
 ];
 
-const courses = [
+const courseList = [
   { abr: "AERO ENG 1", name: "Aerospace Engineering 1 Seminar" },
   { abr: "AERO ENG 2", name: "Aerospace Engineering 2 Seminar" },
   { abr: "AERO ENG 10", name: "Introduction to Aerospace Engineering Design" },
@@ -51256,12 +51256,12 @@ const libraries = [
 ];
 
 const berkeleyData = {
-  majors: majors,
-  courses: courses,
-  selectionCourseOptions: selectionCourseOptions,
-  selectionCourseAbrFilterOptions: selectionCourseAbrFilterOptions,
-  libraries: libraries,
-  pronouns: pronouns,
+  majors,
+  courseList,
+  selectionCourseOptions,
+  selectionCourseAbrFilterOptions,
+  libraries,
+  pronouns,
 };
 
 export default berkeleyData;

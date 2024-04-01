@@ -4,7 +4,7 @@ import {
   ProfileEditFormProps,
 } from "@/app/profile/_components/ProfileEditForm";
 import React from "react";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { statusToURL } from "@/types/UserModelTypes";

@@ -30,6 +30,9 @@ import fbIcon from "@/media/fbIcon.svg";
 import igIcon from "@/media/igIcon.svg";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { asyncInputStyling } from "@/theme/input";
+import { DropdownOption } from "@/types/MiscTypes";
+import { stopLoading } from "@/lib/utils";
 
 export interface ProfileEditFormProps {
   profileImage: string;
@@ -47,11 +50,6 @@ export interface ProfileEditFormProps {
   passInCancel?: Function;
 }
 
-interface Option {
-  value: string;
-  label: string;
-}
-
 interface IUserBasicInfo {
   profileImageFile: string;
   firstName: string;
@@ -65,23 +63,11 @@ interface IUserBasicInfo {
   igURL: string;
 }
 
-const majorOptions: Option[] = berkeleyData.majors.map(
-  (m) => ({ label: m.major, value: m.major }) as Option,
+const majorOptions: DropdownOption[] = berkeleyData.majors.map(
+  (m) => ({ label: m.major, value: m.major }) as DropdownOption,
 );
 
-const pronounsOptions: Option[] = berkeleyData.pronouns;
-
-const inputStyling = {
-  control: (baseStyles: any, _state: any) => ({
-    ...baseStyles,
-    borderRadius: "10px",
-  }),
-  placeholder: (baseStyles: any, _state: any) => ({
-    ...baseStyles,
-    color: "#9ca6b5",
-    fontWeight: "510",
-  }),
-};
+const pronounsOptions: DropdownOption[] = berkeleyData.pronouns;
 
 export function ProfileEditForm({
   profileImage,
@@ -217,12 +203,6 @@ export function ProfileEditForm({
     onDrop,
   });
 
-  const stopLoading = () => {
-    if (toastLoadingRef.current) {
-      toast.close(toastLoadingRef.current);
-    }
-  };
-
   const checkForErrors = async () => {
     const firstNameValid = await trigger("firstName");
     const lastNameValid = await trigger("lastName");
@@ -280,7 +260,7 @@ export function ProfileEditForm({
 
     if (errorMsg != null) {
       toast({
-        title: "Error with Inputted Information",
+        title: "Error with inputted information",
         description: errorMsg,
         status: "error",
         duration: 2000,
@@ -301,11 +281,11 @@ export function ProfileEditForm({
       body: JSON.stringify(data),
     });
 
-    stopLoading();
+    stopLoading(toast, toastLoadingRef);
 
-    if (response.status === 200) {
+    if (response.ok) {
       toast({
-        title: "Information Saved",
+        title: "Information saved",
         status: "success",
         duration: 2000,
         isClosable: false,
@@ -315,7 +295,7 @@ export function ProfileEditForm({
       const errorMsg = await response.json();
 
       toast({
-        title: "Unexpected Server Error",
+        title: "Unexpected server error",
         description: errorMsg.error,
         status: "error",
         duration: 2000,
@@ -327,12 +307,12 @@ export function ProfileEditForm({
   const buttonLayout = () => {
     const submitButton = (
       <Button
-        className="md:w-1/4 md:max-w-40"
+        className="md:w-40"
         type="submit"
         onClick={checkForErrors}
         colorScheme="messenger"
       >
-        Save
+        {isStart ? "Save & Continue" : "Save"}
       </Button>
     );
 
@@ -382,7 +362,8 @@ export function ProfileEditForm({
                   defaultInputValue={major}
                   isClearable={true}
                   options={majorOptions}
-                  chakraStyles={inputStyling}
+                  chakraStyles={asyncInputStyling}
+                  // @ts-ignore
                   size={["xs", "sm", "sm", "sm", "sm", "sm"]}
                   placeholder="Major"
                   onBlur={(_e) => trigger("major")}
@@ -509,11 +490,14 @@ export function ProfileEditForm({
               </FormLabel>
               <Select
                 useBasicStyles
-                chakraStyles={inputStyling}
+                chakraStyles={asyncInputStyling}
                 defaultInputValue={pronouns}
                 isClearable={true}
                 options={pronounsOptions}
-                onChange={(e) => setValue("pronouns", e === null ? "" : e.value)}
+                onChange={(e) =>
+                  setValue("pronouns", e === null ? "" : e.value)
+                }
+                // @ts-ignore
                 size={["xs", "sm", "sm", "sm", "sm", "sm"]}
                 placeholder={"Pronouns"}
               />
