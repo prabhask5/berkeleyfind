@@ -18,7 +18,7 @@ import {
 import { AsyncSelect } from "chakra-react-select";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import CourseListItem from "./CourseListItem";
 
@@ -41,10 +41,6 @@ export default function CourseEditForm({
   const toast = useToast();
   const toastLoadingRef = React.useRef<ToastId>();
   const [allClosed, setAllClosed] = useState(false);
-
-  useEffect(() => {
-    router.prefetch("/temp");
-  }, [router]);
 
   const { handleSubmit, setValue, reset, watch } = useForm<IUserCourseInfo>({
     mode: "all",
@@ -144,7 +140,7 @@ export default function CourseEditForm({
         duration: 2000,
         isClosable: false,
       });
-      if (isStart) router.push("/temp");
+      if (isStart) router.push("/start/studytimes");
     } else {
       const errorMsg = await response.json();
 
@@ -160,7 +156,7 @@ export default function CourseEditForm({
 
   const buttonLayout = () => {
     const submitButton = (
-      <Button className="md:w-40" type="submit" colorScheme="messenger">
+      <Button className="md:w-40 lg:mb-5" type="submit" colorScheme="messenger">
         {isStart ? "Save & Continue" : "Save"}
       </Button>
     );

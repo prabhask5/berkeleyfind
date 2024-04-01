@@ -90,10 +90,6 @@ export function ProfileEditForm({
   const toastRef = React.useRef<ToastId>();
 
   useEffect(() => {
-    router.prefetch("/temp");
-  }, [router]);
-
-  useEffect(() => {
     if (fetchedSavedData != undefined && !toastRef.current) {
       toastRef.current = toast({
         title: fetchedSavedData
@@ -119,7 +115,6 @@ export function ProfileEditForm({
   } = useForm<IUserBasicInfo>({
     mode: "onBlur",
     defaultValues: {
-      profileImageFile: profileImage,
       firstName: firstName,
       lastName: lastName,
       email: email,
@@ -290,7 +285,7 @@ export function ProfileEditForm({
         duration: 2000,
         isClosable: false,
       });
-      if (isStart) router.push("/temp");
+      if (isStart) router.push("/start/courses");
     } else {
       const errorMsg = await response.json();
 
@@ -307,7 +302,7 @@ export function ProfileEditForm({
   const buttonLayout = () => {
     const submitButton = (
       <Button
-        className="md:w-40"
+        className="md:w-40 lg:mb-5"
         type="submit"
         onClick={checkForErrors}
         colorScheme="messenger"
@@ -336,17 +331,17 @@ export function ProfileEditForm({
 
   return (
     <form onSubmit={handleSubmit(handleSubmitForm)}>
-      <Stack spacing={[5, 5, 5, 7, 7, 7]}>
+      <Stack spacing={[5, 5, 5, 5, 5, 7]}>
         <Heading size="lg">My Profile</Heading>
-        <Stack spacing={[2, 3, 3, 5, 5, 5]}>
+        <Stack spacing={[2, 3, 3, 3, 3, 5]}>
           <Stack
             direction={["row", "row", "row", "row", "row", "row"]}
-            spacing={[3, 5, 5, 7, 7, 7]}
+            spacing={[3, 5, 5, 5, 5, 7]}
           >
             <Avatar
               className="rounded-full w-20 h-20 sm:w-32 sm:h-32 cursor-pointer"
               draggable="false"
-              src={watch("profileImageFile")}
+              src={watch("profileImageFile") ?? profileImage}
               onClick={onOpen}
             />
             <Stack className="w-full" spacing={[2, 3, 3, 5, 5, 5]}>

@@ -16,7 +16,7 @@ export default async function StartCourses() {
       <Stack
         direction={["column", "column", "column", "row", "row", "row"]}
         spacing={[10, 10, 10, 10, 10, 10]}
-        className="w-11/12 2xl:w-[97.5%] mx-auto my-[10%] lg:my-auto h-full lg:p-5"
+        className="w-11/12 2xl:w-[97.5%] mx-auto my-[10%] lg:my-auto h-full lg:pt-5"
       >
         <Heading
           className="text-center m-auto"

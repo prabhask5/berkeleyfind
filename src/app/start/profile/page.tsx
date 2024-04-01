@@ -27,7 +27,7 @@ export default async function StartProfile() {
       <Stack
         direction={["column", "column", "column", "row", "row", "row"]}
         spacing={[10, 10, 10, 10, 10, 10]}
-        className="w-9/12 lg:w-11/12 2xl:w-[97.5%] mx-auto my-[10%] lg:my-auto"
+        className="w-9/12 lg:w-11/12 2xl:w-[97.5%] mx-auto my-[10%] lg:my-auto h-full lg:pt-5"
       >
         <Heading
           className="text-center m-auto"
