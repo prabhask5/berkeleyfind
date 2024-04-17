@@ -12,7 +12,6 @@ import {
   useToast,
   ToastId,
   Button,
-  ButtonGroup,
   Heading,
 } from "@chakra-ui/react";
 import { AsyncSelect } from "chakra-react-select";
@@ -24,7 +23,6 @@ import CourseListItem from "./CourseListItem";
 
 interface CourseEditFormProps {
   courseList: Course[];
-  passInCancel?: Function;
   isStart: boolean;
 }
 
@@ -35,14 +33,13 @@ interface IUserCourseInfo {
 export default function CourseEditForm({
   courseList,
   isStart,
-  passInCancel,
 }: CourseEditFormProps) {
   const router = useRouter();
   const toast = useToast();
   const toastLoadingRef = React.useRef<ToastId>();
   const [allClosed, setAllClosed] = useState(false);
 
-  const { handleSubmit, setValue, reset, watch } = useForm<IUserCourseInfo>({
+  const { handleSubmit, setValue, watch } = useForm<IUserCourseInfo>({
     mode: "all",
     defaultValues: {
       courseList: courseList,
@@ -155,27 +152,10 @@ export default function CourseEditForm({
   };
 
   const buttonLayout = () => {
-    const submitButton = (
-      <Button className="md:w-40 lg:mb-5" type="submit" colorScheme="messenger">
-        {isStart ? "Save & Continue" : "Save"}
-      </Button>
-    );
-
-    if (isStart) return submitButton;
-
     return (
-      <ButtonGroup gap={4}>
-        {submitButton}
-        <Button
-          onClick={() => {
-            reset();
-            if (passInCancel) passInCancel();
-          }}
-          colorScheme="gray"
-        >
-          Cancel
-        </Button>
-      </ButtonGroup>
+      <Button className="md:w-40 lg:mb-5" type="submit" colorScheme="messenger">
+        {"Save & Continue"}
+      </Button>
     );
   };
 
@@ -234,7 +214,7 @@ export default function CourseEditForm({
           </div>
           <Divider className="bg-[#D8D8D8]" variant="solid" />
         </Stack>
-        {buttonLayout()}
+        {isStart && buttonLayout()}
       </Stack>
     </form>
   );

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -21,10 +22,10 @@ import {
   Text,
   Heading,
   Button,
-  ButtonGroup,
+  CloseButton,
 } from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
-import React, { useEffect } from "react";
+import React from "react";
 import { Select } from "chakra-react-select";
 import fbIcon from "@/media/fbIcon.svg";
 import igIcon from "@/media/igIcon.svg";
@@ -46,8 +47,6 @@ export interface ProfileEditFormProps {
   fbURL: string;
   igURL: string;
   isStart: boolean;
-  fetchedSavedData?: boolean;
-  passInCancel?: Function;
 }
 
 interface IUserBasicInfo {
@@ -81,36 +80,20 @@ export function ProfileEditForm({
   fbURL,
   igURL,
   isStart,
-  passInCancel,
-  fetchedSavedData,
 }: ProfileEditFormProps) {
   const router = useRouter();
   const toast = useToast();
   const toastLoadingRef = React.useRef<ToastId>();
-  const toastRef = React.useRef<ToastId>();
-
-  useEffect(() => {
-    if (fetchedSavedData != undefined && !toastRef.current) {
-      toastRef.current = toast({
-        title: fetchedSavedData
-          ? "Fetched profile data"
-          : "Error fetching profile data",
-        status: fetchedSavedData ? "success" : "error",
-        duration: 2000,
-        isClosable: false,
-      });
-    }
-  }, [fetchedSavedData, toast]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const {
     register,
-    reset,
     trigger,
     handleSubmit,
     setValue,
     watch,
+    resetField,
     formState: { errors },
   } = useForm<IUserBasicInfo>({
     mode: "onBlur",
@@ -183,6 +166,8 @@ export function ProfileEditForm({
       message: "Invalid instagram url format.",
     },
   });
+
+  register("profileImageFile");
 
   const onDrop = (acceptedFiles: any) => {
     onClose();
@@ -300,33 +285,22 @@ export function ProfileEditForm({
   };
 
   const buttonLayout = () => {
-    const submitButton = (
+    return (
       <Button
         className="md:w-40 lg:mb-5"
         type="submit"
         onClick={checkForErrors}
         colorScheme="messenger"
       >
-        {isStart ? "Save & Continue" : "Save"}
+        {"Save & Continue"}
       </Button>
     );
+  };
 
-    if (isStart) return submitButton;
-
-    return (
-      <ButtonGroup gap={4}>
-        {submitButton}
-        <Button
-          onClick={() => {
-            reset();
-            if (passInCancel) passInCancel();
-          }}
-          colorScheme="gray"
-        >
-          Cancel
-        </Button>
-      </ButtonGroup>
-    );
+  const resolveProfileImageLink = () => {
+    if (watch("profileImageFile")) return watch("profileImageFile");
+    if (profileImage) return profileImage;
+    return "/media/avatar_placeholder.svg";
   };
 
   return (
@@ -338,13 +312,20 @@ export function ProfileEditForm({
             direction={["row", "row", "row", "row", "row", "row"]}
             spacing={[3, 5, 5, 5, 5, 7]}
           >
-            <Avatar
-              className="rounded-full w-20 h-20 sm:w-32 sm:h-32 cursor-pointer"
-              draggable="false"
-              src={watch("profileImageFile") ?? profileImage}
-              onClick={onOpen}
-            />
-            <Stack className="w-full" spacing={[2, 3, 3, 5, 5, 5]}>
+            <div className="relative flex-row flex">
+              <Avatar
+                className="rounded-full w-20 h-20 sm:w-32 sm:h-32 cursor-pointer"
+                draggable="false"
+                src="https://github.com/prabhask5/berkeleyfind/blob/main/src/media/avatar_placeholder.svg"
+                onClick={onOpen}
+              />
+              <div className="absolute top-[-10px] right-[-15px]">
+                {watch("profileImageFile") && (
+                  <CloseButton onClick={() => resetField("profileImageFile")} />
+                )}
+              </div>
+            </div>
+            <Stack className="w-full" spacing={[1, 2, 2, 4, 4, 4]}>
               <FormControl isInvalid={!!errors?.major}>
                 <FormLabel className="mb-0 text-sm sm:text-base">
                   Major{" "}
@@ -498,7 +479,10 @@ export function ProfileEditForm({
               />
             </FormControl>
           </div>
-          <Text className="text-xs sm:text-sm lg:text-base" variant="underText">
+          <Text
+            className="text-[10px] sm:text-sm md:text-base lg:text-[13px] xl:text-base"
+            variant="underText"
+          >
             Copy paste your social media profiles to link your account.
           </Text>
           <Stack
@@ -534,7 +518,7 @@ export function ProfileEditForm({
             </FormControl>
           </Stack>
         </Stack>
-        {buttonLayout()}
+        {isStart && buttonLayout()}
       </Stack>
     </form>
   );

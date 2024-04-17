@@ -1,26 +1,16 @@
 import { Heading, Stack } from "@chakra-ui/react";
-import {
-  ProfileEditForm,
-  ProfileEditFormProps,
-} from "@/app/profile/_components/ProfileEditForm";
+import { ProfileEditForm } from "@/app/profile/_components/ProfileEditForm";
 import React from "react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { statusToURL } from "@/types/UserModelTypes";
-import { headers } from "next/headers";
 
 export default async function StartProfile() {
   const session = await getServerSession(authOptions);
   if (!session) return redirect("/login?redirect=true");
   if (session.user.userStatus && session.user.userStatus !== "startprofile")
     return redirect(statusToURL[session.user.userStatus]);
-
-  const response = await fetch(`${process.env.API_URL}/mybasicinfo`, {
-    method: "GET",
-    headers: headers(),
-  });
-  const editFormData: ProfileEditFormProps = (await response.json()).user;
 
   return (
     <div className="flex w-screen lg:h-screen">
@@ -36,19 +26,18 @@ export default async function StartProfile() {
           Welcome! Start building your profile by first entering some basic
           information.
         </Heading>
-        <div className="lg:w-full">
+        <div className="lg:w-full lg:m-auto">
           <ProfileEditForm
-            profileImage={editFormData?.profileImage ?? ""}
-            firstName={editFormData?.firstName ?? ""}
-            lastName={editFormData?.lastName ?? ""}
-            email={editFormData?.email ?? ""}
-            major={editFormData?.major ?? ""}
-            gradYear={editFormData?.gradYear ?? ""}
-            userBio={editFormData?.userBio ?? ""}
-            pronouns={editFormData?.pronouns ?? ""}
-            fbURL={editFormData?.fbURL ?? ""}
-            igURL={editFormData?.igURL ?? ""}
-            fetchedSavedData={response.ok ?? false}
+            profileImage={""}
+            firstName={""}
+            lastName={""}
+            email={session.user?.email ?? ""}
+            major={""}
+            gradYear={""}
+            userBio={""}
+            pronouns={""}
+            fbURL={""}
+            igURL={""}
             isStart={true}
           />
         </div>

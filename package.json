@@ -23,6 +23,7 @@
     "bson": "^6.5.0",
     "chakra-react-select": "^4.7.6",
     "cloudinary": "^2.0.3",
+    "core-js": "^3.36.1",
     "framer-motion": "^11.0.20",
     "mongodb": "^6.5.0",
     "mongoose": "^8.2.3",
@@ -33,6 +34,8 @@
     "react-dom": "^18",
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.51.1",
+    "react-schedule-selector": "^3.0.2",
+    "styled-components": "^6.1.8",
     "tailwindcss": "^3.4.3"
   },
   "devDependencies": {
