@@ -314,12 +314,12 @@ export function ProfileEditForm({
           >
             <div className="relative flex-row flex">
               <div
-                className="rounded-full w-20 h-20 sm:w-32 sm:h-32 cursor-pointer border"
+                className="rounded-full w-20 h-20 sm:w-32 sm:h-32 cursor-pointer"
                 onClick={onOpen}
               >
                 <Image
                   fill={true}
-                  className="cursor-pointer rounded-full"
+                  className="rounded-full"
                   draggable="false"
                   src={resolveProfileImageLink()}
                   alt="Profile picture"

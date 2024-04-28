@@ -34,7 +34,7 @@ export default function CourseListItem({
 
   return (
     <div className="w-full">
-      <div className="my-[5px] md:my-[10px] grid grid-cols-[93%_5%]">
+      <div className="my-[6px] sm:my-[10px] grid grid-cols-[93%_5%]">
         <Popover
           trigger="hover"
           openDelay={400}

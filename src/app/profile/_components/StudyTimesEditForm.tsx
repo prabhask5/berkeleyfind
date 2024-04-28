@@ -109,7 +109,7 @@ export default function StudyTimesEditForm({
               }
               return (
                 <Text
-                  className="text-xs sm:text-sm lg:text-sm xl:text-base"
+                  className="text-[8px] sm:text-sm lg:text-[10px] xl:text-base"
                   variant="underText"
                 >
                   {processedTime}
@@ -128,7 +128,7 @@ export default function StudyTimesEditForm({
               ];
               return (
                 <Text
-                  className="text-center text-xs sm:text-sm lg:text-sm xl:text-base"
+                  className="text-center text-[9px] sm:text-sm lg:text-[11px] xl:text-base"
                   variant="underText"
                 >
                   {days[date.getDay()]}
