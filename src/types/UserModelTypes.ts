@@ -6,7 +6,7 @@ export const statusToURL = {
   startprofile: "/start/profile",
   startcourses: "/start/courses",
   startstudypref: "/start/studytimes",
-  explore: "/explore",
+  explore: "/pages/explore",
 };
 
 export interface UserType {
