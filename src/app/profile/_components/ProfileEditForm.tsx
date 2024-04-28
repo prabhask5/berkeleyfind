@@ -4,7 +4,6 @@
 import { useForm } from "react-hook-form";
 import berkeleyData from "@/data/berkeleydata";
 import {
-  Avatar,
   Box,
   FormControl,
   FormErrorMessage,
@@ -34,6 +33,7 @@ import { useRouter } from "next/navigation";
 import { asyncInputStyling } from "@/theme/input";
 import { DropdownOption } from "@/types/MiscTypes";
 import { stopLoading } from "@/lib/utils";
+import placeholder from "@/media/avatar_placeholder.svg";
 
 export interface ProfileEditFormProps {
   profileImage: string;
@@ -98,6 +98,7 @@ export function ProfileEditForm({
   } = useForm<IUserBasicInfo>({
     mode: "onBlur",
     defaultValues: {
+      profileImageFile: profileImage,
       firstName: firstName,
       lastName: lastName,
       email: email,
@@ -299,8 +300,7 @@ export function ProfileEditForm({
 
   const resolveProfileImageLink = () => {
     if (watch("profileImageFile")) return watch("profileImageFile");
-    if (profileImage) return profileImage;
-    return "/media/avatar_placeholder.svg";
+    return placeholder;
   };
 
   return (
@@ -313,12 +313,18 @@ export function ProfileEditForm({
             spacing={[3, 5, 5, 5, 5, 7]}
           >
             <div className="relative flex-row flex">
-              <Avatar
-                className="rounded-full w-20 h-20 sm:w-32 sm:h-32 cursor-pointer"
-                draggable="false"
-                src="https://github.com/prabhask5/berkeleyfind/blob/main/src/media/avatar_placeholder.svg"
+              <div
+                className="rounded-full w-20 h-20 sm:w-32 sm:h-32 cursor-pointer border"
                 onClick={onOpen}
-              />
+              >
+                <Image
+                  fill={true}
+                  className="cursor-pointer rounded-full"
+                  draggable="false"
+                  src={resolveProfileImageLink()}
+                  alt="Profile picture"
+                />
+              </div>
               <div className="absolute top-[-10px] right-[-15px]">
                 {watch("profileImageFile") && (
                   <CloseButton onClick={() => resetField("profileImageFile")} />
