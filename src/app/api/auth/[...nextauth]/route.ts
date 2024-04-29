@@ -53,7 +53,7 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials, _req) {
         if (!credentials?.email || !credentials?.password)
           throw new Error(
             JSON.stringify({ error: "Missing fields", code: 400 }),
@@ -78,7 +78,7 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials, _req) {
         if (!credentials?.email || !credentials?.password)
           throw new Error(
             JSON.stringify({ error: "Missing fields", code: 400 }),

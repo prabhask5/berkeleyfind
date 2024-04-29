@@ -34,6 +34,7 @@
     "react-dom": "^18",
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.51.1",
+    "react-responsive": "^10.0.0",
     "react-schedule-selector": "^3.0.2",
     "styled-components": "^6.1.8",
     "tailwindcss": "^3.4.3"

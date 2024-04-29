@@ -1,5 +1,5 @@
 import { Heading, Stack } from "@chakra-ui/react";
-import { ProfileEditForm } from "@/app/(pages)/profile/_components/ProfileEditForm";
+import { ProfileEditForm } from "@/app/(user)/profile/_components/ProfileEditForm";
 import React from "react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";

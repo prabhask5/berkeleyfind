@@ -22,6 +22,11 @@ const customTheme = extendTheme({
         logo: {
           fontFamily: "Baloo Thambi 2",
         },
+        navbarLogo: {
+          fontFamily: "Baloo Thambi 2",
+          _hover: { color: "#A73CFC" },
+          _active: { color: "#920efb" },
+        },
         underText: {
           color: "#e8e8e8",
         },
@@ -35,7 +40,16 @@ const customTheme = extendTheme({
         underText: {
           color: "#8A8A8A",
           fontWeight: "510",
-          fontSize: "13px",
+        },
+        navbar: {
+          fontWeight: "590",
+          color: "#414141",
+          _hover: { color: "#A73CFC" },
+          _active: { color: "#920efb" },
+        },
+        currPageNavBar: {
+          fontWeight: "590",
+          color: "#A73CFC",
         },
       },
     },
