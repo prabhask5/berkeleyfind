@@ -68,7 +68,7 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
   };
 
   const logo = (
-    <Link href="/explore" passHref>
+    <Link href="/explore" className="cursor-pointer" passHref>
       <Heading variant="navbarLogo" size={["md", "md", "md", "md", "md", "md"]}>
         BerkeleyFind
       </Heading>
@@ -244,7 +244,7 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
       {drawer()}
     </div>
   ) : (
-    <div className="flex flex-row h-20 px-5">
+    <div className="flex flex-row h-20 px-5 border-b-2 border-[#D8D8D8]">
       <div className="my-auto">{logo}</div>
       <div className="ml-auto my-auto">{dropdown}</div>
     </div>

@@ -15,7 +15,7 @@ export default async function PagesLayout({
     return redirect(statusToURL[session.user.userStatus]);
 
   return (
-    <section>
+    <section className="h-screen">
       <NavBar
         profilePic={session.user.image}
         email={session.user.email}
