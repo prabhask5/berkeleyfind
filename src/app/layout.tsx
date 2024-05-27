@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Providers from "@/app/_components/Providers";
+import { fonts } from "@/theme";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={fonts.baloo_thambi_2.variable}>
       <body>
         <Providers>{children}</Providers>
       </body>

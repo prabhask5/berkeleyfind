@@ -1,6 +1,15 @@
 import { extendTheme } from "@chakra-ui/react";
-import "@fontsource/baloo-thambi-2";
+import { Baloo_Thambi_2 } from "next/font/google";
 import { inputTheme } from "./input";
+
+const baloo_thambi_2 = Baloo_Thambi_2({
+  subsets: ["latin"],
+  variable: "--font-baloo_thambi_2",
+});
+
+export const fonts = {
+  baloo_thambi_2,
+};
 
 const breakpoints = {
   base: "0px",
@@ -11,7 +20,7 @@ const breakpoints = {
   "2xl": "1536px",
 };
 
-const customTheme = extendTheme({
+export const customTheme = extendTheme({
   breakpoints,
   components: {
     Heading: {
@@ -20,10 +29,10 @@ const customTheme = extendTheme({
       },
       variants: {
         logo: {
-          fontFamily: "Baloo Thambi 2",
+          fontFamily: "var(--font-baloo_thambi_2)",
         },
         navbarLogo: {
-          fontFamily: "Baloo Thambi 2",
+          fontFamily: "var(--font-baloo_thambi_2)",
           _hover: { color: "#A73CFC" },
           _active: { color: "#920efb" },
         },
@@ -71,5 +80,3 @@ const customTheme = extendTheme({
     },
   },
 });
-
-export default customTheme;
