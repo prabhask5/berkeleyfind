@@ -1,5 +1,5 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import CourseEditForm from "@/app/(app)/profile/_components/CourseEditForm";
+import CourseEditForm from "@/app/(app)/(normal-format)/profile/_components/CourseEditForm";
 import { statusToURL } from "@/types/UserModelTypes";
 import { Stack, Heading } from "@chakra-ui/react";
 import { getServerSession } from "next-auth/next";

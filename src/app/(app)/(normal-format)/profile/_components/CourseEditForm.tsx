@@ -19,6 +19,7 @@ import React from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import CourseListItem from "./CourseListItem";
+import { DropdownOption } from "@/types/MiscTypes";
 
 interface CourseEditFormProps {
   courseList: Course[];
@@ -145,7 +146,9 @@ export default function CourseEditForm({
             chakraStyles={asyncInputStyling}
             cacheOptions
             loadOptions={promiseOptions}
-            onChange={(e) => handleAddCourse(parseInt(e!.value))}
+            onChange={(e) =>
+              handleAddCourse(parseInt((e as DropdownOption).value))
+            }
             defaultOptions
             placeholder={"Type to search for a class..."}
           />

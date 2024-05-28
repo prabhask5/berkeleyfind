@@ -30,18 +30,15 @@ import { signOut } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
+import { RelevantSessionProps } from "@/types/MiscTypes";
 
-interface NavBarProps {
-  profilePic: string | null | undefined;
-  email: string | null | undefined;
-  name: string | null | undefined;
-}
+interface NavBarProps extends RelevantSessionProps {}
 
 export default function NavBar({ profilePic, email, name }: NavBarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const toast = useToast();
-  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1224px)" });
+  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1280px)" });
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -239,10 +236,10 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
   };
 
   return isTabletOrMobile ? (
-    <div className="w-screen">
+    <>
       {menuButton}
       {drawer()}
-    </div>
+    </>
   ) : (
     <div className="flex flex-row h-20 px-5 border-b-2 border-[#D8D8D8]">
       <div className="my-auto">{logo}</div>

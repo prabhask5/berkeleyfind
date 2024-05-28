@@ -1,14 +1,20 @@
-import ProfileSearchFilter from "./_components/ProfileSearchFilter";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { statusToURL } from "@/types/UserModelTypes";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import ExplorePageLayout from "./_components/ExplorePageLayout";
 
 export default async function Explore() {
+  const session = await getServerSession(authOptions);
+  if (!session) return redirect("/login?redirect=true");
+  if (session.user.userStatus && session.user.userStatus !== "explore")
+    return redirect(statusToURL[session.user.userStatus]);
+
   return (
-    <div className="w-screen h-[calc(100vh_-_5rem)] flex flex-row">
-      <div className="w-[20%]">
-        <ProfileSearchFilter />
-      </div>
-      <div className="w-[80%]">
-        <div className="h-full bg-[#FAFAFA]"></div>
-      </div>
-    </div>
+    <ExplorePageLayout
+      profilePic={session.user.image}
+      email={session.user.email}
+      name={session.user.name}
+    />
   );
 }

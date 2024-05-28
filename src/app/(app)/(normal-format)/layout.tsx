@@ -1,8 +1,8 @@
 import { statusToURL } from "@/types/UserModelTypes";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { authOptions } from "../api/auth/[...nextauth]/route";
-import NavBar from "./_components/Navbar";
+import { authOptions } from "../../api/auth/[...nextauth]/route";
+import NavBar from "../_components/Navbar";
 
 export default async function PagesLayout({
   children,

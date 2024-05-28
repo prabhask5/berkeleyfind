@@ -349,7 +349,12 @@ export function ProfileEditForm({
                   size={["xs", "sm", "sm", "sm", "sm", "sm"]}
                   placeholder="Major"
                   onBlur={(_e) => trigger("major")}
-                  onChange={(e) => setValue("major", e === null ? "" : e.value)}
+                  onChange={(e) =>
+                    setValue(
+                      "major",
+                      e === null ? "" : (e as DropdownOption).value,
+                    )
+                  }
                   className="text-[#1c1c1c]"
                 />
                 {!!errors?.major ? (
@@ -477,7 +482,10 @@ export function ProfileEditForm({
                 isClearable={true}
                 options={pronounsOptions}
                 onChange={(e) =>
-                  setValue("pronouns", e === null ? "" : e.value)
+                  setValue(
+                    "pronouns",
+                    e === null ? "" : (e as DropdownOption).value,
+                  )
                 }
                 // @ts-ignore
                 size={["xs", "sm", "sm", "sm", "sm", "sm"]}

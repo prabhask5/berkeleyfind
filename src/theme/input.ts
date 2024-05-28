@@ -1,10 +1,11 @@
 import { inputAnatomy } from "@chakra-ui/anatomy";
 import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
+import { ChakraStylesConfig } from "chakra-react-select";
 
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(inputAnatomy.keys);
 
-export const asyncInputStyling = {
+export const asyncInputStyling: ChakraStylesConfig = {
   control: (baseStyles: any, _state: any) => ({
     ...baseStyles,
     borderRadius: "10px",
