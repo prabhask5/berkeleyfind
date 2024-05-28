@@ -1,6 +1,7 @@
 import berkeleyData from "@/data/berkeleydata";
 import { DropdownOption } from "@/types/MiscTypes";
 import { ToastId } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
 
 export const stopLoading = (
   toast: any,
@@ -35,3 +36,17 @@ export const promiseOptions = (inputValue: string) =>
       resolve(filterCourseList(inputValue));
     }, 1000);
   });
+
+export const useBetterMediaQuery = ({ query }: { query: string }) => {
+  const [matches, setMatches] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const mediaQueryList = window.matchMedia(query);
+    const listener = () => setMatches(!!mediaQueryList.matches);
+    listener();
+    mediaQueryList.addEventListener("change", listener);
+    return () => mediaQueryList.removeEventListener("change", listener);
+  }, [query]);
+
+  return matches;
+};

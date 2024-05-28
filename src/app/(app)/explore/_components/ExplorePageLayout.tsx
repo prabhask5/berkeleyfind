@@ -2,7 +2,7 @@
 
 import { FilterTag, RelevantSessionProps } from "@/types/MiscTypes";
 import ProfileSearchFilter from "./ProfileSearchFilter";
-import { useMediaQuery } from "react-responsive";
+import { useBetterMediaQuery } from "@/lib/utils";
 import NavBar from "../../_components/Navbar";
 import { useForm } from "react-hook-form";
 
@@ -17,7 +17,9 @@ export default function ExplorePageLayout({
   email,
   name,
 }: ExplorePageLayoutProps) {
-  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1280px)" });
+  const isTabletOrMobile = useBetterMediaQuery({
+    query: "(max-width: 1280px)",
+  });
 
   const { resetField, setValue, watch, register } = useForm<ISessionTagInfo>({
     mode: "all",

@@ -29,7 +29,7 @@ import placeholder from "@/media/avatar_placeholder.svg";
 import { signOut } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useMediaQuery } from "react-responsive";
+import { useBetterMediaQuery } from "@/lib/utils";
 import { RelevantSessionProps } from "@/types/MiscTypes";
 
 interface NavBarProps extends RelevantSessionProps {}
@@ -38,7 +38,9 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const toast = useToast();
-  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1280px)" });
+  const isTabletOrMobile = useBetterMediaQuery({
+    query: "(max-width: 1280px)",
+  });
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -155,7 +157,7 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
 
   const menuButton = (
     <IconButton
-      className="rounded-full block ml-auto mr-2 mt-2"
+      className="rounded-full"
       variant="ghost"
       onClick={onOpen}
       icon={<HamburgerIcon className="w-6 h-6" />}

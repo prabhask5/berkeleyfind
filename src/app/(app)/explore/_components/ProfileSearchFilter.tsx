@@ -23,7 +23,7 @@ import { DropdownOption, FilterTag } from "@/types/MiscTypes";
 import { asyncInputStyling } from "@/theme/input";
 import { promiseOptions } from "@/lib/utils";
 import berkeleyData from "@/data/berkeleydata";
-import { useMediaQuery } from "react-responsive";
+import { useBetterMediaQuery } from "@/lib/utils";
 import { useEffect, useRef } from "react";
 import {
   UseFormResetField,
@@ -49,10 +49,9 @@ export default function ProfileSearchFilter({
   register,
 }: ProfileSearchFilterProps) {
   const toast = useToast();
-  const shouldFilterPlaceholderChange = useMediaQuery({
-    query: "(max-width: 1536px)",
+  const isTabletOrMobile = useBetterMediaQuery({
+    query: "(max-width: 1280px)",
   });
-  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1280px)" });
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const buttomOfTagList = useRef<null | HTMLDivElement>(null);
@@ -118,7 +117,7 @@ export default function ProfileSearchFilter({
 
   const filterButton = (
     <IconButton
-      className="rounded-full block ml-auto mr-2 mt-2"
+      className="rounded-full"
       variant="ghost"
       onClick={onOpen}
       icon={<Icon className="w-6 h-6" as={FiFilter} />}
@@ -164,11 +163,7 @@ export default function ProfileSearchFilter({
         loadOptions={promiseOptions}
         onChange={(e) => handleAddTag(parseInt((e as DropdownOption).value))}
         defaultOptions
-        placeholder={
-          shouldFilterPlaceholderChange
-            ? "Search for a class..."
-            : "Type to search for a class..."
-        }
+        placeholder={"Search for a class..."}
       />
       <div className="overflow-y-auto overflow-x-hidden">
         <Stack spacing={2} className="px-3 pb-3">

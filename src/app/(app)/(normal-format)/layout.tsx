@@ -2,7 +2,7 @@ import { statusToURL } from "@/types/UserModelTypes";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "../../api/auth/[...nextauth]/route";
-import NavBar from "../_components/Navbar";
+import ResponsiveNavBar from "../_components/ResponsiveNavbar";
 
 export default async function PagesLayout({
   children,
@@ -15,13 +15,15 @@ export default async function PagesLayout({
     return redirect(statusToURL[session.user.userStatus]);
 
   return (
-    <section className="h-screen">
-      <NavBar
+    <section className="w-screen h-screen">
+      <ResponsiveNavBar
         profilePic={session.user.image}
         email={session.user.email}
         name={session.user.name}
       />
-      {children}
+      <div className="w-full h-[calc(100%_-_80px)] overflow-y-auto overflow-x-hidden">
+        {children}
+      </div>
     </section>
   );
 }
