@@ -9,7 +9,6 @@ import {
   Divider,
   Box,
   PopoverArrow,
-  useToast,
   IconButton,
   useDisclosure,
   Drawer,
@@ -25,13 +24,14 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useBetterMediaQuery } from "@/lib/utils";
 import { RelevantSessionProps } from "@/types/MiscTypes";
+import React from "react";
 
 interface NavBarProps extends RelevantSessionProps {}
 
 export default function NavBar({ profilePic, email, name }: NavBarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const toast = useToast();
+
   const isTabletOrMobile = useBetterMediaQuery({
     query: "(max-width: 1280px)",
   });
@@ -51,11 +51,6 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
 
   const handleRedirect = (destination: string) => {
     if (pathname !== destination) {
-      toast({
-        title: "Please wait to be redirected...",
-        status: "loading",
-        duration: null,
-      });
       router.push(destination);
     }
   };
