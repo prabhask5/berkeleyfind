@@ -32,7 +32,7 @@ export default function ExplorePageLayout({
 
   const mobileLayout = () => (
     <div className="w-screen h-screen">
-      <div className="fixed bg-white rounded-full z-10 top-5 left-5">
+      <div className="fixed bg-white rounded-full z-10 top-[4.166667%] left-[4.166667%] lg:top-[1.25%] lg:left-[1.25%]">
         <ProfileSearchFilter
           resetField={resetField}
           setValue={setValue}
@@ -40,7 +40,7 @@ export default function ExplorePageLayout({
           register={register}
         />
       </div>
-      <div className="fixed bg-white rounded-full z-10 top-5 right-5">
+      <div className="fixed bg-white rounded-full z-10 top-[4.166667%] right-[4.166667%] lg:top-[1.25%] lg:right-[1.25%]">
         <NavBar profilePic={profilePic} email={email} name={name} />
       </div>
       <div className="w-full h-full bg-[#E1E1E1] overflow-y-auto overflow-x-hidden">

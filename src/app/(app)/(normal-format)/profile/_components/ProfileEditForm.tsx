@@ -345,7 +345,7 @@ export function ProfileEditForm({
   const handleUndo = () => {
     reset();
     toast({
-      title: "Successfully reverted profile information",
+      title: "Successfully restored profile information",
       status: "success",
       duration: 2000,
       isClosable: false,
@@ -355,16 +355,19 @@ export function ProfileEditForm({
   const buttonLayout = () => {
     return isStart ? (
       <Button
-        className="md:w-40 lg:mb-5"
+        className="md:w-40 lg:mb-5 bg-[#A73CFC] text-white"
         type="submit"
         onClick={checkForErrors}
-        colorScheme="messenger"
       >
         {"Save & Continue"}
       </Button>
     ) : (
       <ButtonGroup gap={2}>
-        <Button type="submit" isDisabled={!anyChanges} colorScheme="messenger">
+        <Button
+          type="submit"
+          isDisabled={!anyChanges}
+          className="bg-[#A73CFC] text-white"
+        >
           Save
         </Button>
         <Button

@@ -56,7 +56,7 @@ export default function ProfilePageLayout({
       <Stack
         direction={["column", "column", "column", "row", "row", "row"]}
         spacing={[10, 10, 10, 10, 10, 10]}
-        className="w-11/12 lg:w-[97.5%] mx-auto my-[10%] lg:my-auto h-full lg:py-5"
+        className="w-11/12 lg:w-[97.5%] mx-auto my-[10%] lg:my-auto h-full lg:py-[1.25%]"
       >
         <div className="w-full lg:m-auto lg:overflow-y-auto lg:overflow-x-hidden lg:p-2">
           <ProfileEditForm
