@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -22,9 +21,10 @@ import {
   Heading,
   Button,
   CloseButton,
+  ButtonGroup,
 } from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Select } from "chakra-react-select";
 import fbIcon from "@/media/fbIcon.svg";
 import igIcon from "@/media/igIcon.svg";
@@ -34,6 +34,7 @@ import { asyncInputStyling } from "@/theme/input";
 import { DropdownOption } from "@/types/MiscTypes";
 import { stopLoading } from "@/lib/utils";
 import placeholder from "@/media/avatar_placeholder.svg";
+import { turnStringIntoDropdownOption } from "@/lib/utils";
 
 export interface ProfileEditFormProps {
   profileImage: string;
@@ -84,6 +85,19 @@ export function ProfileEditForm({
   const router = useRouter();
   const toast = useToast();
   const toastLoadingRef = React.useRef<ToastId>();
+  const [anyChanges, setAnyChanges] = useState<boolean>(false);
+  const [defaultValues, setDefaultValues] = useState<IUserBasicInfo>({
+    profileImageFile: profileImage,
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    major: major,
+    gradYear: gradYear,
+    userBio: userBio,
+    pronouns: pronouns,
+    fbURL: fbURL,
+    igURL: igURL,
+  });
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -93,7 +107,7 @@ export function ProfileEditForm({
     handleSubmit,
     setValue,
     watch,
-    resetField,
+    reset,
     formState: { errors },
   } = useForm<IUserBasicInfo>({
     mode: "onBlur",
@@ -169,6 +183,38 @@ export function ProfileEditForm({
   });
 
   register("profileImageFile");
+
+  const currFormState = watch();
+
+  useEffect(() => {
+    setAnyChanges(
+      !(
+        watch("email") == defaultValues.email &&
+        watch("fbURL") == defaultValues.fbURL &&
+        watch("firstName") == defaultValues.firstName &&
+        watch("gradYear") == defaultValues.gradYear &&
+        watch("igURL") == defaultValues.igURL &&
+        watch("lastName") == defaultValues.lastName &&
+        watch("major") == defaultValues.major &&
+        watch("profileImageFile") == defaultValues.profileImageFile &&
+        watch("pronouns") == defaultValues.pronouns &&
+        watch("userBio") == defaultValues.userBio
+      ),
+    );
+  }, [
+    currFormState,
+    defaultValues.email,
+    defaultValues.fbURL,
+    defaultValues.firstName,
+    defaultValues.gradYear,
+    defaultValues.igURL,
+    defaultValues.lastName,
+    defaultValues.major,
+    defaultValues.profileImageFile,
+    defaultValues.pronouns,
+    defaultValues.userBio,
+    watch,
+  ]);
 
   const onDrop = (acceptedFiles: any) => {
     onClose();
@@ -271,7 +317,18 @@ export function ProfileEditForm({
         duration: 2000,
         isClosable: false,
       });
+
+      const newProfileImageLink = (await response.json()).profileImage;
+
       if (isStart) router.push("/start/courses");
+      else {
+        const dataWithNewProfileImage: IUserBasicInfo = {
+          ...data,
+          profileImageFile: newProfileImageLink,
+        };
+        reset(dataWithNewProfileImage);
+        setDefaultValues(dataWithNewProfileImage);
+      }
     } else {
       const errorMsg = await response.json();
 
@@ -285,8 +342,18 @@ export function ProfileEditForm({
     }
   };
 
+  const handleUndo = () => {
+    reset();
+    toast({
+      title: "Successfully reverted profile information",
+      status: "success",
+      duration: 2000,
+      isClosable: false,
+    });
+  };
+
   const buttonLayout = () => {
-    return (
+    return isStart ? (
       <Button
         className="md:w-40 lg:mb-5"
         type="submit"
@@ -295,6 +362,19 @@ export function ProfileEditForm({
       >
         {"Save & Continue"}
       </Button>
+    ) : (
+      <ButtonGroup gap={2}>
+        <Button type="submit" isDisabled={!anyChanges} colorScheme="messenger">
+          Save
+        </Button>
+        <Button
+          onClick={handleUndo}
+          isDisabled={!anyChanges}
+          colorScheme="gray"
+        >
+          Undo
+        </Button>
+      </ButtonGroup>
     );
   };
 
@@ -305,7 +385,7 @@ export function ProfileEditForm({
 
   return (
     <form onSubmit={handleSubmit(handleSubmitForm)}>
-      <Stack spacing={[5, 5, 5, 5, 5, 7]}>
+      <Stack spacing={[5, 5, 5, 5, 5, 7]} className="px-2">
         <Heading size="lg">My Profile</Heading>
         <Stack spacing={[2, 3, 3, 3, 3, 5]}>
           <Stack
@@ -319,7 +399,7 @@ export function ProfileEditForm({
               >
                 <Image
                   fill={true}
-                  className="rounded-full"
+                  className="w-20 max-h-20 sm:w-32 sm:max-h-32 rounded-full my-auto"
                   draggable="false"
                   src={resolveProfileImageLink()}
                   alt="Profile picture"
@@ -327,7 +407,9 @@ export function ProfileEditForm({
               </div>
               <div className="absolute top-[-10px] right-[-15px]">
                 {watch("profileImageFile") && (
-                  <CloseButton onClick={() => resetField("profileImageFile")} />
+                  <CloseButton
+                    onClick={() => setValue("profileImageFile", "")}
+                  />
                 )}
               </div>
             </div>
@@ -341,7 +423,7 @@ export function ProfileEditForm({
                 </FormLabel>
                 <Select
                   useBasicStyles
-                  defaultInputValue={major}
+                  value={turnStringIntoDropdownOption(watch("major"))}
                   isClearable={true}
                   options={majorOptions}
                   chakraStyles={asyncInputStyling}
@@ -478,7 +560,7 @@ export function ProfileEditForm({
               <Select
                 useBasicStyles
                 chakraStyles={asyncInputStyling}
-                defaultInputValue={pronouns}
+                value={turnStringIntoDropdownOption(watch("pronouns"))}
                 isClearable={true}
                 options={pronounsOptions}
                 onChange={(e) =>
@@ -532,7 +614,7 @@ export function ProfileEditForm({
             </FormControl>
           </Stack>
         </Stack>
-        {isStart && buttonLayout()}
+        {buttonLayout()}
       </Stack>
     </form>
   );

@@ -25,7 +25,7 @@ export default async function StartCourses() {
           Next, add your current and past courses to find students who share
           your learning interests.
         </Heading>
-        <div className="w-full lg:m-auto lg:h-full lg:overflow-y-auto lg:overflow-x-hidden lg:p-2">
+        <div className="w-full lg:m-auto lg:overflow-y-auto lg:overflow-x-hidden lg:p-2">
           <CourseEditForm courseList={[]} isStart={true} />
         </div>
       </Stack>

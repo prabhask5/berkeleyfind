@@ -32,7 +32,7 @@ export default function ExplorePageLayout({
 
   const mobileLayout = () => (
     <div className="w-screen h-screen">
-      <div className="flex flex-row h-20 px-5 border-b-2 border-[#D8D8D8]">
+      <div className="flex flex-row h-20 px-5">
         <div className="my-auto">
           <ProfileSearchFilter
             resetField={resetField}

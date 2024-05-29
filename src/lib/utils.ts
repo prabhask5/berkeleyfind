@@ -50,3 +50,10 @@ export const useBetterMediaQuery = ({ query }: { query: string }) => {
 
   return matches;
 };
+
+export const turnStringIntoDropdownOption = (
+  value: string,
+): DropdownOption => ({
+  label: value,
+  value,
+});

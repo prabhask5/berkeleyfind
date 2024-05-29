@@ -68,10 +68,10 @@ export async function POST(request: Request) {
 
     const updateData: any = {};
 
-    if (oldUser.profileImagePublicID)
-      await cloudinary.uploader.destroy(oldUser.profileImagePublicID);
+    if (profileImageFile && profileImageFile !== oldUser.profileImage) {
+      if (oldUser.profileImagePublicID)
+        await cloudinary.uploader.destroy(oldUser.profileImagePublicID);
 
-    if (profileImageFile) {
       const imageResponse: { secure_url: string; public_id: string } =
         await cloudinary.uploader
           .upload(profileImageFile, { folder: "berkeleyfind" })

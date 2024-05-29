@@ -6,16 +6,16 @@ import { asyncInputStyling } from "@/theme/input";
 import { Course } from "@/types/CourseModelTypes";
 import {
   Stack,
-  Divider,
   Text,
   useToast,
   ToastId,
   Button,
   Heading,
+  ButtonGroup,
 } from "@chakra-ui/react";
 import { AsyncSelect } from "chakra-react-select";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import CourseListItem from "./CourseListItem";
@@ -38,8 +38,12 @@ export default function CourseEditForm({
   const toast = useToast();
   const toastLoadingRef = React.useRef<ToastId>();
   const [allClosed, setAllClosed] = useState(false);
+  const [anyChanges, setAnyChanges] = useState<boolean>(false);
+  const [defaultValues, setDefaultValues] = useState<IUserCourseInfo>({
+    courseList: courseList,
+  });
 
-  const { handleSubmit, setValue, watch } = useForm<IUserCourseInfo>({
+  const { handleSubmit, setValue, watch, reset } = useForm<IUserCourseInfo>({
     mode: "all",
     defaultValues: {
       courseList: courseList,
@@ -91,6 +95,19 @@ export default function CourseEditForm({
     });
   };
 
+  const currFormState = watch();
+
+  useEffect(() => {
+    setAnyChanges(
+      watch("courseList").length !== defaultValues.courseList.length ||
+        watch("courseList").filter(
+          (v, i) =>
+            v.courseAbrName != defaultValues.courseList[i].courseAbrName ||
+            v.courseLongName != defaultValues.courseList[i].courseLongName,
+        ).length > 0,
+    );
+  }, [courseList, currFormState, defaultValues.courseList, watch]);
+
   const handleSubmitForm = async (data: IUserCourseInfo) => {
     toastLoadingRef.current = toast({
       title: "Processing...",
@@ -113,6 +130,10 @@ export default function CourseEditForm({
         isClosable: false,
       });
       if (isStart) router.push("/start/studytimes");
+      else {
+        reset(data);
+        setDefaultValues(data);
+      }
     } else {
       const errorMsg = await response.json();
 
@@ -126,17 +147,40 @@ export default function CourseEditForm({
     }
   };
 
+  const handleUndo = () => {
+    reset();
+    toast({
+      title: "Successfully reverted profile information",
+      status: "success",
+      duration: 2000,
+      isClosable: false,
+    });
+  };
+
   const buttonLayout = () => {
-    return (
+    return isStart ? (
       <Button className="md:w-40 lg:mb-5" type="submit" colorScheme="messenger">
         {"Save & Continue"}
       </Button>
+    ) : (
+      <ButtonGroup gap={2}>
+        <Button type="submit" isDisabled={!anyChanges} colorScheme="messenger">
+          Save
+        </Button>
+        <Button
+          onClick={handleUndo}
+          isDisabled={!anyChanges}
+          colorScheme="gray"
+        >
+          Undo
+        </Button>
+      </ButtonGroup>
     );
   };
 
   return (
     <form onSubmit={handleSubmit(handleSubmitForm)}>
-      <Stack spacing={[8, 8, 8, 8, 8, 8]}>
+      <Stack spacing={[5, 5, 5, 5, 5, 7]} className="px-2">
         <Stack spacing={[2, 3, 3, 5, 5, 5]} className="w-full">
           <AsyncSelect
             // @ts-ignore
@@ -167,9 +211,8 @@ export default function CourseEditForm({
           </Heading>
           <div
             onScroll={() => setAllClosed(!allClosed)}
-            className="flex flex-col h-[575px] w-full overflow-y-auto overflow-x-hidden"
+            className="flex flex-col h-[575px] w-full overflow-y-auto overflow-x-hidden border border-[#D8D8D8]"
           >
-            <Divider className="bg-[#D8D8D8]" variant="solid" />
             {watch("courseList").length > 0 ? (
               watch("courseList").map((c: Course, index) => (
                 <div key={index}>
@@ -189,9 +232,8 @@ export default function CourseEditForm({
               </Heading>
             )}
           </div>
-          <Divider className="bg-[#D8D8D8]" variant="solid" />
         </Stack>
-        {isStart && buttonLayout()}
+        {buttonLayout()}
       </Stack>
     </form>
   );

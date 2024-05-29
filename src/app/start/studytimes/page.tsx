@@ -16,7 +16,7 @@ export default async function StartCourses() {
       <Stack
         direction={["column", "column", "column", "row", "row", "row"]}
         spacing={[10, 10, 10, 10, 10, 10]}
-        className="w-11/12 2xl:w-[97.5%] mx-auto my-[10%] lg:my-auto h-full lg:pt-5"
+        className="w-11/12 lg:w-[97.5%] mx-auto my-[10%] lg:my-auto h-full lg:pt-5"
       >
         <Heading
           className="text-center m-auto"
@@ -25,7 +25,7 @@ export default async function StartCourses() {
           Finally, add your preferred study times to find students who study
           like you.
         </Heading>
-        <div className="w-full lg:m-auto">
+        <div className="w-full lg:m-auto lg:overflow-y-auto lg:overflow-x-hidden lg:p-2">
           <StudyTimesEditForm weekTimes={[]} isStart={true} />
         </div>
       </Stack>

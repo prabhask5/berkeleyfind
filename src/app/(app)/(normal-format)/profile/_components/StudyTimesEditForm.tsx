@@ -1,10 +1,17 @@
 "use client";
 
 import { stopLoading } from "@/lib/utils";
-import { Button, Stack, Text, ToastId, useToast } from "@chakra-ui/react";
+import {
+  Button,
+  ButtonGroup,
+  Stack,
+  Text,
+  ToastId,
+  useToast,
+} from "@chakra-ui/react";
 import ScheduleSelector from "react-schedule-selector";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface IUserStudyTimesInfo {
@@ -22,18 +29,57 @@ export default function StudyTimesEditForm({
   const router = useRouter();
   const toast = useToast();
   const toastLoadingRef = React.useRef<ToastId>();
-
-  const { handleSubmit, setValue, watch } = useForm<IUserStudyTimesInfo>({
-    defaultValues: {
-      weekTimes: weekTimes,
-    },
+  const [anyChanges, setAnyChanges] = useState<boolean>(false);
+  const [defaultValues, setDefaultValues] = useState<IUserStudyTimesInfo>({
+    weekTimes: weekTimes,
   });
 
+  const { handleSubmit, setValue, watch, reset } = useForm<IUserStudyTimesInfo>(
+    {
+      defaultValues: {
+        weekTimes: weekTimes,
+      },
+    },
+  );
+
+  const currFormState = watch();
+
+  useEffect(() => {
+    setAnyChanges(
+      watch("weekTimes").length !== defaultValues.weekTimes.length ||
+        watch("weekTimes").filter((v, i) => v != defaultValues.weekTimes[i])
+          .length > 0,
+    );
+  }, [watch, defaultValues.weekTimes, currFormState]);
+
+  const handleUndo = () => {
+    reset();
+    toast({
+      title: "Successfully reverted study preferences",
+      status: "success",
+      duration: 2000,
+      isClosable: false,
+    });
+  };
+
   const buttonLayout = () => {
-    return (
+    return isStart ? (
       <Button className="md:w-40 lg:mb-5" type="submit" colorScheme="messenger">
         {"Save & Finish"}
       </Button>
+    ) : (
+      <ButtonGroup gap={2}>
+        <Button type="submit" isDisabled={!anyChanges} colorScheme="messenger">
+          Save
+        </Button>
+        <Button
+          onClick={handleUndo}
+          isDisabled={!anyChanges}
+          colorScheme="gray"
+        >
+          Undo
+        </Button>
+      </ButtonGroup>
     );
   };
 
@@ -60,6 +106,10 @@ export default function StudyTimesEditForm({
         isClosable: false,
       });
       if (isStart) router.push("/explore");
+      else {
+        reset(data);
+        setDefaultValues(data);
+      }
     } else {
       const errorMsg = await response.json();
 
@@ -75,7 +125,7 @@ export default function StudyTimesEditForm({
 
   return (
     <form onSubmit={handleSubmit(handleSubmitForm)}>
-      <Stack spacing={[8, 8, 8, 8, 8, 8]}>
+      <Stack spacing={[5, 5, 5, 5, 5, 7]} className="px-2">
         <Stack spacing={[2, 3, 3, 5, 5, 5]} className="w-full">
           <Text
             className="text-center text-xs sm:text-sm lg:text-base"
@@ -95,9 +145,22 @@ export default function StudyTimesEditForm({
             onChange={(newSelection: Date[]) =>
               setValue("weekTimes", newSelection)
             }
-            selectedColor="#A73CFC"
-            unselectedColor="#e5c4fe"
-            hoveredColor="#c680fd"
+            renderDateCell={(time, selected, refSetter) => {
+              const dateCellStyleAddOn = selected
+                ? " bg-[#A73CFC]"
+                : " bg-[#E5C4FE]";
+
+              return (
+                <div
+                  className={
+                    "w-full h-[25px] cursor-pointer hover:bg-[#C680FD]" +
+                    dateCellStyleAddOn
+                  }
+                  // @ts-ignore
+                  ref={refSetter}
+                />
+              );
+            }}
             renderTimeLabel={(time: Date) => {
               let processedTime = "";
               if (time.getHours() < 12) {
@@ -109,7 +172,7 @@ export default function StudyTimesEditForm({
               }
               return (
                 <Text
-                  className="text-[8px] sm:text-sm lg:text-[10px] xl:text-base"
+                  className="text-[8px] sm:text-sm xl:text-base"
                   variant="underText"
                 >
                   {processedTime}
@@ -137,7 +200,7 @@ export default function StudyTimesEditForm({
             }}
           />
         </Stack>
-        {isStart && buttonLayout()}
+        {buttonLayout()}
       </Stack>
     </form>
   );

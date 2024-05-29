@@ -18,7 +18,7 @@ const nextConfig = {
         protocol: "https",
         hostname: "res.cloudinary.com",
         port: "",
-        pathname: "/douhlwcyr/image/upload/v1714287066/berkeleyfind/**",
+        pathname: "/douhlwcyr/image/upload/**",
       },
     ],
   },
