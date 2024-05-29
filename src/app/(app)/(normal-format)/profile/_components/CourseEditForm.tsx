@@ -23,7 +23,7 @@ import { DropdownOption } from "@/types/MiscTypes";
 
 interface CourseEditFormProps {
   courseList: Course[];
-  isStart: boolean;
+  isStart?: boolean;
 }
 
 interface IUserCourseInfo {
@@ -32,7 +32,7 @@ interface IUserCourseInfo {
 
 export default function CourseEditForm({
   courseList,
-  isStart,
+  isStart = false,
 }: CourseEditFormProps) {
   const router = useRouter();
   const toast = useToast();
@@ -205,7 +205,7 @@ export default function CourseEditForm({
           </Text>
           <Heading
             size={["sm", "md", "md", "md", "md", "md"]}
-            className="text-center sm:pb-5 text-[#A73CFC]"
+            className="text-center text-[#A73CFC]"
           >
             My Classes
           </Heading>
@@ -220,6 +220,7 @@ export default function CourseEditForm({
                     course={c}
                     allClosed={allClosed}
                     handleDeleteCourse={() => handleDeleteCourse(index)}
+                    inEditMode
                   />
                 </div>
               ))

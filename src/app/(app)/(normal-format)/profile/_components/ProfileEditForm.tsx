@@ -47,7 +47,7 @@ export interface ProfileEditFormProps {
   pronouns: string;
   fbURL: string;
   igURL: string;
-  isStart: boolean;
+  isStart?: boolean;
 }
 
 interface IUserBasicInfo {
@@ -80,7 +80,7 @@ export function ProfileEditForm({
   pronouns,
   fbURL,
   igURL,
-  isStart,
+  isStart = false,
 }: ProfileEditFormProps) {
   const router = useRouter();
   const toast = useToast();
@@ -398,7 +398,7 @@ export function ProfileEditForm({
                 onClick={onOpen}
               >
                 <Image
-                  fill={true}
+                  fill
                   className="w-20 max-h-20 sm:w-32 sm:max-h-32 rounded-full my-auto"
                   draggable="false"
                   src={resolveProfileImageLink()}
@@ -424,7 +424,7 @@ export function ProfileEditForm({
                 <Select
                   useBasicStyles
                   value={turnStringIntoDropdownOption(watch("major"))}
-                  isClearable={true}
+                  isClearable
                   options={majorOptions}
                   chakraStyles={asyncInputStyling}
                   // @ts-ignore
@@ -561,7 +561,7 @@ export function ProfileEditForm({
                 useBasicStyles
                 chakraStyles={asyncInputStyling}
                 value={turnStringIntoDropdownOption(watch("pronouns"))}
-                isClearable={true}
+                isClearable
                 options={pronounsOptions}
                 onChange={(e) =>
                   setValue(

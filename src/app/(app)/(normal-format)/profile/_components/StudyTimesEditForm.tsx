@@ -19,12 +19,12 @@ interface IUserStudyTimesInfo {
 }
 
 interface StudyTimesEditFormProps extends IUserStudyTimesInfo {
-  isStart: boolean;
+  isStart?: boolean;
 }
 
 export default function StudyTimesEditForm({
   weekTimes,
-  isStart,
+  isStart = false,
 }: StudyTimesEditFormProps) {
   const router = useRouter();
   const toast = useToast();

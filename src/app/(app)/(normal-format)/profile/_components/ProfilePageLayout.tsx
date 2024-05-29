@@ -70,7 +70,6 @@ export default function ProfilePageLayout({
             pronouns={user?.pronouns ?? ""}
             fbURL={user?.fbURL ?? ""}
             igURL={user?.igURL ?? ""}
-            isStart={false}
           />
         </div>
         <Tabs className="w-full" align="center" variant="unstyled">
@@ -90,14 +89,10 @@ export default function ProfilePageLayout({
           />
           <TabPanels className="text-left lg:m-auto lg:overflow-y-auto lg:overflow-x-hidden lg:p-2">
             <TabPanel className="p-0 pt-4">
-              <CourseEditForm
-                courseList={user?.courseList ?? []}
-                isStart={false}
-              />
+              <CourseEditForm courseList={user?.courseList ?? []} />
             </TabPanel>
             <TabPanel className="p-0 pt-2">
               <StudyTimesEditForm
-                isStart={false}
                 weekTimes={user?.userStudyPreferences.weekTimes ?? []}
               />
             </TabPanel>

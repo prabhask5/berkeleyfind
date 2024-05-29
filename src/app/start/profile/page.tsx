@@ -38,7 +38,7 @@ export default async function StartProfile() {
             pronouns={""}
             fbURL={""}
             igURL={""}
-            isStart={true}
+            isStart
           />
         </div>
       </Stack>

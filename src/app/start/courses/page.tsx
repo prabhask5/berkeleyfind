@@ -26,7 +26,7 @@ export default async function StartCourses() {
           your learning interests.
         </Heading>
         <div className="w-full lg:m-auto lg:overflow-y-auto lg:overflow-x-hidden lg:p-2">
-          <CourseEditForm courseList={[]} isStart={true} />
+          <CourseEditForm courseList={[]} isStart />
         </div>
       </Stack>
     </div>

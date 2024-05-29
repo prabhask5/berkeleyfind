@@ -19,12 +19,14 @@ interface CourseListItemProps {
   course: Course;
   allClosed: boolean;
   handleDeleteCourse: Function;
+  inEditMode: boolean;
 }
 
 export default function CourseListItem({
   course,
   allClosed,
   handleDeleteCourse,
+  inEditMode,
 }: CourseListItemProps) {
   const { onOpen, onClose, isOpen } = useDisclosure();
 
@@ -32,9 +34,16 @@ export default function CourseListItem({
     onClose();
   }, [onClose, allClosed]);
 
+  const editModeStyleAddOn = " grid grid-cols-[93%_5%]";
+
   return (
     <div className="w-full">
-      <div className="my-[6px] sm:my-[10px] pl-1 sm:pl-2 md:pl-3 lg:pl-4 xl:pl-5 2xl:pl-6 grid grid-cols-[93%_5%]">
+      <div
+        className={
+          "my-[6px] sm:my-[10px] pl-1 sm:pl-2 md:pl-3 lg:pl-4 xl:pl-5 2xl:pl-6" +
+          (inEditMode && editModeStyleAddOn)
+        }
+      >
         <Popover
           trigger="hover"
           openDelay={400}
@@ -59,16 +68,18 @@ export default function CourseListItem({
             </PopoverBody>
           </PopoverContent>
         </Popover>
-        <Tooltip
-          label="Delete course"
-          aria-label="remove course"
-          openDelay={350}
-        >
-          <CloseButton
-            size={["sm", "sm", "md", "md", "md", "md"]}
-            onClick={() => handleDeleteCourse()}
-          />
-        </Tooltip>
+        {inEditMode && (
+          <Tooltip
+            label="Delete course"
+            aria-label="remove course"
+            openDelay={350}
+          >
+            <CloseButton
+              size={["sm", "sm", "md", "md", "md", "md"]}
+              onClick={() => handleDeleteCourse()}
+            />
+          </Tooltip>
+        )}
       </div>
       <Divider className="bg-[#D8D8D8]" variant="solid" />
     </div>

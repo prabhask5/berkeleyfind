@@ -100,7 +100,7 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
             ? menuOptionsCurrentPageStyleAddOn
             : svgSelectStyleAddOn)
         }
-        aria-hidden="true"
+        aria-hidden
         xmlns="http://www.w3.org/2000/svg"
         fill="currentColor"
         viewBox="0 0 20 18"
@@ -129,7 +129,7 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
             ? menuOptionsCurrentPageStyleAddOn
             : svgSelectStyleAddOn)
         }
-        aria-hidden="true"
+        aria-hidden
         xmlns="http://www.w3.org/2000/svg"
         fill="currentColor"
         viewBox="0 0 18 20"
@@ -158,7 +158,7 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
             ? menuOptionsCurrentPageStyleAddOn
             : svgSelectStyleAddOn)
         }
-        aria-hidden="true"
+        aria-hidden
         xmlns="http://www.w3.org/2000/svg"
         fill="currentColor"
         viewBox="0 0 20 20"
@@ -180,7 +180,7 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
     >
       <svg
         className="flex-shrink-0 w-5 h-5 text-gray-500"
-        aria-hidden="true"
+        aria-hidden
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 16 16"

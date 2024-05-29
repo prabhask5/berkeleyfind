@@ -26,7 +26,7 @@ export default async function StartCourses() {
           like you.
         </Heading>
         <div className="w-full lg:m-auto lg:overflow-y-auto lg:overflow-x-hidden lg:p-2">
-          <StudyTimesEditForm weekTimes={[]} isStart={true} />
+          <StudyTimesEditForm weekTimes={[]} isStart />
         </div>
       </Stack>
     </div>
