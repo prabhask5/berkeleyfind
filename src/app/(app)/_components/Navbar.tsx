@@ -35,7 +35,16 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
   const isTabletOrMobile = useBetterMediaQuery({
     query: "(max-width: 1280px)",
   });
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isDrawerOpen,
+    onOpen: onDrawerOpen,
+    onClose: onDrawerClose,
+  } = useDisclosure();
+  const {
+    isOpen: isPopoverOpen,
+    onOpen: onPopoverOpen,
+    onClose: onPopoverClose,
+  } = useDisclosure();
 
   useEffect(() => {
     router.prefetch("/explore");
@@ -51,6 +60,8 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
 
   const handleRedirect = (destination: string) => {
     if (pathname !== destination) {
+      onDrawerClose();
+      onPopoverClose();
       router.push(destination);
     }
   };
@@ -216,12 +227,12 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
   };
 
   const dropdown = (
-    <Popover trigger="hover">
-      <Box className="my-auto">
-        <PopoverTrigger>
+    <Popover isOpen={isPopoverOpen} onClose={onPopoverClose} trigger="hover">
+      <PopoverTrigger>
+        <Box onMouseEnter={onPopoverOpen} className="my-auto">
           <div className="cursor-pointer">{avatar}</div>
-        </PopoverTrigger>
-      </Box>
+        </Box>
+      </PopoverTrigger>
       {dropdownBody()}
     </Popover>
   );
@@ -230,7 +241,7 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
     <IconButton
       className="rounded-full"
       variant="ghost"
-      onClick={onOpen}
+      onClick={onDrawerOpen}
       icon={<HamburgerIcon className="w-6 h-6" />}
       aria-label="Menu button"
     />
@@ -240,14 +251,14 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
     <IconButton
       className="rounded-full"
       variant="ghost"
-      onClick={onClose}
+      onClick={onDrawerClose}
       icon={<CloseIcon className="w-3 h-3" />}
       aria-label="Close drawer button"
     />
   );
 
   const drawer = () => (
-    <Drawer onClose={onClose} isOpen={isOpen} size="xs">
+    <Drawer onClose={onDrawerClose} isOpen={isDrawerOpen} size="xs">
       <DrawerOverlay />
       <DrawerContent>
         <div className="flex flex-row my-6 px-6">
