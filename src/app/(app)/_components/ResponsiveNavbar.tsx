@@ -17,10 +17,8 @@ export default function ResponsiveNavBar({
 
   const resolveNavBarRender = () => {
     return isTabletOrMobile ? (
-      <div className="flex flex-row h-20 px-5">
-        <div className="ml-auto my-auto">
-          <NavBar profilePic={profilePic} email={email} name={name} />
-        </div>
+      <div className="absolute bg-white rounded-full z-10 top-5 right-5">
+        <NavBar profilePic={profilePic} email={email} name={name} />
       </div>
     ) : (
       <NavBar profilePic={profilePic} email={email} name={name} />

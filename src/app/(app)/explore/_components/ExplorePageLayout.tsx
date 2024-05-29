@@ -32,20 +32,18 @@ export default function ExplorePageLayout({
 
   const mobileLayout = () => (
     <div className="w-screen h-screen">
-      <div className="flex flex-row h-20 px-5">
-        <div className="my-auto">
-          <ProfileSearchFilter
-            resetField={resetField}
-            setValue={setValue}
-            watch={watch}
-            register={register}
-          />
-        </div>
-        <div className="ml-auto my-auto">
-          <NavBar profilePic={profilePic} email={email} name={name} />
-        </div>
+      <div className="absolute bg-white rounded-full z-10 top-5 left-5">
+        <ProfileSearchFilter
+          resetField={resetField}
+          setValue={setValue}
+          watch={watch}
+          register={register}
+        />
       </div>
-      <div className="w-full h-[calc(100%_-_80px)] bg-[#E1E1E1] overflow-y-auto overflow-x-hidden">
+      <div className="absolute bg-white rounded-full z-10 top-5 right-5">
+        <NavBar profilePic={profilePic} email={email} name={name} />
+      </div>
+      <div className="w-full h-full bg-[#E1E1E1] overflow-y-auto overflow-x-hidden">
         {profileCardLayouts}
       </div>
     </div>
