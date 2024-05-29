@@ -52,7 +52,7 @@ export default function ProfilePageLayout({
   }, [error, success, toast]);
 
   return (
-    <div className="flex w-screen lg:max-h-full">
+    <div className="flex w-screen">
       <Stack
         direction={["column", "column", "column", "row", "row", "row"]}
         spacing={[10, 10, 10, 10, 10, 10]}

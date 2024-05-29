@@ -21,7 +21,7 @@ export default async function PagesLayout({
         email={session.user.email}
         name={session.user.name}
       />
-      <div className="w-full h-[calc(100%_-_80px)] overflow-y-auto overflow-x-hidden">
+      <div className="w-full xl:h-[calc(100%_-_80px)] overflow-y-auto overflow-x-hidden">
         {children}
       </div>
     </section>
