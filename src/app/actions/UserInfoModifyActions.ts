@@ -1,9 +1,17 @@
-import { User } from "@/models/User";
-import type { UserBasicInfoType } from "@/types/UserModelTypes";
-import dbConnect from "@/lib/dbConnect";
-import { POSTMyBasicInfoRequestData } from "@/types/RequestDataTypes";
+"use server";
+
 import { v2 as cloudinary } from "cloudinary";
-import { SessionCheckResponse, checkSession } from "@/lib/auth";
+import { getUserBasicInfo } from "./UserInfoGetActions";
+import dbConnect from "@/lib/dbConnect";
+import { User } from "@/models/User";
+import {
+  POSTCoursesRequestData,
+  POSTMyBasicInfoRequestData,
+  POSTStudyPrefRequestData,
+} from "@/types/RequestDataTypes";
+import { UserBasicInfoType } from "@/types/UserModelTypes";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -11,32 +19,7 @@ cloudinary.config({
   api_secret: process.env.API_SECRET,
 });
 
-export async function GET() {
-  const sesssionCheck: SessionCheckResponse = await checkSession([
-    "explore",
-    "startprofile",
-  ]);
-
-  if (!sesssionCheck.ok)
-    return Response.json({ error: "Not authorized" }, { status: 401 });
-
-  try {
-    await dbConnect();
-
-    const user: UserBasicInfoType | null = await User.findById(
-      sesssionCheck._id,
-      "email profileImage profileImagePublicID firstName lastName major gradYear userBio pronouns fbURL igURL userStatus",
-    );
-
-    if (!user)
-      return Response.json({ error: "User not found" }, { status: 404 });
-    return Response.json({ user }, { status: 200 });
-  } catch (e) {
-    return Response.json({ error: "Error in fetching user" }, { status: 500 });
-  }
-}
-
-export async function POST(request: Request) {
+export async function saveUserBasicInfo(data: POSTMyBasicInfoRequestData) {
   const {
     email,
     profileImageFile,
@@ -48,10 +31,10 @@ export async function POST(request: Request) {
     pronouns,
     fbURL,
     igURL,
-  }: POSTMyBasicInfoRequestData = await request.json();
+  }: POSTMyBasicInfoRequestData = data;
 
   try {
-    const getOldUserResponse: Response = await GET();
+    const getOldUserResponse: Response = await getUserBasicInfo();
     if (getOldUserResponse.status >= 400) {
       if (getOldUserResponse.status === 500)
         return Response.json(
@@ -112,6 +95,70 @@ export async function POST(request: Request) {
   } catch (e) {
     return Response.json(
       { error: "Error in modifying user basic info." },
+      { status: 500 },
+    );
+  }
+}
+
+export async function saveUserCourseInfo(data: POSTCoursesRequestData) {
+  const session = await getServerSession(authOptions);
+
+  if (
+    !session ||
+    (session?.user?.userStatus !== "startcourses" &&
+      session?.user?.userStatus !== "explore")
+  )
+    return Response.json({ error: "Not authorized" }, { status: 401 });
+
+  const { courseList }: POSTCoursesRequestData = data;
+
+  try {
+    const updateData: any = { courseList };
+    if (session.user.userStatus === "startcourses")
+      updateData.userStatus = "startstudypref";
+
+    await dbConnect();
+
+    await User.findByIdAndUpdate(session.user._id, {
+      $set: updateData,
+    });
+
+    return Response.json({ courseList }, { status: 200 });
+  } catch (e) {
+    return Response.json(
+      { error: "Error in modifying user course list" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function saveUserStudyPreferences(data: POSTStudyPrefRequestData) {
+  const session = await getServerSession(authOptions);
+
+  if (
+    !session ||
+    (session?.user?.userStatus !== "startstudypref" &&
+      session?.user?.userStatus !== "explore")
+  )
+    return Response.json({ error: "Not authorized" }, { status: 401 });
+
+  const { userStudyPreferences }: POSTStudyPrefRequestData = data;
+
+  try {
+    const updateData: any = { userStudyPreferences };
+    if (session.user.userStatus === "startstudypref")
+      updateData.userStatus = "explore";
+
+    await dbConnect();
+
+    await User.findByIdAndUpdate(session.user._id, {
+      $set: updateData,
+    });
+
+    return Response.json({ userStudyPreferences }, { status: 200 });
+  } catch (e) {
+    return Response.json(
+      { error: "Error in modifying user course list" },
       { status: 500 },
     );
   }

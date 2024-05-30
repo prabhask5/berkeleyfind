@@ -1,9 +1,9 @@
-import { GET as getUserInfo } from "@/app/api/me/route";
 import { UserType } from "@/types/UserModelTypes";
 import ProfilePageLayout from "./_components/ProfilePageLayout";
+import { getUserCompleteInfo } from "@/app/actions/UserInfoGetActions";
 
 export default async function Profile() {
-  const res: Response = await getUserInfo();
+  const res: Response = await getUserCompleteInfo();
   const success: boolean = res.status === 200;
   const data: any = await res.json();
 

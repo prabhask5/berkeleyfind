@@ -20,6 +20,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import CourseListItem from "./CourseListItem";
 import { DropdownOption } from "@/types/MiscTypes";
+import { saveUserCourseInfo } from "@/app/actions/UserInfoModifyActions";
 
 interface CourseEditFormProps {
   courseList: Course[];
@@ -115,10 +116,7 @@ export default function CourseEditForm({
       duration: null,
     });
 
-    const response = await fetch(`${process.env.API_URL}/mycourses`, {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
+    const response = await saveUserCourseInfo(data);
 
     stopLoading(toast, toastLoadingRef);
 

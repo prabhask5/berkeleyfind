@@ -13,6 +13,7 @@ import ScheduleSelector from "react-schedule-selector";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { saveUserStudyPreferences } from "@/app/actions/UserInfoModifyActions";
 
 interface IUserStudyTimesInfo {
   weekTimes: Date[];
@@ -94,10 +95,10 @@ export default function StudyTimesEditForm({
       duration: null,
     });
 
-    const request_obj = { userStudyPreferences: data };
-    const response = await fetch(`${process.env.API_URL}/mystudypref`, {
-      method: "POST",
-      body: JSON.stringify(request_obj),
+    const response = await saveUserStudyPreferences({
+      userStudyPreferences: {
+        weekTimes: data.weekTimes,
+      },
     });
 
     stopLoading(toast, toastLoadingRef);

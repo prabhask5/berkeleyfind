@@ -35,6 +35,7 @@ import { DropdownOption } from "@/types/MiscTypes";
 import { stopLoading } from "@/lib/utils";
 import placeholder from "@/media/avatar_placeholder.svg";
 import { turnStringIntoDropdownOption } from "@/lib/utils";
+import { saveUserBasicInfo } from "@/app/actions/UserInfoModifyActions";
 
 export interface ProfileEditFormProps {
   profileImage: string;
@@ -303,10 +304,7 @@ export function ProfileEditForm({
       duration: null,
     });
 
-    const response = await fetch(`${process.env.API_URL}/mybasicinfo`, {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
+    const response = await saveUserBasicInfo(data);
 
     stopLoading(toast, toastLoadingRef);
 

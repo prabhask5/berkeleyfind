@@ -1,6 +1,6 @@
-import { GET as getAllRequests } from "@/app/api/social/route";
 import { FriendUserType, StrangerUserType } from "@/types/UserModelTypes";
 import SocialPageLayout from "./_components/SocialPageLayout";
+import { getAllRequests } from "@/app/actions/OtherUserInfoGetActions";
 
 export default async function Social() {
   const res: Response = await getAllRequests();

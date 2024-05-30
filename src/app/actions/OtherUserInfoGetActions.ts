@@ -1,16 +1,52 @@
+"use server";
+
+import { SessionCheckResponse, checkSession } from "@/lib/auth";
+import dbConnect from "@/lib/dbConnect";
+import { ProfileMatchMyData, profileMatch } from "@/lib/matcher";
 import { User } from "@/models/User";
 import {
-  FriendUserDataQuery,
+  StrangerUserType,
   StangerUserDataQuery,
-  type FriendUserType,
-  type StrangerUserType,
+  ExploreUserType,
+  FriendUserDataQuery,
+  FriendUserType,
 } from "@/types/UserModelTypes";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { ObjectId } from "mongoose";
 import { getServerSession } from "next-auth";
-import dbConnect from "@/lib/dbConnect";
-import { ObjectId } from "mongodb";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 
-export async function GET() {
+export async function getExploreUsers() {
+  const sesssionCheck: SessionCheckResponse = await checkSession();
+
+  if (!sesssionCheck.ok)
+    return Response.json({ error: "Not authorized" }, { status: 401 });
+
+  try {
+    await dbConnect();
+
+    const me: ProfileMatchMyData | null = await User.findById(
+      sesssionCheck._id,
+      "major pronouns courseList userStudyPreferences",
+    );
+
+    if (!me) return Response.json({ error: "User not found" }, { status: 404 });
+
+    const users: StrangerUserType[] | null = await User.find(
+      { _id: { $ne: sesssionCheck._id }, userStatus: "explore" },
+      StangerUserDataQuery,
+    );
+
+    const sortedExploreUsers: ExploreUserType[] = (users ?? [])
+      .map((user) => ({ ...user, profileMatch: profileMatch(me, user) }))
+      .sort((a, b) => a.profileMatch - b.profileMatch);
+
+    return Response.json({ users: sortedExploreUsers }, { status: 200 });
+  } catch (e) {
+    return Response.json({ error: "Error in fetching users" }, { status: 500 });
+  }
+}
+
+export async function getAllRequests() {
   const session = await getServerSession(authOptions);
 
   if (!session || session?.user.userStatus !== "explore")
