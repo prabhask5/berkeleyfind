@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import React from "react";
-import LoginSignUpView from "./_components/LoginSignUpView";
+import LoginSignUpPageLayout from "./_components/LoginSignUpPageLayout";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { statusToURL } from "@/types/UserModelTypes";
@@ -14,5 +14,7 @@ export default async function LoginPage({
   if (session && session.user.userStatus)
     return redirect(statusToURL[session.user.userStatus]);
 
-  return <LoginSignUpView fromRedirect={searchParams.redirect ?? "false"} />;
+  return (
+    <LoginSignUpPageLayout fromRedirect={searchParams.redirect ?? "false"} />
+  );
 }

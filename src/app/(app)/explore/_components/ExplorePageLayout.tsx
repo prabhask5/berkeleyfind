@@ -5,8 +5,15 @@ import ProfileSearchFilter from "./ProfileSearchFilter";
 import { useBetterMediaQuery } from "@/lib/utils";
 import NavBar from "../../_components/Navbar";
 import { useForm } from "react-hook-form";
+import { ExploreUserType } from "@/types/UserModelTypes";
+import { useToast, ToastId } from "@chakra-ui/react";
+import React, { useEffect } from "react";
 
-interface ExplorePageLayoutProps extends RelevantSessionProps {}
+interface ExplorePageLayoutProps extends RelevantSessionProps {
+  users: ExploreUserType[] | null;
+  success: boolean;
+  error: string | null;
+}
 
 interface ISessionTagInfo {
   tagList: FilterTag[];
@@ -16,7 +23,25 @@ export default function ExplorePageLayout({
   profilePic,
   email,
   name,
+  success,
+  users,
+  error,
 }: ExplorePageLayoutProps) {
+  const toast = useToast();
+  const toastRef = React.useRef<ToastId>();
+
+  useEffect(() => {
+    if (toastRef.current) return;
+    if (!success) {
+      toastRef.current = toast({
+        title: error,
+        status: "error",
+        duration: 2000,
+        isClosable: false,
+      });
+    }
+  }, [error, success, toast]);
+
   const isTabletOrMobile = useBetterMediaQuery({
     query: "(max-width: 1280px)",
   });

@@ -9,7 +9,7 @@ interface LoginSignUpViewProps {
   fromRedirect: string;
 }
 
-export default function LoginSignUpView({
+export default function LoginSignUpPageLayout({
   fromRedirect,
 }: LoginSignUpViewProps) {
   const [viewState, setViewState] = useState<"login" | "signup">("login");

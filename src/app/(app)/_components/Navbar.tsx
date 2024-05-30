@@ -49,7 +49,7 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
   useEffect(() => {
     router.prefetch("/explore");
     router.prefetch("/profile");
-    router.prefetch("/requests");
+    router.prefetch("/social");
     router.prefetch("/login");
   }, [router]);
 
@@ -151,12 +151,12 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
     </a>
   );
 
-  const requestsOption = (rounded: boolean) => (
+  const socialOption = (rounded: boolean) => (
     <a
-      onClick={() => handleRedirect("/requests")}
+      onClick={() => handleRedirect("/social")}
       className={
         menuOptionsBaseStyle +
-        (pathname === "/requests"
+        (pathname === "/social"
           ? menuOptionsCurrentPageStyleAddOn
           : menuOptionsSelectStyleAddOn) +
         (rounded ? " rounded-lg" : "")
@@ -165,7 +165,7 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
       <svg
         className={
           svgBaseStyle +
-          (pathname == "/requests"
+          (pathname == "/social"
             ? menuOptionsCurrentPageStyleAddOn
             : svgSelectStyleAddOn)
         }
@@ -176,7 +176,7 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
       >
         <path d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z" />
       </svg>
-      <span className="flex-1 ms-3 whitespace-nowrap">My Requests</span>
+      <span className="flex-1 ms-3 whitespace-nowrap">Social</span>
     </a>
   );
 
@@ -219,7 +219,7 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
         <Divider />
         {exploreOption(false)}
         {profileOption(false)}
-        {requestsOption(false)}
+        {socialOption(false)}
         <Divider />
         {signOutOption(false)}
       </PopoverContent>
@@ -275,7 +275,7 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
         <div className="px-4 my-3">
           {exploreOption(true)}
           {profileOption(true)}
-          {requestsOption(true)}
+          {socialOption(true)}
           {signOutOption(true)}
         </div>
       </DrawerContent>

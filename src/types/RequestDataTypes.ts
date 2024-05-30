@@ -2,12 +2,6 @@ import { ObjectId } from "mongodb";
 import { Course } from "./CourseModelTypes";
 import { StudyPreferences } from "./UserPreferenceModelTypes";
 
-export interface GETExploreRequestData {
-  // first index included, last index not included
-  firstIndex: number;
-  lastIndex: number;
-}
-
 export interface POSTMyBasicInfoRequestData {
   email: string;
   profileImageFile: string;
