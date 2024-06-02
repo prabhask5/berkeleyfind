@@ -53,6 +53,9 @@ dependencies:
   framer-motion:
     specifier: ^11.0.20
     version: 11.2.10(react-dom@18.3.1)(react@18.3.1)
+  google:
+    specifier: link:next/font/google
+    version: link:next/font/google
   mongodb:
     specifier: ^6.5.0
     version: 6.7.0
