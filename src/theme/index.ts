@@ -76,6 +76,12 @@ export const customTheme = extendTheme({
           _hover: { bgGradient: "linear(to-r, #920efb, #0e42fb)" },
           _active: { bgGradient: "linear(to-r, #7903d7, #0332d7)" },
         },
+        websiteColorTheme: {
+          color: "white",
+          background: "#A73CFC",
+          _hover: "#920EFB",
+          _active: "#7903D7",
+        },
       },
     },
   },

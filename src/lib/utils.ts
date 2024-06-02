@@ -2,6 +2,8 @@ import berkeleyData from "@/data/berkeleydata";
 import { DropdownOption } from "@/types/MiscTypes";
 import { ToastId } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
+import placeholder from "@/media/avatar_placeholder.svg";
+import { ActionResponse } from "@/types/RequestDataTypes";
 
 export const stopLoading = (
   toast: any,
@@ -53,7 +55,29 @@ export const useBetterMediaQuery = ({ query }: { query: string }) => {
 
 export const turnStringIntoDropdownOption = (
   value: string,
-): DropdownOption => ({
-  label: value,
-  value,
-});
+): DropdownOption | null => {
+  if (!value) return null;
+  return {
+    label: value,
+    value,
+  };
+};
+
+export const resolveProfileImageLink = (
+  profileImage: string | null | undefined,
+) => {
+  if (profileImage) return profileImage;
+  return placeholder;
+};
+
+export const handleError = (toast: any, response: ActionResponse) => {
+  const errorMsg = response.responseData;
+
+  toast({
+    title: "Unexpected server error",
+    description: errorMsg.error,
+    status: "error",
+    duration: 2000,
+    isClosable: false,
+  });
+};

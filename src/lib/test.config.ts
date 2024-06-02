@@ -1,5 +1,5 @@
 import { User } from "@/models/User";
-import testData from "@/../testData";
+import testData from "@/data/testData";
 
 export const InitiateManyTestData = async () => {
   try {

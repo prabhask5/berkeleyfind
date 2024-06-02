@@ -12,45 +12,69 @@ import {
   FriendUserType,
 } from "@/types/UserModelTypes";
 import { ObjectId } from "mongoose";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
 
-export async function getExploreUsers() {
+export async function getExploreUsers(): Promise<string> {
   const sesssionCheck: SessionCheckResponse = await checkSession();
 
   if (!sesssionCheck.ok)
-    return Response.json({ error: "Not authorized" }, { status: 401 });
+    return JSON.stringify({
+      status: 401,
+      responseData: { error: "Not authorized" },
+    });
 
   try {
     await dbConnect();
 
     const me: ProfileMatchMyData | null = await User.findById(
       sesssionCheck._id,
-      "major pronouns courseList userStudyPreferences",
-    );
+      "major pronouns courseList userStudyPreferences friendsList outgoingRequestsList incomingRequestsList",
+    ).lean();
 
-    if (!me) return Response.json({ error: "User not found" }, { status: 404 });
+    if (!me)
+      return JSON.stringify({
+        status: 404,
+        responseData: { error: "User not found" },
+      });
 
     const users: StrangerUserType[] | null = await User.find(
-      { _id: { $ne: sesssionCheck._id }, userStatus: "explore" },
+      {
+        _id: {
+          $ne: sesssionCheck._id,
+          $nin: [
+            ...me.friendsList,
+            ...me.outgoingRequestsList,
+            ...me.incomingRequestsList,
+          ],
+        },
+        userStatus: "explore",
+      },
       StangerUserDataQuery,
-    );
+    ).lean();
 
     const sortedExploreUsers: ExploreUserType[] = (users ?? [])
       .map((user) => ({ ...user, profileMatch: profileMatch(me, user) }))
-      .sort((a, b) => a.profileMatch - b.profileMatch);
+      .sort((a, b) => b.profileMatch - a.profileMatch);
 
-    return Response.json({ users: sortedExploreUsers }, { status: 200 });
+    return JSON.stringify({
+      status: 200,
+      responseData: { users: sortedExploreUsers },
+    });
   } catch (e) {
-    return Response.json({ error: "Error in fetching users" }, { status: 500 });
+    return JSON.stringify({
+      status: 500,
+      responseData: { error: "Error in fetching users" },
+    });
   }
 }
 
-export async function getAllRequests() {
-  const session = await getServerSession(authOptions);
+export async function getAllRequests(): Promise<string> {
+  const sessionCheck: SessionCheckResponse = await checkSession();
 
-  if (!session || session?.user.userStatus !== "explore")
-    return Response.json({ error: "Not authorized" }, { status: 401 });
+  if (!sessionCheck.ok)
+    return JSON.stringify({
+      status: 401,
+      responseData: { error: "Not authorized" },
+    });
 
   try {
     await dbConnect();
@@ -60,9 +84,9 @@ export async function getAllRequests() {
       outgoingRequestsList: ObjectId[];
       incomingRequestsList: ObjectId[];
     } = (await User.findById(
-      session.user._id,
+      sessionCheck._id,
       "friendsList outgoingRequestsList incomingRequestsList",
-    )) ?? {
+    ).lean()) ?? {
       friendsList: [],
       outgoingRequestsList: [],
       incomingRequestsList: [],
@@ -72,26 +96,26 @@ export async function getAllRequests() {
       (await User.find(
         { _id: { $in: userLists.friendsList }, userStatus: "explore" },
         FriendUserDataQuery,
-      )) ?? [];
+      ).lean()) ?? [];
     const outgoingRequestsList: StrangerUserType[] =
       (await User.find(
         { _id: { $in: userLists.outgoingRequestsList }, userStatus: "explore" },
         StangerUserDataQuery,
-      )) ?? [];
+      ).lean()) ?? [];
     const incomingRequestsList: StrangerUserType[] =
       (await User.find(
         { _id: { $in: userLists.incomingRequestsList }, userStatus: "explore" },
         StangerUserDataQuery,
-      )) ?? [];
+      ).lean()) ?? [];
 
-    return Response.json(
-      { friendsList, outgoingRequestsList, incomingRequestsList },
-      { status: 200 },
-    );
+    return JSON.stringify({
+      status: 200,
+      responseData: { friendsList, outgoingRequestsList, incomingRequestsList },
+    });
   } catch (e) {
-    return Response.json(
-      { error: "Error in fetching requests" },
-      { status: 500 },
-    );
+    return JSON.stringify({
+      status: 500,
+      responseData: { error: "Error in fetching requests" },
+    });
   }
 }

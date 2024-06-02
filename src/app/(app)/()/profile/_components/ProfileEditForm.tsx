@@ -19,23 +19,23 @@ import {
   useToast,
   Text,
   Heading,
-  Button,
   CloseButton,
-  ButtonGroup,
+  Tooltip,
+  Icon,
 } from "@chakra-ui/react";
 import { useDropzone } from "react-dropzone";
 import React, { useEffect, useState } from "react";
 import { Select } from "chakra-react-select";
-import fbIcon from "@/media/fbIcon.svg";
-import igIcon from "@/media/igIcon.svg";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { asyncInputStyling } from "@/theme/input";
 import { DropdownOption } from "@/types/MiscTypes";
-import { stopLoading } from "@/lib/utils";
-import placeholder from "@/media/avatar_placeholder.svg";
+import { handleError, resolveProfileImageLink, stopLoading } from "@/lib/utils";
 import { turnStringIntoDropdownOption } from "@/lib/utils";
 import { saveUserBasicInfo } from "@/app/actions/UserInfoModifyActions";
+import ButtonLayout from "@/app/_components/ButtonLayout";
+import { ActionResponse } from "@/types/RequestDataTypes";
+import { FaFacebook, FaInstagram } from "react-icons/fa";
 
 export interface ProfileEditFormProps {
   profileImage: string;
@@ -304,11 +304,13 @@ export function ProfileEditForm({
       duration: null,
     });
 
-    const response = await saveUserBasicInfo(data);
+    const response: ActionResponse = JSON.parse(
+      await saveUserBasicInfo(JSON.stringify(data)),
+    );
 
     stopLoading(toast, toastLoadingRef);
 
-    if (response.ok) {
+    if (response.status === 200) {
       toast({
         title: "Information saved",
         status: "success",
@@ -316,7 +318,7 @@ export function ProfileEditForm({
         isClosable: false,
       });
 
-      const newProfileImageLink = (await response.json()).profileImage;
+      const newProfileImageLink = response.responseData.profileImage;
 
       if (isStart) router.push("/start/courses");
       else {
@@ -327,17 +329,7 @@ export function ProfileEditForm({
         reset(dataWithNewProfileImage);
         setDefaultValues(dataWithNewProfileImage);
       }
-    } else {
-      const errorMsg = await response.json();
-
-      toast({
-        title: "Unexpected server error",
-        description: errorMsg.error,
-        status: "error",
-        duration: 2000,
-        isClosable: false,
-      });
-    }
+    } else handleError(toast, response);
   };
 
   const handleUndo = () => {
@@ -350,40 +342,6 @@ export function ProfileEditForm({
     });
   };
 
-  const buttonLayout = () => {
-    return isStart ? (
-      <Button
-        className="md:w-40 lg:mb-5 bg-[#A73CFC] text-white"
-        type="submit"
-        onClick={checkForErrors}
-      >
-        {"Save & Continue"}
-      </Button>
-    ) : (
-      <ButtonGroup gap={2}>
-        <Button
-          type="submit"
-          isDisabled={!anyChanges}
-          className="bg-[#A73CFC] text-white"
-        >
-          Save
-        </Button>
-        <Button
-          onClick={handleUndo}
-          isDisabled={!anyChanges}
-          colorScheme="gray"
-        >
-          Undo
-        </Button>
-      </ButtonGroup>
-    );
-  };
-
-  const resolveProfileImageLink = () => {
-    if (watch("profileImageFile")) return watch("profileImageFile");
-    return placeholder;
-  };
-
   return (
     <form onSubmit={handleSubmit(handleSubmitForm)}>
       <Stack spacing={[5, 5, 5, 5, 5, 7]} className="px-2">
@@ -394,18 +352,24 @@ export function ProfileEditForm({
             spacing={[3, 5, 5, 5, 5, 7]}
           >
             <div className="relative flex-row flex">
-              <div
-                className="rounded-full w-20 h-20 sm:w-32 sm:h-32 cursor-pointer"
-                onClick={onOpen}
+              <Tooltip
+                label="Click to add profile picture"
+                aria-label="add profile image"
+                openDelay={350}
               >
-                <Image
-                  fill
-                  className="w-20 max-h-20 sm:w-32 sm:max-h-32 rounded-full my-auto"
-                  draggable="false"
-                  src={resolveProfileImageLink()}
-                  alt="Profile picture"
-                />
-              </div>
+                <div
+                  className="rounded-full w-20 h-20 sm:w-32 sm:h-32 cursor-pointer"
+                  onClick={onOpen}
+                >
+                  <Image
+                    fill
+                    className="w-20 max-h-20 sm:w-32 sm:max-h-32 rounded-full my-auto"
+                    draggable="false"
+                    src={resolveProfileImageLink(watch("profileImageFile"))}
+                    alt="Profile picture"
+                  />
+                </div>
+              </Tooltip>
               <div className="absolute top-[-10px] right-[-15px]">
                 {watch("profileImageFile") && (
                   <CloseButton
@@ -586,7 +550,7 @@ export function ProfileEditForm({
             direction={["row", "row", "row", "row", "row", "row"]}
             spacing={[2, 2, 2, 2, 2, 2]}
           >
-            <Image priority src={fbIcon} alt="Facebook icon" />
+            <Icon as={FaFacebook} boxSize={6} />
             <FormControl isInvalid={!!errors.fbURL}>
               <Input
                 {...register("fbURL")}
@@ -602,7 +566,7 @@ export function ProfileEditForm({
             direction={["row", "row", "row", "row", "row", "row"]}
             spacing={[2, 2, 2, 2, 2, 2]}
           >
-            <Image priority src={igIcon} alt="Instagram icon" />
+            <Icon as={FaInstagram} boxSize={6} />
             <FormControl isInvalid={!!errors.igURL}>
               <Input
                 {...register("igURL")}
@@ -615,7 +579,13 @@ export function ProfileEditForm({
             </FormControl>
           </Stack>
         </Stack>
-        {buttonLayout()}
+        <ButtonLayout
+          isStart={isStart}
+          startButtonText={"Save & Continue"}
+          anyChanges={anyChanges}
+          checkForErrorsFunc={checkForErrors}
+          handleUndoFunc={handleUndo}
+        />
       </Stack>
     </form>
   );

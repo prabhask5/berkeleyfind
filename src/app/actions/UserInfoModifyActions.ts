@@ -5,13 +5,13 @@ import { getUserBasicInfo } from "./UserInfoGetActions";
 import dbConnect from "@/lib/dbConnect";
 import { User } from "@/models/User";
 import {
+  ActionResponse,
   POSTCoursesRequestData,
   POSTMyBasicInfoRequestData,
   POSTStudyPrefRequestData,
 } from "@/types/RequestDataTypes";
 import { UserBasicInfoType } from "@/types/UserModelTypes";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { SessionCheckResponse, checkSession } from "@/lib/auth";
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -19,7 +19,20 @@ cloudinary.config({
   api_secret: process.env.API_SECRET,
 });
 
-export async function saveUserBasicInfo(data: POSTMyBasicInfoRequestData) {
+export async function saveUserBasicInfo(dataString: string): Promise<string> {
+  const data: POSTMyBasicInfoRequestData = JSON.parse(dataString);
+
+  const sesssionCheck: SessionCheckResponse = await checkSession([
+    "explore",
+    "startprofile",
+  ]);
+
+  if (!sesssionCheck.ok)
+    return JSON.stringify({
+      status: 401,
+      responseData: { error: "Not authorized" },
+    });
+
   const {
     email,
     profileImageFile,
@@ -34,20 +47,24 @@ export async function saveUserBasicInfo(data: POSTMyBasicInfoRequestData) {
   }: POSTMyBasicInfoRequestData = data;
 
   try {
-    const getOldUserResponse: Response = await getUserBasicInfo();
+    const getOldUserResponse: ActionResponse = JSON.parse(
+      await getUserBasicInfo(),
+    );
     if (getOldUserResponse.status >= 400) {
       if (getOldUserResponse.status === 500)
-        return Response.json(
-          { error: "Error in fetching old user." },
-          { status: 500 },
-        );
+        return JSON.stringify({
+          status: 500,
+          responseData: { error: "Error in fetching old user." },
+        });
       else if (getOldUserResponse.status === 404)
-        return Response.json({ error: "User not found." }, { status: 404 });
-      return getOldUserResponse;
+        return JSON.stringify({
+          status: 404,
+          responseData: { error: "User not found." },
+        });
+      return JSON.stringify(getOldUserResponse);
     }
 
-    const { user: oldUser }: { user: UserBasicInfoType } =
-      await getOldUserResponse.json();
+    const oldUser: UserBasicInfoType = getOldUserResponse.responseData.user;
 
     const updateData: any = {};
 
@@ -59,7 +76,6 @@ export async function saveUserBasicInfo(data: POSTMyBasicInfoRequestData) {
         await cloudinary.uploader
           .upload(profileImageFile, { folder: "berkeleyfind" })
           .catch((error) => {
-            console.log(error);
             throw error;
           });
 
@@ -79,87 +95,105 @@ export async function saveUserBasicInfo(data: POSTMyBasicInfoRequestData) {
     if (pronouns !== oldUser.pronouns) updateData.pronouns = pronouns;
     if (fbURL !== oldUser.fbURL) updateData.fbURL = fbURL;
     if (igURL !== oldUser.igURL) updateData.igURL = igURL;
-    if (oldUser.userStatus === "startprofile")
+    if (sesssionCheck.userStatus === "startprofile")
       updateData.userStatus = "startcourses";
 
     await dbConnect();
 
-    await User.findByIdAndUpdate(oldUser._id, {
+    await User.findByIdAndUpdate(sesssionCheck._id, {
       $set: updateData,
-    });
+    }).lean();
 
-    return Response.json(
-      { profileImage: updateData.profileImage ?? oldUser.profileImage },
-      { status: 200 },
-    );
+    return JSON.stringify({
+      status: 200,
+      responseData: {
+        profileImage:
+          updateData.profileImage !== undefined
+            ? updateData.profileImage
+            : oldUser.profileImage,
+      },
+    });
   } catch (e) {
-    return Response.json(
-      { error: "Error in modifying user basic info." },
-      { status: 500 },
-    );
+    return JSON.stringify({
+      status: 500,
+      responseData: { error: "Error in modifying user basic info." },
+    });
   }
 }
 
-export async function saveUserCourseInfo(data: POSTCoursesRequestData) {
-  const session = await getServerSession(authOptions);
+export async function saveUserCourseInfo(dataString: string): Promise<string> {
+  const data: POSTCoursesRequestData = JSON.parse(dataString);
 
-  if (
-    !session ||
-    (session?.user?.userStatus !== "startcourses" &&
-      session?.user?.userStatus !== "explore")
-  )
-    return Response.json({ error: "Not authorized" }, { status: 401 });
+  const sesssionCheck: SessionCheckResponse = await checkSession([
+    "explore",
+    "startcourses",
+  ]);
+
+  if (!sesssionCheck.ok)
+    return JSON.stringify({
+      status: 401,
+      responseData: { error: "Not authorized" },
+    });
 
   const { courseList }: POSTCoursesRequestData = data;
 
   try {
     const updateData: any = { courseList };
-    if (session.user.userStatus === "startcourses")
+    if (sesssionCheck.userStatus === "startcourses")
       updateData.userStatus = "startstudypref";
 
     await dbConnect();
 
-    await User.findByIdAndUpdate(session.user._id, {
+    await User.findByIdAndUpdate(sesssionCheck._id, {
       $set: updateData,
-    });
+    }).lean();
 
-    return Response.json({ courseList }, { status: 200 });
+    return JSON.stringify({ status: 200, responseData: { courseList } });
   } catch (e) {
-    return Response.json(
-      { error: "Error in modifying user course list" },
-      { status: 500 },
-    );
+    return JSON.stringify({
+      status: 500,
+      responseData: { error: "Error in modifying user course list" },
+    });
   }
 }
 
-export async function saveUserStudyPreferences(data: POSTStudyPrefRequestData) {
-  const session = await getServerSession(authOptions);
+export async function saveUserStudyPreferences(
+  dataString: string,
+): Promise<string> {
+  const data: POSTStudyPrefRequestData = JSON.parse(dataString);
 
-  if (
-    !session ||
-    (session?.user?.userStatus !== "startstudypref" &&
-      session?.user?.userStatus !== "explore")
-  )
-    return Response.json({ error: "Not authorized" }, { status: 401 });
+  const sesssionCheck: SessionCheckResponse = await checkSession([
+    "explore",
+    "startstudypref",
+  ]);
+
+  if (!sesssionCheck.ok)
+    return JSON.stringify({
+      status: 401,
+      responseData: { error: "Not authorized" },
+    });
 
   const { userStudyPreferences }: POSTStudyPrefRequestData = data;
 
   try {
     const updateData: any = { userStudyPreferences };
-    if (session.user.userStatus === "startstudypref")
+    if (sesssionCheck.userStatus === "startstudypref")
       updateData.userStatus = "explore";
 
     await dbConnect();
 
-    await User.findByIdAndUpdate(session.user._id, {
+    await User.findByIdAndUpdate(sesssionCheck._id, {
       $set: updateData,
-    });
+    }).lean();
 
-    return Response.json({ userStudyPreferences }, { status: 200 });
+    return JSON.stringify({
+      status: 200,
+      responseData: { userStudyPreferences },
+    });
   } catch (e) {
-    return Response.json(
-      { error: "Error in modifying user course list" },
-      { status: 500 },
-    );
+    return JSON.stringify({
+      status: 500,
+      responseData: { error: "Error in modifying user course list" },
+    });
   }
 }

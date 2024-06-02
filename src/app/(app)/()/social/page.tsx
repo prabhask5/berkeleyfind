@@ -1,11 +1,12 @@
 import { FriendUserType, StrangerUserType } from "@/types/UserModelTypes";
 import SocialPageLayout from "./_components/SocialPageLayout";
 import { getAllRequests } from "@/app/actions/OtherUserInfoGetActions";
+import { ActionResponse } from "@/types/RequestDataTypes";
 
 export default async function Social() {
-  const res: Response = await getAllRequests();
+  const res: ActionResponse = JSON.parse(await getAllRequests());
   const success: boolean = res.status === 200;
-  const data: any = await res.json();
+  const data: any = res.responseData;
 
   const friendsList: FriendUserType[] = success ? data.friendsList : null;
   const outgoingRequestsList: StrangerUserType[] = success

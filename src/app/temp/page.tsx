@@ -4,7 +4,7 @@ import { getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { statusToURL } from "@/types/UserModelTypes";
-import LoadingScreen from "../_components/LoadingScreen";
+import LoadingScreen from "@/app/_components/LoadingScreen";
 
 export default function RedirectPage() {
   const router = useRouter();

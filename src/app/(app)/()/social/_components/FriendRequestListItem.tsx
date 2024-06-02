@@ -1,7 +1,7 @@
 "use client";
 
 import { resolveProfileImageLink } from "@/lib/utils";
-import { FriendUserType } from "@/types/UserModelTypes";
+import { StrangerUserType } from "@/types/UserModelTypes";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -10,27 +10,25 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Button,
-  Divider,
   Heading,
   IconButton,
-  Stack,
   Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
 import Image from "next/image";
 import React from "react";
-import DetailedViewModal from "@/app/(app)/_components/DetailedViewModal";
-import IconLinks from "@/app/(app)/_components/IconLinks";
-import { CloseIcon } from "@chakra-ui/icons";
-import ProfileReadView from "@/app/(app)/_components/ProfileReadView";
 import UserProfileSummary from "@/app/(app)/_components/UserProfileSummary";
+import DetailedViewModal from "@/app/(app)/_components/DetailedViewModal";
+import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
+import ProfileReadView from "@/app/(app)/_components/ProfileReadView";
 
-interface FriendListItemProps extends Omit<FriendUserType, "_id"> {
+interface FriendRequestListItemProps extends Omit<StrangerUserType, "_id"> {
   index: number;
+  acceptCallBack?: () => void;
   deleteCallBack: () => void;
 }
 
-export default function FriendListItem({
+export default function FriendRequestListItem({
   profileImage,
   firstName,
   lastName,
@@ -40,12 +38,10 @@ export default function FriendListItem({
   pronouns,
   courseList,
   userStudyPreferences,
-  fbURL,
-  igURL,
-  email,
   index,
+  acceptCallBack,
   deleteCallBack,
-}: FriendListItemProps) {
+}: FriendRequestListItemProps) {
   const colorChoices = ["#E3E3E3", "#FFFFFF"];
   const cancelRef = React.useRef(null);
 
@@ -87,19 +83,35 @@ export default function FriendListItem({
             </Heading>
           </div>
         </Tooltip>
-        <div className="ml-auto my-auto flex flex-row sm:gap-1">
-          <IconLinks fbURL={fbURL} igURL={igURL} email={email} />
+        <div className="ml-auto flex flex-row sm:gap-1">
+          {acceptCallBack && (
+            <Tooltip
+              isDisabled={isModalOpen || isAlertOpen}
+              label="Accept request"
+              aria-label="accept request"
+              openDelay={300}
+            >
+              <IconButton
+                className="my-auto"
+                onClick={acceptCallBack}
+                variant="ghost"
+                icon={<CheckIcon boxSize={5} />}
+                aria-label={"Accept request"}
+              />
+            </Tooltip>
+          )}
           <Tooltip
             isDisabled={isModalOpen || isAlertOpen}
-            label="Delete friend"
-            aria-label="delete friend"
+            label="Delete request"
+            aria-label="delete request"
             openDelay={300}
           >
             <IconButton
               onClick={onAlertOpen}
+              className="my-auto"
               variant="ghost"
               icon={<CloseIcon boxSize={4} />}
-              aria-label={"Delete friend"}
+              aria-label={"Delete request"}
             />
           </Tooltip>
           <AlertDialog
@@ -111,7 +123,7 @@ export default function FriendListItem({
             <AlertDialogOverlay>
               <AlertDialogContent>
                 <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                  Delete Friend
+                  Delete Request
                 </AlertDialogHeader>
                 <AlertDialogBody>
                   {" "}
@@ -129,7 +141,7 @@ export default function FriendListItem({
                     }}
                     ml={3}
                   >
-                    Delete Friend
+                    Delete Request
                   </Button>
                 </AlertDialogFooter>
               </AlertDialogContent>
@@ -140,19 +152,15 @@ export default function FriendListItem({
       <DetailedViewModal isModalOpen={isModalOpen} onModalClose={onModalClose}>
         <UserProfileSummary
           profileReadViewComponent={
-            <Stack spacing={7}>
-              <ProfileReadView
-                profileImage={profileImage}
-                firstName={firstName}
-                lastName={lastName}
-                major={major}
-                gradYear={gradYear}
-                userBio={userBio}
-                pronouns={pronouns}
-              />
-              <Divider className="bg-[#D8D8D8]" variant="solid" />
-              <IconLinks fbURL={fbURL} igURL={igURL} email={email} />
-            </Stack>
+            <ProfileReadView
+              profileImage={profileImage}
+              firstName={firstName}
+              lastName={lastName}
+              major={major}
+              gradYear={gradYear}
+              userBio={userBio}
+              pronouns={pronouns}
+            />
           }
           courseList={courseList}
           userStudyPreferences={userStudyPreferences}

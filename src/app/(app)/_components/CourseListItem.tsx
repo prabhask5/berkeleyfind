@@ -18,15 +18,13 @@ import { useEffect } from "react";
 interface CourseListItemProps {
   course: Course;
   allClosed: boolean;
-  handleDeleteCourse: Function;
-  inEditMode: boolean;
+  handleDeleteCourse?: () => void;
 }
 
 export default function CourseListItem({
   course,
   allClosed,
   handleDeleteCourse,
-  inEditMode,
 }: CourseListItemProps) {
   const { onOpen, onClose, isOpen } = useDisclosure();
 
@@ -35,13 +33,14 @@ export default function CourseListItem({
   }, [onClose, allClosed]);
 
   const editModeStyleAddOn = " grid grid-cols-[93%_5%]";
+  const readModeStyleAddon = " pr-1 sm:pr-2 md:pr-3 lg:pr-4 xl:pr-5 2xl:pr-6";
 
   return (
     <div className="w-full">
       <div
         className={
           "my-[6px] sm:my-[10px] pl-1 sm:pl-2 md:pl-3 lg:pl-4 xl:pl-5 2xl:pl-6" +
-          (inEditMode && editModeStyleAddOn)
+          (handleDeleteCourse ? editModeStyleAddOn : readModeStyleAddon)
         }
       >
         <Popover
@@ -68,7 +67,7 @@ export default function CourseListItem({
             </PopoverBody>
           </PopoverContent>
         </Popover>
-        {inEditMode && (
+        {handleDeleteCourse && (
           <Tooltip
             label="Delete course"
             aria-label="remove course"

@@ -5,6 +5,9 @@ export interface ProfileMatchMyData {
   pronouns: UserType["pronouns"];
   courseList: UserType["courseList"];
   userStudyPreferences: UserType["userStudyPreferences"];
+  friendsList: UserType["friendsList"];
+  outgoingRequestsList: UserType["outgoingRequestsList"];
+  incomingRequestsList: UserType["incomingRequestsList"];
 }
 
 export const profileMatch = (

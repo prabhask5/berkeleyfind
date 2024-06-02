@@ -7,33 +7,46 @@ import { Course } from "@/types/CourseModelTypes";
 import { UserBasicInfoType, UserType } from "@/types/UserModelTypes";
 import { StudyPreferences } from "@/types/UserPreferenceModelTypes";
 
-export async function getUserCompleteInfo() {
+export async function getUserCompleteInfo(): Promise<string> {
   const sesssionCheck: SessionCheckResponse = await checkSession();
 
   if (!sesssionCheck.ok)
-    return Response.json({ error: "Not authorized" }, { status: 401 });
+    return JSON.stringify({
+      status: 401,
+      responseData: { error: "Not authorized" },
+    });
 
   try {
     await dbConnect();
 
-    const user: UserType | null = await User.findById(sesssionCheck._id);
+    const user: UserType | null = await User.findById(sesssionCheck._id).lean();
 
     if (!user)
-      return Response.json({ error: "User not found" }, { status: 404 });
-    return Response.json({ user }, { status: 200 });
+      return JSON.stringify({
+        status: 404,
+        responseData: { error: "User not found" },
+      });
+
+    return JSON.stringify({ status: 200, responseData: { user } });
   } catch (e) {
-    return Response.json({ error: "Error in fetching user" }, { status: 500 });
+    return JSON.stringify({
+      status: 500,
+      responseData: { error: "Error in fetching user" },
+    });
   }
 }
 
-export async function getUserBasicInfo() {
+export async function getUserBasicInfo(): Promise<string> {
   const sesssionCheck: SessionCheckResponse = await checkSession([
     "explore",
     "startprofile",
   ]);
 
   if (!sesssionCheck.ok)
-    return Response.json({ error: "Not authorized" }, { status: 401 });
+    return JSON.stringify({
+      status: 401,
+      responseData: { error: "Not authorized" },
+    });
 
   try {
     await dbConnect();
@@ -41,23 +54,33 @@ export async function getUserBasicInfo() {
     const user: UserBasicInfoType | null = await User.findById(
       sesssionCheck._id,
       "email profileImage profileImagePublicID firstName lastName major gradYear userBio pronouns fbURL igURL userStatus",
-    );
+    ).lean();
 
     if (!user)
-      return Response.json({ error: "User not found" }, { status: 404 });
-    return Response.json({ user }, { status: 200 });
+      return JSON.stringify({
+        status: 404,
+        responseData: { error: "User not found" },
+      });
+
+    return JSON.stringify({ status: 200, responseData: { user } });
   } catch (e) {
-    return Response.json({ error: "Error in fetching user" }, { status: 500 });
+    return JSON.stringify({
+      status: 500,
+      responseData: { error: "Error in fetching user" },
+    });
   }
 }
 
-export async function getUserCourseInfo() {
+export async function getUserCourseInfo(): Promise<string> {
   const sesssionCheck: SessionCheckResponse = await checkSession([
     "startcourses",
   ]);
 
   if (!sesssionCheck.ok)
-    return Response.json({ error: "Not authorized" }, { status: 401 });
+    return JSON.stringify({
+      status: 401,
+      responseData: { error: "Not authorized" },
+    });
 
   try {
     await dbConnect();
@@ -65,26 +88,33 @@ export async function getUserCourseInfo() {
     const courseList: Course[] | null = await User.findById(
       sesssionCheck._id,
       "courseList",
-    );
+    ).lean();
 
     if (!courseList)
-      return Response.json({ error: "Course list not found" }, { status: 404 });
-    return Response.json({ courseList }, { status: 200 });
+      return JSON.stringify({
+        status: 404,
+        responseData: { error: "Course list not found" },
+      });
+
+    return JSON.stringify({ status: 200, responseData: { courseList } });
   } catch (e) {
-    return Response.json(
-      { error: "Error in fetching course list" },
-      { status: 500 },
-    );
+    return JSON.stringify({
+      status: 500,
+      responseData: { error: "Error in fetching course list" },
+    });
   }
 }
 
-export async function getUserStudyPreferences() {
+export async function getUserStudyPreferences(): Promise<string> {
   const sesssionCheck: SessionCheckResponse = await checkSession([
     "startstudypref",
   ]);
 
   if (!sesssionCheck.ok)
-    return Response.json({ error: "Not authorized" }, { status: 401 });
+    return JSON.stringify({
+      status: 401,
+      responseData: { error: "Not authorized" },
+    });
 
   try {
     await dbConnect();
@@ -92,18 +122,22 @@ export async function getUserStudyPreferences() {
     const userStudyPreferences: StudyPreferences | null = await User.findById(
       sesssionCheck._id,
       "userStudyPreferences",
-    );
+    ).lean();
 
     if (!userStudyPreferences)
-      return Response.json(
-        { error: "User study preferences not found" },
-        { status: 404 },
-      );
-    return Response.json({ userStudyPreferences }, { status: 200 });
+      return JSON.stringify({
+        status: 404,
+        responseData: { error: "User study preferences not found" },
+      });
+
+    return JSON.stringify({
+      status: 200,
+      responseData: { userStudyPreferences },
+    });
   } catch (e) {
-    return Response.json(
-      { error: "Error in fetching user study preferences" },
-      { status: 500 },
-    );
+    return JSON.stringify({
+      status: 500,
+      responseData: { error: "Error in fetching user study preferences" },
+    });
   }
 }

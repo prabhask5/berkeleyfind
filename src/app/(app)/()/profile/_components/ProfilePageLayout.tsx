@@ -56,9 +56,9 @@ export default function ProfilePageLayout({
       <Stack
         direction={["column", "column", "column", "row", "row", "row"]}
         spacing={[10, 10, 10, 10, 10, 10]}
-        className="w-11/12 lg:w-[97.5%] mx-auto my-[10%] lg:my-auto h-full lg:py-[1.25%]"
+        className="w-11/12 lg:w-[97.5%] mx-auto my-[10%] lg:my-auto h-full lg:py-[1.25%] lg:gap-4"
       >
-        <div className="w-full lg:m-auto lg:overflow-y-auto lg:overflow-x-hidden lg:p-2">
+        <div className="w-full">
           <ProfileEditForm
             profileImage={user?.profileImage ?? ""}
             firstName={user?.firstName ?? ""}
@@ -87,11 +87,11 @@ export default function ProfilePageLayout({
             bg="#A73CFC"
             borderRadius="1px"
           />
-          <TabPanels className="text-left lg:m-auto lg:overflow-y-auto lg:overflow-x-hidden lg:p-2">
+          <TabPanels className="text-left">
             <TabPanel className="p-0 pt-4">
               <CourseEditForm courseList={user?.courseList ?? []} />
             </TabPanel>
-            <TabPanel className="p-0 pt-2">
+            <TabPanel className="p-0 pt-4">
               <StudyTimesEditForm
                 weekTimes={user?.userStudyPreferences.weekTimes ?? []}
               />

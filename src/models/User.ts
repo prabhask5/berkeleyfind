@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { CourseSchema } from "../models/Courses";
-import { PreferenceSchema } from "../models/Preferences";
+import { CourseSchema } from "@/models/Courses";
+import { PreferenceSchema } from "@/models/Preferences";
 import { ObjectId } from "mongodb";
 
 const UserSchema = new mongoose.Schema({

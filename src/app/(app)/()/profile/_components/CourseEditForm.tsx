@@ -1,26 +1,20 @@
 "use client";
 
 import berkeleyData from "@/data/berkeleydata";
-import { promiseOptions, stopLoading } from "@/lib/utils";
+import { handleError, promiseOptions, stopLoading } from "@/lib/utils";
 import { asyncInputStyling } from "@/theme/input";
 import { Course } from "@/types/CourseModelTypes";
-import {
-  Stack,
-  Text,
-  useToast,
-  ToastId,
-  Button,
-  Heading,
-  ButtonGroup,
-} from "@chakra-ui/react";
+import { Stack, Text, useToast, ToastId, Heading } from "@chakra-ui/react";
 import { AsyncSelect } from "chakra-react-select";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import CourseListItem from "./CourseListItem";
 import { DropdownOption } from "@/types/MiscTypes";
 import { saveUserCourseInfo } from "@/app/actions/UserInfoModifyActions";
+import ButtonLayout from "@/app/_components/ButtonLayout";
+import { ActionResponse } from "@/types/RequestDataTypes";
+import Courses from "@/app/(app)/_components/Courses";
 
 interface CourseEditFormProps {
   courseList: Course[];
@@ -38,7 +32,6 @@ export default function CourseEditForm({
   const router = useRouter();
   const toast = useToast();
   const toastLoadingRef = React.useRef<ToastId>();
-  const [allClosed, setAllClosed] = useState(false);
   const [anyChanges, setAnyChanges] = useState<boolean>(false);
   const [defaultValues, setDefaultValues] = useState<IUserCourseInfo>({
     courseList: courseList,
@@ -116,11 +109,13 @@ export default function CourseEditForm({
       duration: null,
     });
 
-    const response = await saveUserCourseInfo(data);
+    const response: ActionResponse = JSON.parse(
+      await saveUserCourseInfo(JSON.stringify(data)),
+    );
 
     stopLoading(toast, toastLoadingRef);
 
-    if (response.ok) {
+    if (response.status === 200) {
       toast({
         title: "Information saved",
         status: "success",
@@ -132,17 +127,7 @@ export default function CourseEditForm({
         reset(data);
         setDefaultValues(data);
       }
-    } else {
-      const errorMsg = await response.json();
-
-      toast({
-        title: "Unexpected server error",
-        description: errorMsg.error,
-        status: "error",
-        duration: 2000,
-        isClosable: false,
-      });
-    }
+    } else handleError(toast, response);
   };
 
   const handleUndo = () => {
@@ -153,31 +138,6 @@ export default function CourseEditForm({
       duration: 2000,
       isClosable: false,
     });
-  };
-
-  const buttonLayout = () => {
-    return isStart ? (
-      <Button className="md:w-40 lg:mb-5 bg-[#A73CFC] text-white" type="submit">
-        {"Save & Continue"}
-      </Button>
-    ) : (
-      <ButtonGroup gap={2}>
-        <Button
-          type="submit"
-          isDisabled={!anyChanges}
-          className="bg-[#A73CFC] text-white"
-        >
-          Save
-        </Button>
-        <Button
-          onClick={handleUndo}
-          isDisabled={!anyChanges}
-          colorScheme="gray"
-        >
-          Undo
-        </Button>
-      </ButtonGroup>
-    );
   };
 
   return (
@@ -211,32 +171,17 @@ export default function CourseEditForm({
           >
             My Classes
           </Heading>
-          <div
-            onScroll={() => setAllClosed(!allClosed)}
-            className="flex flex-col h-[575px] w-full overflow-y-auto overflow-x-hidden border border-[#D8D8D8]"
-          >
-            {watch("courseList").length > 0 ? (
-              watch("courseList").map((c: Course, index) => (
-                <div key={index}>
-                  <CourseListItem
-                    course={c}
-                    allClosed={allClosed}
-                    handleDeleteCourse={() => handleDeleteCourse(index)}
-                    inEditMode
-                  />
-                </div>
-              ))
-            ) : (
-              <Heading
-                size={["md", "lg", "lg", "lg", "lg", "lg"]}
-                className="m-auto text-[#f2f2f2]"
-              >
-                Courses will appear here.
-              </Heading>
-            )}
-          </div>
+          <Courses
+            courseListSource={watch("courseList")}
+            handleDeleteCourse={handleDeleteCourse}
+          />
         </Stack>
-        {buttonLayout()}
+        <ButtonLayout
+          isStart={isStart}
+          startButtonText={"Save & Continue"}
+          anyChanges={anyChanges}
+          handleUndoFunc={handleUndo}
+        />
       </Stack>
     </form>
   );

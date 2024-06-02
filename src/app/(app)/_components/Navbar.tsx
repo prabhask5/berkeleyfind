@@ -18,11 +18,10 @@ import {
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import Image from "next/image";
 import Link from "next/link";
-import placeholder from "@/media/avatar_placeholder.svg";
 import { signOut } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useBetterMediaQuery } from "@/lib/utils";
+import { resolveProfileImageLink, useBetterMediaQuery } from "@/lib/utils";
 import { RelevantSessionProps } from "@/types/MiscTypes";
 import React from "react";
 
@@ -53,11 +52,6 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
     router.prefetch("/login");
   }, [router]);
 
-  const resolveProfileImageLink = () => {
-    if (profilePic) return profilePic;
-    return placeholder;
-  };
-
   const handleRedirect = (destination: string) => {
     if (pathname !== destination) {
       onDrawerClose();
@@ -80,7 +74,7 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
         fill
         className="rounded-full"
         draggable="false"
-        src={resolveProfileImageLink()}
+        src={resolveProfileImageLink(profilePic)}
         alt="Profile picture"
       />
     </div>

@@ -6,14 +6,17 @@ import { User } from "@/models/User";
 import { ModifyRequestsRequestData } from "@/types/RequestDataTypes";
 import { ObjectId } from "mongodb";
 import { getAllRequests } from "./OtherUserInfoGetActions";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
 
-export async function acceptFriendRequest(data: ModifyRequestsRequestData) {
+export async function acceptFriendRequest(dataString: string): Promise<string> {
+  const data: ModifyRequestsRequestData = JSON.parse(dataString);
+
   const sesssionCheck: SessionCheckResponse = await checkSession();
 
   if (!sesssionCheck.ok)
-    return Response.json({ error: "Not authorized" }, { status: 401 });
+    return JSON.stringify({
+      status: 401,
+      responseData: { error: "Not authorized" },
+    });
 
   const { otherUserId }: ModifyRequestsRequestData = data;
 
@@ -26,14 +29,14 @@ export async function acceptFriendRequest(data: ModifyRequestsRequestData) {
     } = (await User.findById(
       sesssionCheck._id,
       "incomingRequestsList friendsList",
-    )) ?? { incomingRequestsList: [], friendsList: [] };
+    ).lean()) ?? { incomingRequestsList: [], friendsList: [] };
     const newFriendRequestLists: {
       outgoingRequestsList: ObjectId[];
       friendsList: ObjectId[];
     } = (await User.findById(
       otherUserId,
       "outgoingRequestsList friendsList",
-    )) ?? { outgoingRequestsList: [], friendsList: [] };
+    ).lean()) ?? { outgoingRequestsList: [], friendsList: [] };
 
     myRequestLists.incomingRequestsList =
       myRequestLists.incomingRequestsList.filter((d) => d != otherUserId);
@@ -52,74 +55,84 @@ export async function acceptFriendRequest(data: ModifyRequestsRequestData) {
         incomingRequestsList: myRequestLists.incomingRequestsList,
         friendsList: myRequestLists.friendsList,
       },
-    });
+    }).lean();
     await User.findByIdAndUpdate(otherUserId, {
       $set: {
         outgoingRequestsList: newFriendRequestLists.outgoingRequestsList,
         friendsList: newFriendRequestLists.friendsList,
       },
-    });
+    }).lean();
 
     return await getAllRequests();
   } catch (e) {
-    return Response.json(
-      { error: "Error in accepting friend request" },
-      { status: 500 },
-    );
+    return JSON.stringify({
+      status: 500,
+      responseData: { error: "Error in accepting friend request" },
+    });
   }
 }
 
-export async function deleteFriend(data: ModifyRequestsRequestData) {
-  const session = await getServerSession(authOptions);
+export async function deleteFriend(dataString: string): Promise<string> {
+  const data: ModifyRequestsRequestData = JSON.parse(dataString);
+  const sessionCheck: SessionCheckResponse = await checkSession();
 
-  if (!session || session?.user.userStatus !== "explore")
-    return Response.json({ error: "Not authorized" }, { status: 401 });
+  if (!sessionCheck.ok)
+    return JSON.stringify({
+      status: 401,
+      responseData: { error: "Not authorized" },
+    });
 
   const { otherUserId }: ModifyRequestsRequestData = data;
 
   try {
     await dbConnect();
 
-    const myRequestList: { friendsList: ObjectId[] } = (await User.findById(
-      session.user._id,
-      "friendsList",
-    )) ?? { friendsList: [] };
+    const myRequestList: { friendsList: ObjectId[] } = (
+      await User.findById(sessionCheck._id, "friendsList")
+    ).lean() ?? { friendsList: [] };
     const prevFriendRequestList: { friendsList: ObjectId[] } =
-      (await User.findById(otherUserId, "friendsList")) ?? { friendsList: [] };
+      (await User.findById(otherUserId, "friendsList").lean()) ?? {
+        friendsList: [],
+      };
 
     myRequestList.friendsList = myRequestList.friendsList.filter(
       (d) => d != otherUserId,
     );
     prevFriendRequestList.friendsList =
-      prevFriendRequestList.friendsList.filter((d) => d != session.user._id);
+      prevFriendRequestList.friendsList.filter((d) => d != sessionCheck._id);
 
-    await User.findByIdAndUpdate(session.user._id, {
+    await User.findByIdAndUpdate(sessionCheck._id, {
       $set: {
         friendsList: myRequestList.friendsList,
       },
-    });
+    }).lean();
     await User.findByIdAndUpdate(otherUserId, {
       $set: {
         friendsList: prevFriendRequestList.friendsList,
       },
-    });
+    }).lean();
 
     return await getAllRequests();
   } catch (e) {
-    return Response.json(
-      { error: "Error in deleting friend" },
-      { status: 500 },
-    );
+    return JSON.stringify({
+      status: 500,
+      responseData: { error: "Error in deleting friend" },
+    });
   }
 }
 
 export async function deleteIncomingFriendRequest(
-  data: ModifyRequestsRequestData,
-) {
+  dataString: string,
+): Promise<string> {
+  const data: ModifyRequestsRequestData = JSON.parse(dataString);
+
   const sesssionCheck: SessionCheckResponse = await checkSession();
 
   if (!sesssionCheck.ok)
-    return Response.json({ error: "Not authorized" }, { status: 401 });
+    return JSON.stringify({
+      status: 401,
+      responseData: { error: "Not authorized" },
+    });
 
   const { otherUserId }: ModifyRequestsRequestData = data;
 
@@ -127,7 +140,10 @@ export async function deleteIncomingFriendRequest(
     await dbConnect();
 
     const myRequestList: { incomingRequestsList: ObjectId[] } =
-      (await User.findById(sesssionCheck._id, "incomingRequestsList")) ?? {
+      (await User.findById(
+        sesssionCheck._id,
+        "incomingRequestsList",
+      ).lean()) ?? {
         incomingRequestsList: [],
       };
 
@@ -138,22 +154,27 @@ export async function deleteIncomingFriendRequest(
       $set: {
         incomingRequestsList: myRequestList.incomingRequestsList,
       },
-    });
+    }).lean();
 
     return await getAllRequests();
   } catch (e) {
-    return Response.json(
-      { error: "Error in deleting incoming request" },
-      { status: 500 },
-    );
+    return JSON.stringify({
+      status: 500,
+      responseData: { error: "Error in deleting incoming request" },
+    });
   }
 }
 
-export async function sendFriendRequest(data: ModifyRequestsRequestData) {
+export async function sendFriendRequest(dataString: string): Promise<string> {
+  const data: ModifyRequestsRequestData = JSON.parse(dataString);
+
   const sesssionCheck: SessionCheckResponse = await checkSession();
 
   if (!sesssionCheck.ok)
-    return Response.json({ error: "Not authorized" }, { status: 401 });
+    return JSON.stringify({
+      status: 401,
+      responseData: { error: "Not authorized" },
+    });
 
   const { otherUserId }: ModifyRequestsRequestData = data;
 
@@ -162,12 +183,15 @@ export async function sendFriendRequest(data: ModifyRequestsRequestData) {
 
     const myRequestList: {
       outgoingRequestsList: ObjectId[];
-    } = (await User.findById(sesssionCheck._id, "outgoingRequestsList")) ?? {
+    } = (await User.findById(
+      sesssionCheck._id,
+      "outgoingRequestsList",
+    ).lean()) ?? {
       outgoingRequestsList: [],
     };
     const receivingUserRequestList: {
       incomingRequestsList: ObjectId[];
-    } = (await User.findById(otherUserId, "incomingRequestsList")) ?? {
+    } = (await User.findById(otherUserId, "incomingRequestsList").lean()) ?? {
       incomingRequestsList: [],
     };
 
@@ -184,29 +208,34 @@ export async function sendFriendRequest(data: ModifyRequestsRequestData) {
       $set: {
         outgoingRequestsList: myRequestList.outgoingRequestsList,
       },
-    });
+    }).lean();
     await User.findByIdAndUpdate(otherUserId, {
       $set: {
         incomingRequestsList: receivingUserRequestList.incomingRequestsList,
       },
-    });
+    }).lean();
 
     return await getAllRequests();
   } catch (e) {
-    return Response.json(
-      { error: "Error in sending friend request" },
-      { status: 500 },
-    );
+    return JSON.stringify({
+      status: 500,
+      responseData: { error: "Error in sending friend request" },
+    });
   }
 }
 
 export async function deleteOutgoingFriendRequest(
-  data: ModifyRequestsRequestData,
-) {
-  const session = await getServerSession(authOptions);
+  dataString: string,
+): Promise<string> {
+  const data: ModifyRequestsRequestData = JSON.parse(dataString);
 
-  if (!session || session?.user.userStatus !== "explore")
-    return Response.json({ error: "Not authorized" }, { status: 401 });
+  const sesssionCheck: SessionCheckResponse = await checkSession();
+
+  if (!sesssionCheck.ok)
+    return JSON.stringify({
+      status: 401,
+      responseData: { error: "Not authorized" },
+    });
 
   const { otherUserId }: ModifyRequestsRequestData = data;
 
@@ -214,11 +243,14 @@ export async function deleteOutgoingFriendRequest(
     await dbConnect();
 
     const myRequestList: { outgoingRequestsList: ObjectId[] } =
-      (await User.findById(session.user._id, "outgoingRequestsList")) ?? {
+      (await User.findById(
+        sesssionCheck._id,
+        "outgoingRequestsList",
+      ).lean()) ?? {
         outgoingRequestsList: [],
       };
     const otherUserRequestList: { incomingRequestsList: ObjectId[] } =
-      (await User.findById(otherUserId, "incomingRequestsList")) ?? {
+      (await User.findById(otherUserId, "incomingRequestsList").lean()) ?? {
         incomingRequestsList: [],
       };
 
@@ -226,25 +258,25 @@ export async function deleteOutgoingFriendRequest(
       myRequestList.outgoingRequestsList.filter((d) => d != otherUserId);
     otherUserRequestList.incomingRequestsList =
       otherUserRequestList.incomingRequestsList.filter(
-        (d) => d != session.user._id,
+        (d) => d != sesssionCheck._id,
       );
 
-    await User.findByIdAndUpdate(session.user._id, {
+    await User.findByIdAndUpdate(sesssionCheck._id, {
       $set: {
         outgoingRequestsList: myRequestList.outgoingRequestsList,
       },
-    });
+    }).lean();
     await User.findByIdAndUpdate(otherUserId, {
       $set: {
         incomingRequestsList: otherUserRequestList.incomingRequestsList,
       },
-    });
+    }).lean();
 
     return await getAllRequests();
   } catch (e) {
-    return Response.json(
-      { error: "Error in deleting incoming request" },
-      { status: 500 },
-    );
+    return JSON.stringify({
+      status: 500,
+      responseData: { error: "Error in deleting incoming request" },
+    });
   }
 }

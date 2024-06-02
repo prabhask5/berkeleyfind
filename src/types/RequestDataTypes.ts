@@ -26,3 +26,8 @@ export interface POSTStudyPrefRequestData {
 export interface ModifyRequestsRequestData {
   otherUserId: ObjectId;
 }
+
+export interface ActionResponse {
+  responseData: any;
+  status: number;
+}

@@ -3,9 +3,13 @@ import { getServerSession } from "next-auth/next";
 import { compare, genSalt, hash } from "bcrypt";
 import dbConnect from "@/lib/dbConnect";
 import { User } from "@/models/User";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { UserType } from "@/types/UserModelTypes";
 import { ObjectId } from "mongodb";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { NextAuthOptions } from "next-auth";
+import { MongoDBAdapter } from "@auth/mongodb-adapter";
+import clientPromise from "@/lib/mongoDBAdapter";
+import { Adapter } from "next-auth/adapters";
 
 export interface AuthResSuccess {
   user: NextAuthUser;
@@ -21,6 +25,98 @@ type LoginFn = (
   _email: string,
   _password: string,
 ) => Promise<AuthResSuccess | AuthResError>;
+
+export const authOptions: NextAuthOptions = {
+  adapter: MongoDBAdapter(clientPromise) as Adapter,
+  secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/login",
+  },
+
+  session: {
+    strategy: "jwt",
+    maxAge: 60 * 60 * 2,
+  },
+
+  callbacks: {
+    async session({ session }) {
+      try {
+        if (!session.user?.email) return session;
+
+        await dbConnect();
+        const user: UserType | null = await User.findOne({
+          email: session.user?.email,
+        });
+
+        if (!user) return session;
+
+        session.user._id = user._id;
+        if (user.firstName && user.lastName)
+          session.user.name = user.firstName + " " + user.lastName;
+        session.user.image = user.profileImage;
+        session.user.userStatus = user.userStatus;
+
+        return session;
+      } catch (error: any) {
+        return session;
+      }
+    },
+  },
+
+  providers: [
+    CredentialsProvider({
+      id: "login",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials, _req) {
+        if (!credentials?.email || !credentials?.password)
+          throw new Error(
+            JSON.stringify({ error: "Missing fields", code: 400 }),
+          );
+
+        const res = await login(credentials.email, credentials.password);
+
+        if ((res as AuthResError).error)
+          throw new Error(
+            JSON.stringify({
+              error: (res as AuthResError).error,
+              code: res.status,
+            }),
+          );
+
+        return (res as AuthResSuccess).user;
+      },
+    }),
+    CredentialsProvider({
+      id: "signup",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials, _req) {
+        if (!credentials?.email || !credentials?.password)
+          throw new Error(
+            JSON.stringify({ error: "Missing fields", code: 400 }),
+          );
+
+        const res = await signup(credentials.email, credentials.password);
+
+        if ((res as AuthResError).error)
+          throw new Error(
+            JSON.stringify({
+              error: (res as AuthResError).error,
+              code: res.status,
+            }),
+          );
+
+        return (res as AuthResSuccess).user;
+      },
+    }),
+  ],
+  debug: process.env.NODE_ENV !== "production",
+};
 
 export const login: LoginFn = async (email, password) => {
   try {
@@ -62,6 +158,7 @@ export const signup: LoginFn = async (email, password) => {
 export interface SessionCheckResponse {
   ok: boolean;
   _id?: ObjectId;
+  userStatus?: "startprofile" | "startcourses" | "startstudypref" | "explore";
 }
 
 export const checkSession = async (
@@ -72,6 +169,10 @@ export const checkSession = async (
     return new Promise((resolve, _reject) => resolve({ ok: false }));
 
   return new Promise((resolve, _reject) =>
-    resolve({ ok: true, _id: session.user._id }),
+    resolve({
+      ok: true,
+      _id: session.user._id,
+      userStatus: session.user.userStatus,
+    }),
   );
 };
