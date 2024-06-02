@@ -22,6 +22,10 @@ const breakpoints = {
 
 export const customTheme = extendTheme({
   breakpoints,
+  config: {
+    initialColorMode: "light",
+    useSystemColorMode: false,
+  },
   components: {
     Heading: {
       baseStyle: {
