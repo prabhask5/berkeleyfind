@@ -36,11 +36,7 @@ export default function UserProfileSummary({
   const coursesComponent = <Courses courseListSource={courseList} />;
 
   const mobileLayout = () => (
-    <Tabs
-      className="w-full my-[5%] h-[650px]"
-      align="center"
-      variant="unstyled"
-    >
+    <Tabs className="max-w-full h-[650px]" align="center" variant="unstyled">
       <TabList>
         <Tab className="text-[#414141] font-medium sm:font-[520] md:font-[550] lg:font-[590] text-sm sm:text-[15px] md:text-[16px] lg:text-[18px]">
           Profile
@@ -53,7 +49,7 @@ export default function UserProfileSummary({
         </Tab>
       </TabList>
       <TabIndicator mt="-1.5px" height="3px" bg="#A73CFC" borderRadius="1px" />
-      <TabPanels className="text-left mt-[2.5%]">
+      <TabPanels className="text-left">
         <TabPanel className="p-0 pt-4">{profileReadViewComponent}</TabPanel>
         <TabPanel className="p-0 pt-4">{coursesComponent}</TabPanel>
         <TabPanel className="p-0 pt-4">{studyTimesComponent}</TabPanel>
@@ -62,13 +58,9 @@ export default function UserProfileSummary({
   );
 
   const desktopLayout = () => (
-    <div className="flex flex-row m-[1.25%] gap-4 h-full">
-      <div className="m-auto">{profileReadViewComponent}</div>
-      <Tabs
-        align="center"
-        className="w-3/5 m-auto h-[650px]"
-        variant="unstyled"
-      >
+    <div className="flex flex-row m-[5%] gap-4 h-full">
+      <div className="w-2/5 my-auto">{profileReadViewComponent}</div>
+      <Tabs align="center" className="w-3/5 h-[650px]" variant="unstyled">
         <TabList>
           <Tab className="text-[#414141] font-medium sm:font-[520] md:font-[550] lg:font-[590] text-sm sm:text-[15px] md:text-[16px] lg:text-[18px]">
             Course List

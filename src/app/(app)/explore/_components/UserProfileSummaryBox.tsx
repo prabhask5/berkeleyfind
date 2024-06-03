@@ -46,9 +46,9 @@ export default function UserProfileSummaryBox({
   });
 
   const mobileLayout = () => (
-    <div className="border-2 border-[#D8D8D8] rounded-3xl">
-      <div className="w-11/12 flex flex-col mx-auto">
-        <Stack className="mt-5 m-auto" spacing={2} direction="row">
+    <div className="border-2 border-[#D8D8D8] rounded-3xl bg-white p-[5%]">
+      <div className="flex flex-col">
+        <Stack className="m-auto" spacing={2} direction="row">
           <CircularProgress value={match} size="75px" color="#A73CFC">
             <Tooltip
               openDelay={300}
@@ -60,58 +60,60 @@ export default function UserProfileSummaryBox({
               </CircularProgressLabel>
             </Tooltip>
           </CircularProgress>
-          <Tooltip
-            openDelay={300}
-            label="Send friend request"
-            aria-label="Friend request tooltip"
-          >
-            <IconButton
-              style={{ marginBottom: "20px", marginTop: "1px" }}
-              onClick={sendFriendRequestCallback}
-              variant="ghost"
-              w={14}
-              h={14}
-              icon={<Icon color="#B01E28" as={AiFillHeart} w={14} h={14} />}
-              aria-label={"Add friend"}
-            />
-          </Tooltip>
-          <Tooltip
-            openDelay={300}
-            label="Temporarily hide profile"
-            aria-label="Hide profile tooltip"
-          >
-            <IconButton
-              style={{ marginBottom: "20px" }}
-              onClick={handleTempDeleteCallback}
-              variant="ghost"
-              w={14}
-              h={14}
-              icon={<DeleteIcon w={12} h={12} />}
-              aria-label={"Hide profile"}
-            />
-          </Tooltip>
+          <Stack className="my-auto" spacing={2} direction="row">
+            <Tooltip
+              openDelay={300}
+              label="Send friend request"
+              aria-label="Friend request tooltip"
+            >
+              <IconButton
+                onClick={sendFriendRequestCallback}
+                variant="ghost"
+                w={14}
+                h={14}
+                icon={<Icon color="#B01E28" as={AiFillHeart} w={14} h={14} />}
+                aria-label={"Add friend"}
+              />
+            </Tooltip>
+            <Tooltip
+              openDelay={300}
+              label="Temporarily hide profile"
+              aria-label="Hide profile tooltip"
+            >
+              <IconButton
+                onClick={handleTempDeleteCallback}
+                variant="ghost"
+                w={14}
+                h={14}
+                icon={<DeleteIcon w={12} h={12} />}
+                aria-label={"Hide profile"}
+              />
+            </Tooltip>
+          </Stack>
         </Stack>
-        <UserProfileSummary
-          profileReadViewComponent={
-            <ProfileReadView
-              profileImage={profileImage}
-              firstName={firstName}
-              lastName={lastName}
-              major={major}
-              gradYear={gradYear}
-              userBio={userBio}
-              pronouns={pronouns}
-            />
-          }
-          courseList={courseList}
-          userStudyPreferences={userStudyPreferences}
-        />
+        <div className="m-auto">
+          <UserProfileSummary
+            profileReadViewComponent={
+              <ProfileReadView
+                profileImage={profileImage}
+                firstName={firstName}
+                lastName={lastName}
+                major={major}
+                gradYear={gradYear}
+                userBio={userBio}
+                pronouns={pronouns}
+              />
+            }
+            courseList={courseList}
+            userStudyPreferences={userStudyPreferences}
+          />
+        </div>
       </div>
     </div>
   );
 
   const desktopLayout = () => (
-    <div className="border-2 border-[#D8D8D8] rounded-3xl m-5">
+    <div className="border-2 border-[#D8D8D8] rounded-3xl m-5 bg-white">
       <UserProfileSummary
         profileReadViewComponent={
           <div>
@@ -147,7 +149,6 @@ export default function UserProfileSummaryBox({
                 aria-label="Friend request tooltip"
               >
                 <IconButton
-                  style={{ marginBottom: "20px", marginTop: "1px" }}
                   onClick={sendFriendRequestCallback}
                   variant="ghost"
                   w={14}
@@ -162,7 +163,6 @@ export default function UserProfileSummaryBox({
                 aria-label="Hide profile tooltip"
               >
                 <IconButton
-                  style={{ marginBottom: "20px" }}
                   onClick={handleTempDeleteCallback}
                   variant="ghost"
                   w={14}

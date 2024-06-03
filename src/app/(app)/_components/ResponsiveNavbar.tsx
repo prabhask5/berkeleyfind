@@ -17,7 +17,7 @@ export default function ResponsiveNavBar({
 
   const resolveNavBarRender = () => {
     return isTabletOrMobile ? (
-      <div className="fixed bg-white rounded-full z-10 top-[4.166667%] right-[4.166667%] lg:top-[1.25%] lg:right-[1.25%]">
+      <div className="fixed bg-[#E6E6E6] rounded-full z-10 top-[4.166667%] right-[4.166667%] lg:top-[1.25%] lg:right-[1.25%]">
         <NavBar profilePic={profilePic} email={email} name={name} />
       </div>
     ) : (

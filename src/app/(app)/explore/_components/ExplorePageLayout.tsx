@@ -109,8 +109,8 @@ export default function ExplorePageLayout({
     ));
 
   const mobileLayout = () => (
-    <div className="w-screen h-screen flex">
-      <div className="fixed bg-white rounded-full z-10 top-[4.166667%] left-[4.166667%] lg:top-[1.25%] lg:left-[1.25%]">
+    <div className="w-screen flex bg-[#F2F2F2]">
+      <div className="fixed bg-[#F2F2F2] rounded-full z-10 top-[4.166667%] left-[4.166667%] lg:top-[1.25%] lg:left-[1.25%]">
         <ProfileSearchFilter
           resetField={resetField}
           setValue={setValue}
@@ -118,7 +118,7 @@ export default function ExplorePageLayout({
           register={register}
         />
       </div>
-      <div className="fixed bg-white rounded-full z-10 top-[4.166667%] right-[4.166667%] lg:top-[1.25%] lg:right-[1.25%]">
+      <div className="fixed bg-[#F2F2F2] rounded-full z-10 top-[4.166667%] right-[4.166667%] lg:top-[1.25%] lg:right-[1.25%]">
         <NavBar profilePic={profilePic} email={email} name={name} />
       </div>
       <div className="w-11/12 my-[10%] mx-auto">{profileCardLayouts}</div>
@@ -138,7 +138,7 @@ export default function ExplorePageLayout({
           />
         </div>
         <div className="w-[80%]">
-          <div className="overflow-y-auto overflow-x-hidden w-full h-full">
+          <div className="overflow-y-auto overflow-x-hidden w-full h-full bg-[#F2F2F2]">
             {profileCardLayouts}
           </div>
         </div>
