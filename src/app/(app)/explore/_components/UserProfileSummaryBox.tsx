@@ -49,13 +49,13 @@ export default function UserProfileSummaryBox({
     <div className="border-2 border-[#D8D8D8] rounded-3xl bg-white p-[5%]">
       <div className="flex flex-col">
         <Stack className="m-auto" spacing={2} direction="row">
-          <CircularProgress value={match} size="75px" color="#A73CFC">
+          <CircularProgress value={match} size="50px" color="#A73CFC">
             <Tooltip
               openDelay={300}
               label={match + "% profile match"}
               aria-label="Match tooltip"
             >
-              <CircularProgressLabel className="font-[510]">
+              <CircularProgressLabel className="font-[510] text-sm">
                 {match + "%"}
               </CircularProgressLabel>
             </Tooltip>
@@ -69,9 +69,7 @@ export default function UserProfileSummaryBox({
               <IconButton
                 onClick={sendFriendRequestCallback}
                 variant="ghost"
-                w={14}
-                h={14}
-                icon={<Icon color="#B01E28" as={AiFillHeart} w={14} h={14} />}
+                icon={<Icon color="#B01E28" as={AiFillHeart} w={10} h={10} />}
                 aria-label={"Add friend"}
               />
             </Tooltip>
@@ -83,9 +81,7 @@ export default function UserProfileSummaryBox({
               <IconButton
                 onClick={handleTempDeleteCallback}
                 variant="ghost"
-                w={14}
-                h={14}
-                icon={<DeleteIcon w={12} h={12} />}
+                icon={<DeleteIcon w={8} h={8} />}
                 aria-label={"Hide profile"}
               />
             </Tooltip>

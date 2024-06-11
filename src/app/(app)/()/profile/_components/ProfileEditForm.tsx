@@ -225,7 +225,7 @@ export function ProfileEditForm({
     reader.readAsDataURL(fileObject);
   };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
     accept: { "image/*": [] },
     onDrop,
@@ -428,20 +428,40 @@ export function ProfileEditForm({
           </Stack>
           <Modal isOpen={isOpen} onClose={onClose} isCentered>
             <ModalOverlay />
-            <ModalContent className="w-9/12 aspect-square p-2">
+            <ModalContent className="w-9/12 p-2">
               <ModalBody>
                 <Box
                   {...getRootProps()}
-                  className="flex w-full h-full p-4"
+                  className="flex w-full h-full p-4 items-center justify-center"
                   border="1px dashed black"
                   cursor="pointer"
                 >
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <svg
+                      className="w-10 h-10 mb-3 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                      ></path>
+                    </svg>
+                    <p className="mb-2 text-sm text-gray-500">
+                      <span className="text-[#A73CFC] font-semibold">
+                        Click to upload
+                      </span>{" "}
+                      or drag and drop
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      SVG, PNG, JPG or GIF (MAX. 800x400px)
+                    </p>
+                  </div>
                   <input {...getInputProps()} />
-                  <Text className="text-center m-auto">
-                    {isDragActive
-                      ? "Release here to upload your image."
-                      : "Drop an image here, or click to select a file."}
-                  </Text>
                 </Box>
               </ModalBody>
             </ModalContent>

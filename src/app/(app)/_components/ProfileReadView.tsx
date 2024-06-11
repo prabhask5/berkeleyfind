@@ -35,10 +35,8 @@ export default function ProfileReadView({
   const displayName =
     name.length < 25 ? (
       <div className="flex flex-row">
-        <Heading className="pb-1" size="md">
-          {name}
-        </Heading>
-        <Text className="pt-1 pl-2 font-bold" variant="underText">
+        <Heading size="md">{name}</Heading>
+        <Text className="pl-2 font-bold" variant="underText">
           {pronouns}
         </Text>
       </div>
@@ -46,20 +44,18 @@ export default function ProfileReadView({
       <div>
         <div className="flex flex-row">
           <Heading fontSize={nameSize + "px"}>{firstName}</Heading>
-          <Text className="pt-1 pl-2 font-bold" variant="underText">
+          <Text className="pl-2 font-bold" variant="underText">
             {pronouns}
           </Text>
         </div>
-        <Heading className="pb-1" fontSize={nameSize + "px"}>
-          {lastName}
-        </Heading>
+        <Heading fontSize={nameSize + "px"}>{lastName}</Heading>
       </div>
     );
 
   return (
     <Stack spacing={5}>
       <div className="flex flex-row gap-2">
-        <div className="relative w-20 h-20 sm:w-28 sm:h-28">
+        <div className="relative min-w-20 h-20 sm:w-28 sm:h-28">
           <Image
             fill
             className="rounded-full"

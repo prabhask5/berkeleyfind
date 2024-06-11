@@ -19,7 +19,7 @@ export default function Courses({
   return (
     <div
       onScroll={() => setAllClosed(!allClosed)}
-      className="flex flex-col h-[600px] w-full overflow-y-auto overflow-x-hidden border-2 border-[#D8D8D8] rounded-lg"
+      className="flex flex-col h-[600px] min-w-full overflow-y-auto overflow-x-hidden border-2 border-[#D8D8D8] rounded-lg"
     >
       {courseListSource.length > 0 ? (
         courseListSource.map((c: Course, index) => (
