@@ -46,7 +46,7 @@ export default function UserProfileSummaryBox({
   });
 
   const mobileLayout = () => (
-    <div className="border-2 border-[#D8D8D8] rounded-3xl bg-white p-[5%]">
+    <div className="border-2 border-[#D8D8D8] rounded-3xl bg-white p-[5%] w-full">
       <div className="flex flex-col">
         <Stack className="m-auto" spacing={2} direction="row">
           <CircularProgress value={match} size="50px" color="#A73CFC">
@@ -87,7 +87,7 @@ export default function UserProfileSummaryBox({
             </Tooltip>
           </Stack>
         </Stack>
-        <div className="m-auto">
+        <div className="m-auto w-full">
           <UserProfileSummary
             profileReadViewComponent={
               <ProfileReadView
