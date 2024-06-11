@@ -2,21 +2,25 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+To install all necessary node modules:
+
+```bash
+pnpm install
+```
+
+This project uses custom githooks to manage unused dependencies, to change the folder used to run githook scripts from use the following command:
+
+```bash
+git config --local core.hooksPath .githooks/
+```
+
+Then to start up the applicatiojn, run the development server:
 
 ```bash
 pnpm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-## Initializing Node Modules and Starting Node Server
-
-To install all necessary node modules:
-
-```bash
-pnpm install
-```
 
 If test data is needed, uncomment the InitiateTestData() line in server.js
 

@@ -1,0 +1,3 @@
+node src/lib/removeUnusedDependencies.mjs
+pnpm install
+git add .

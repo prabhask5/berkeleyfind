@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import exec from "child_process";
+import { exec } from "child_process";
 import depcheck from "depcheck";
 
 const options = {
@@ -10,7 +10,8 @@ const options = {
     "build",
   ],
   ignoreMatches: [
-    // list of modules to ignore
+    "core-js",
+    "prettier"
   ],
 };
 
@@ -26,7 +27,7 @@ depcheck(process.cwd(), options, (unused) => {
   const allUnused = [...unusedDependencies, ...unusedDevDependencies];
   console.log(`Unused dependencies: ${allUnused.join(", ")}`);
 
-  const uninstallCmd = `npm uninstall ${allUnused.join(" ")}`;
+  const uninstallCmd = `pnpm remove ${allUnused.join(" ")}`;
   console.log(`Running: ${uninstallCmd}`);
 
   exec(uninstallCmd, (err, stdout, stderr) => {

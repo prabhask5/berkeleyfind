@@ -38,6 +38,9 @@ dependencies:
   cookies-next:
     specifier: ^4.2.1
     version: 4.2.1
+  core-js:
+    specifier: ^3.36.1
+    version: 3.37.1
   framer-motion:
     specifier: ^11.0.20
     version: 11.2.10(react-dom@18.3.1)(react@18.3.1)
@@ -97,6 +100,9 @@ devDependencies:
   eslint-plugin-unused-imports:
     specifier: ^3.1.0
     version: 3.2.0(eslint@8.57.0)
+  prettier:
+    specifier: 3.2.5
+    version: 3.2.5
   typescript:
     specifier: ^5.4.3
     version: 5.4.5
@@ -2697,6 +2703,11 @@ packages:
       toggle-selection: 1.0.6
     dev: false
 
+  /core-js@3.37.1:
+    resolution: {integrity: sha512-Xn6qmxrQZyB0FFY8E3bgRXei3lWDJHhvI+u0q9TKIYM49G8pAr0FgnnrFRAmsbptZL1yxRADVXn+x5AGsbBfyw==}
+    requiresBuild: true
+    dev: false
+
   /cosmiconfig@6.0.0:
     resolution: {integrity: sha512-xb3ZL6+L8b9JLLCx3ZdoZy4+2ECphCMo2PwqgP1tlfVq6M6YReyzBJtvWWtbDSpNr9hn96pkCiZqUcFEc+54Qg==}
     engines: {node: '>=8'}
@@ -4884,6 +4895,12 @@ packages:
   /prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
+    dev: true
+
+  /prettier@3.2.5:
+    resolution: {integrity: sha512-3/GWa9aOC0YeD7LUfvOG2NiDyhOWRvt1k+rcKhOuYnMY24iiCphgneUfJDyFXd6rZCAnuLBv6UeAULtrhT/F4A==}
+    engines: {node: '>=14'}
+    hasBin: true
     dev: true
 
   /pretty-format@26.6.2:
