@@ -1,6 +1,6 @@
 "use client";
 
-import { stopLoading } from "@/lib/utils";
+import { debounce, stopLoading } from "@/lib/utils";
 import {
   Heading,
   Text,
@@ -147,7 +147,7 @@ export default function Login() {
       <Heading variant="logo" size={["sm", "lg", "lg", "lg", "lg", "lg"]}>
         BerkeleyFind
       </Heading>
-      <form onSubmit={handleSubmit(handleSubmitForm)}>
+      <form onSubmit={debounce(handleSubmit(handleSubmitForm), 100)}>
         <Stack spacing={[3, 3, 5, 5, 5, 5]}>
           <Heading size="2xl">Log in.</Heading>
           <Text
@@ -199,7 +199,7 @@ export default function Login() {
                     "1.75rem",
                   ]}
                   size={["xs", "xs", "sm", "sm", "sm", "sm"]}
-                  onClick={() => setShow(!show)}
+                  onClick={debounce(() => setShow(!show), 100)}
                 >
                   {show ? "Hide" : "Show"}
                 </Button>
@@ -213,7 +213,7 @@ export default function Login() {
             className="w-11/12 sm:w-3/4 mx-auto"
             type="submit"
             variant="websiteTheme"
-            onClick={checkForErrors}
+            onClick={debounce(checkForErrors, 100)}
             size={["sm", "sm", "md", "md", "md", "md"]}
           >
             Log In

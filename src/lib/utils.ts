@@ -81,3 +81,14 @@ export const handleError = (toast: any, response: ActionResponse) => {
     isClosable: false,
   });
 };
+
+// wait in milliseconds
+export const debounce = (callback: Function, wait: number) => {
+  let timeoutId: number | undefined = undefined;
+  return (...args: any[]) => {
+    window.clearTimeout(timeoutId);
+    timeoutId = window.setTimeout(() => {
+      callback(...args);
+    }, wait);
+  };
+};

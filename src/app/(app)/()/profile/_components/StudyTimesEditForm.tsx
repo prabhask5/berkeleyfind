@@ -1,6 +1,6 @@
 "use client";
 
-import { handleError, stopLoading } from "@/lib/utils";
+import { debounce, handleError, stopLoading } from "@/lib/utils";
 import { Stack, Text, ToastId, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -93,7 +93,7 @@ export default function StudyTimesEditForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(handleSubmitForm)}>
+    <form onSubmit={debounce(handleSubmit(handleSubmitForm), 100)}>
       <Stack spacing={[5, 5, 5, 5, 5, 7]} className="px-2">
         <Stack spacing={[2, 3, 3, 5, 5, 5]} className="w-full">
           <Text
@@ -105,9 +105,10 @@ export default function StudyTimesEditForm({
           </Text>
           <StudyTimes
             weekTimesSource={watch("weekTimes")}
-            onChange={(newSelection: Date[]) =>
-              setValue("weekTimes", newSelection)
-            }
+            onChange={debounce(
+              (newSelection: Date[]) => setValue("weekTimes", newSelection),
+              100,
+            )}
           />
         </Stack>
         <ButtonLayout

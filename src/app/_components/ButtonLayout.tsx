@@ -1,5 +1,6 @@
 "use client";
 
+import { debounce } from "@/lib/utils";
 import { Button, ButtonGroup } from "@chakra-ui/react";
 
 interface ButtonLayoutProps {
@@ -21,7 +22,7 @@ export default function ButtonLayout({
     <Button
       className="md:w-40 lg:mb-5"
       type="submit"
-      onClick={checkForErrorsFunc}
+      onClick={checkForErrorsFunc && debounce(checkForErrorsFunc, 100)}
       variant="websiteColorTheme"
     >
       {startButtonText}
@@ -31,13 +32,13 @@ export default function ButtonLayout({
       <Button
         type="submit"
         isDisabled={!anyChanges}
-        onClick={checkForErrorsFunc}
+        onClick={checkForErrorsFunc && debounce(checkForErrorsFunc, 100)}
         variant="websiteColorTheme"
       >
         Save
       </Button>
       <Button
-        onClick={handleUndoFunc}
+        onClick={debounce(handleUndoFunc, 100)}
         isDisabled={!anyChanges}
         colorScheme="gray"
       >

@@ -1,6 +1,6 @@
 "use client";
 
-import { resolveProfileImageLink } from "@/lib/utils";
+import { debounce, resolveProfileImageLink } from "@/lib/utils";
 import { FriendUserType } from "@/types/UserModelTypes";
 import {
   AlertDialog,
@@ -72,7 +72,10 @@ export default function FriendListItem({
           aria-label="detailed view"
           openDelay={300}
         >
-          <div onClick={onModalOpen} className="flex flex-row w-full gap-4">
+          <div
+            onClick={debounce(onModalOpen, 100)}
+            className="flex flex-row w-full gap-4"
+          >
             <div className="relative w-12 h-12 my-auto">
               <Image
                 fill
@@ -96,7 +99,7 @@ export default function FriendListItem({
             openDelay={300}
           >
             <IconButton
-              onClick={onAlertOpen}
+              onClick={debounce(onAlertOpen, 100)}
               variant="ghost"
               icon={<CloseIcon boxSize={4} />}
               aria-label={"Delete friend"}
@@ -105,7 +108,7 @@ export default function FriendListItem({
           <AlertDialog
             isOpen={isAlertOpen}
             leastDestructiveRef={cancelRef}
-            onClose={onAlertClose}
+            onClose={debounce(onAlertClose, 100)}
             isCentered
           >
             <AlertDialogOverlay>
@@ -118,15 +121,15 @@ export default function FriendListItem({
                   Are you sure? You cannot undo this action afterwards.{" "}
                 </AlertDialogBody>
                 <AlertDialogFooter>
-                  <Button ref={cancelRef} onClick={onAlertClose}>
+                  <Button ref={cancelRef} onClick={debounce(onAlertClose, 100)}>
                     Cancel
                   </Button>
                   <Button
                     colorScheme="red"
-                    onClick={() => {
+                    onClick={debounce(() => {
                       deleteCallBack();
                       onAlertClose();
-                    }}
+                    }, 100)}
                     ml={3}
                   >
                     Delete Friend
@@ -137,7 +140,10 @@ export default function FriendListItem({
           </AlertDialog>
         </div>
       </div>
-      <DetailedViewModal isModalOpen={isModalOpen} onModalClose={onModalClose}>
+      <DetailedViewModal
+        isModalOpen={isModalOpen}
+        onModalClose={debounce(onModalClose, 100)}
+      >
         <UserProfileSummary
           profileReadViewComponent={
             <Stack spacing={7}>

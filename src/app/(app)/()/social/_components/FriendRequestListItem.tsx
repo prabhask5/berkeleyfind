@@ -1,6 +1,6 @@
 "use client";
 
-import { resolveProfileImageLink } from "@/lib/utils";
+import { debounce, resolveProfileImageLink } from "@/lib/utils";
 import { StrangerUserType } from "@/types/UserModelTypes";
 import {
   AlertDialog,
@@ -68,7 +68,10 @@ export default function FriendRequestListItem({
           aria-label="detailed view"
           openDelay={300}
         >
-          <div onClick={onModalOpen} className="flex flex-row w-full gap-4">
+          <div
+            onClick={debounce(onModalOpen, 100)}
+            className="flex flex-row w-full gap-4"
+          >
             <div className="relative w-12 h-12 my-auto">
               <Image
                 fill
@@ -93,7 +96,7 @@ export default function FriendRequestListItem({
             >
               <IconButton
                 className="my-auto"
-                onClick={acceptCallBack}
+                onClick={debounce(acceptCallBack, 100)}
                 variant="ghost"
                 icon={<CheckIcon boxSize={5} />}
                 aria-label={"Accept request"}
@@ -107,7 +110,7 @@ export default function FriendRequestListItem({
             openDelay={300}
           >
             <IconButton
-              onClick={onAlertOpen}
+              onClick={debounce(onAlertOpen, 100)}
               className="my-auto"
               variant="ghost"
               icon={<CloseIcon boxSize={4} />}
@@ -117,7 +120,7 @@ export default function FriendRequestListItem({
           <AlertDialog
             isOpen={isAlertOpen}
             leastDestructiveRef={cancelRef}
-            onClose={onAlertClose}
+            onClose={debounce(onAlertClose, 100)}
             isCentered
           >
             <AlertDialogOverlay>
@@ -130,15 +133,15 @@ export default function FriendRequestListItem({
                   Are you sure? You cannot undo this action afterwards.{" "}
                 </AlertDialogBody>
                 <AlertDialogFooter>
-                  <Button ref={cancelRef} onClick={onAlertClose}>
+                  <Button ref={cancelRef} onClick={debounce(onAlertClose, 100)}>
                     Cancel
                   </Button>
                   <Button
                     colorScheme="red"
-                    onClick={() => {
+                    onClick={debounce(() => {
                       deleteCallBack();
                       onAlertClose();
-                    }}
+                    }, 100)}
                     ml={3}
                   >
                     Delete Request

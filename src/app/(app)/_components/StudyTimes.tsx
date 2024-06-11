@@ -1,5 +1,6 @@
 "use client";
 
+import { debounce } from "@/lib/utils";
 import { Text } from "@chakra-ui/react";
 import ScheduleSelector from "react-schedule-selector";
 
@@ -21,7 +22,7 @@ export default function StudyTimes({
       dateFormat="dddd"
       hourlyChunks={1}
       selection={weekTimesSource}
-      onChange={onChange}
+      onChange={onChange && debounce(onChange, 100)}
       renderDateCell={(time, selected, refSetter) => {
         const dateCellStyleAddOn = selected ? " bg-[#A73CFC]" : " bg-[#E5C4FE]";
         const editableStyleAddOn = onChange

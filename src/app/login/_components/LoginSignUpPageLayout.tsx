@@ -4,6 +4,7 @@ import { ToastId, useToast, Stack, Text, Link } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import Login from "./Login";
 import SignUp from "./SignUp";
+import { debounce } from "@/lib/utils";
 
 interface LoginSignUpViewProps {
   fromRedirect: string;
@@ -45,14 +46,16 @@ export default function LoginSignUpPageLayout({
             fontSize={["10px", "xs", "sm", "sm", "sm", "sm"]}
             variant="underText"
           >
-            Don&apos;t have an account? <Link onClick={swapViews}>Sign up</Link>
+            Don&apos;t have an account?{" "}
+            <Link onClick={debounce(swapViews, 100)}>Sign up</Link>
           </Text>
         ) : (
           <Text
             fontSize={["10px", "xs", "sm", "sm", "sm", "sm"]}
             variant="underText"
           >
-            Already have an account? <Link onClick={swapViews}>Log in</Link>
+            Already have an account?{" "}
+            <Link onClick={debounce(swapViews, 100)}>Log in</Link>
           </Text>
         )}
       </Stack>

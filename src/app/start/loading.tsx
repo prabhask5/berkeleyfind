@@ -1,5 +1,6 @@
 "use client";
 
+import { debounce } from "@/lib/utils";
 import { Heading, Link, Stack, Text, Spinner } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -43,8 +44,8 @@ export default function RedirectPage() {
             variant="underText"
           >
             If you are seeing this, something went wrong! Click{" "}
-            <Link onClick={() => router.back()}>here</Link> to go back to the
-            previous page.
+            <Link onClick={debounce(() => router.back(), 100)}>here</Link> to go
+            back to the previous page.
           </Text>
         )}
       </Stack>

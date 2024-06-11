@@ -12,7 +12,7 @@ import {
   Icon,
   IconButton,
 } from "@chakra-ui/react";
-import { useBetterMediaQuery } from "@/lib/utils";
+import { debounce, useBetterMediaQuery } from "@/lib/utils";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { AiFillHeart } from "react-icons/ai";
 
@@ -67,7 +67,7 @@ export default function UserProfileSummaryBox({
               aria-label="Friend request tooltip"
             >
               <IconButton
-                onClick={sendFriendRequestCallback}
+                onClick={debounce(sendFriendRequestCallback, 100)}
                 variant="ghost"
                 icon={<Icon color="#B01E28" as={AiFillHeart} w={10} h={10} />}
                 aria-label={"Add friend"}
@@ -79,7 +79,7 @@ export default function UserProfileSummaryBox({
               aria-label="Hide profile tooltip"
             >
               <IconButton
-                onClick={handleTempDeleteCallback}
+                onClick={debounce(handleTempDeleteCallback, 100)}
                 variant="ghost"
                 icon={<DeleteIcon w={8} h={8} />}
                 aria-label={"Hide profile"}
@@ -145,7 +145,7 @@ export default function UserProfileSummaryBox({
                 aria-label="Friend request tooltip"
               >
                 <IconButton
-                  onClick={sendFriendRequestCallback}
+                  onClick={debounce(sendFriendRequestCallback, 100)}
                   variant="ghost"
                   w={14}
                   h={14}
@@ -159,7 +159,7 @@ export default function UserProfileSummaryBox({
                 aria-label="Hide profile tooltip"
               >
                 <IconButton
-                  onClick={handleTempDeleteCallback}
+                  onClick={debounce(handleTempDeleteCallback, 100)}
                   variant="ghost"
                   w={14}
                   h={14}

@@ -1,5 +1,6 @@
 "use client";
 
+import { debounce } from "@/lib/utils";
 import {
   Modal,
   ModalOverlay,
@@ -22,7 +23,7 @@ export default function DetailedViewModal({
   return (
     <Modal
       isOpen={isModalOpen}
-      onClose={onModalClose}
+      onClose={debounce(onModalClose, 100)}
       size={["lg", "xl", "2xl", "5xl", "6xl", "6xl"]}
       isCentered
     >

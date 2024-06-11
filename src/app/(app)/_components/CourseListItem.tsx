@@ -1,5 +1,6 @@
 "use client";
 
+import { debounce } from "@/lib/utils";
 import { Course } from "@/types/CourseModelTypes";
 import {
   useDisclosure,
@@ -49,7 +50,7 @@ export default function CourseListItem({
           closeDelay={0}
           isOpen={isOpen}
           onOpen={onOpen}
-          onClose={onClose}
+          onClose={debounce(onClose, 100)}
         >
           <PopoverTrigger>
             <Text
@@ -75,7 +76,7 @@ export default function CourseListItem({
           >
             <CloseButton
               size={["sm", "sm", "md", "md", "md", "md"]}
-              onClick={() => handleDeleteCourse()}
+              onClick={debounce(() => handleDeleteCourse(), 100)}
             />
           </Tooltip>
         )}
