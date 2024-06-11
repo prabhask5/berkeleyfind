@@ -9,10 +9,7 @@ const options = {
     "dist",
     "build",
   ],
-  ignoreMatches: [
-    "core-js",
-    "prettier"
-  ],
+  ignoreMatches: ["core-js", "prettier", "autoprefixer"],
 };
 
 depcheck(process.cwd(), options, (unused) => {
