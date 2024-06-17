@@ -21,11 +21,7 @@ import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import {
-  debounce,
-  resolveProfileImageLink,
-  useBetterMediaQuery,
-} from "@/lib/utils";
+import { resolveProfileImageLink, useBetterMediaQuery } from "@/lib/utils";
 import { RelevantSessionProps } from "@/types/MiscTypes";
 import React from "react";
 
@@ -93,7 +89,7 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
 
   const exploreOption = (rounded: boolean) => (
     <a
-      onClick={debounce(() => handleRedirect("/explore"), 100)}
+      onClick={() => handleRedirect("/explore")}
       className={
         menuOptionsBaseStyle +
         (pathname === "/explore"
@@ -122,7 +118,7 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
 
   const profileOption = (rounded: boolean) => (
     <a
-      onClick={debounce(() => handleRedirect("/profile"), 100)}
+      onClick={() => handleRedirect("/profile")}
       className={
         menuOptionsBaseStyle +
         (pathname === "/profile"
@@ -151,7 +147,7 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
 
   const socialOption = (rounded: boolean) => (
     <a
-      onClick={debounce(() => handleRedirect("/social"), 100)}
+      onClick={() => handleRedirect("/social")}
       className={
         menuOptionsBaseStyle +
         (pathname === "/social"
@@ -180,7 +176,7 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
 
   const signOutOption = (rounded: boolean) => (
     <a
-      onClick={debounce(() => signOut({ callbackUrl: "/login" }), 100)}
+      onClick={() => signOut({ callbackUrl: "/login" })}
       className={
         menuOptionsBaseStyle +
         menuOptionsSelectStyleAddOn +
@@ -239,7 +235,7 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
     <IconButton
       className="rounded-full"
       variant="ghost"
-      onClick={debounce(onDrawerOpen, 100)}
+      onClick={onDrawerOpen}
       icon={<HamburgerIcon className="w-6 h-6" />}
       aria-label="Menu button"
     />
@@ -249,18 +245,14 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
     <IconButton
       className="rounded-full"
       variant="ghost"
-      onClick={debounce(onDrawerClose, 100)}
+      onClick={onDrawerClose}
       icon={<CloseIcon className="w-3 h-3" />}
       aria-label="Close drawer button"
     />
   );
 
   const drawer = () => (
-    <Drawer
-      onClose={debounce(onDrawerClose, 100)}
-      isOpen={isDrawerOpen}
-      size="xs"
-    >
+    <Drawer onClose={onDrawerClose} isOpen={isDrawerOpen} size="xs">
       <DrawerOverlay />
       <DrawerContent>
         <div className="flex flex-row my-6 px-6">

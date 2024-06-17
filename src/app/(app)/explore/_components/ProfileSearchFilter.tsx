@@ -21,7 +21,7 @@ import { FiFilter } from "react-icons/fi";
 import { AsyncSelect } from "chakra-react-select";
 import { DropdownOption, FilterTag } from "@/types/MiscTypes";
 import { asyncInputStyling } from "@/theme/input";
-import { debounce, promiseOptions } from "@/lib/utils";
+import { promiseOptions } from "@/lib/utils";
 import berkeleyData from "@/data/berkeleydata";
 import { useBetterMediaQuery } from "@/lib/utils";
 import { useEffect, useRef } from "react";
@@ -119,7 +119,7 @@ export default function ProfileSearchFilter({
     <IconButton
       className="rounded-full"
       variant="ghost"
-      onClick={debounce(onOpen, 100)}
+      onClick={onOpen}
       icon={<Icon className="w-6 h-6" as={FiFilter} />}
       aria-label="Menu button"
     />
@@ -127,12 +127,7 @@ export default function ProfileSearchFilter({
 
   const drawer = () => {
     return (
-      <Drawer
-        placement="left"
-        onClose={debounce(onClose, 100)}
-        isOpen={isOpen}
-        size="xs"
-      >
+      <Drawer placement="left" onClose={onClose} isOpen={isOpen} size="xs">
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
@@ -148,7 +143,7 @@ export default function ProfileSearchFilter({
         <Icon className="w-6 h-6" as={FiFilter} />
         <Heading size="md">Filters</Heading>
         <Link
-          onClick={debounce(() => resetField("tagList"), 100)}
+          onClick={() => resetField("tagList")}
           className="font-bold mt-[1px]"
         >
           Reset
@@ -166,10 +161,7 @@ export default function ProfileSearchFilter({
         chakraStyles={asyncInputStyling}
         cacheOptions
         loadOptions={promiseOptions}
-        onChange={debounce(
-          (e: any) => handleAddTag(parseInt((e as DropdownOption).value)),
-          100,
-        )}
+        onChange={(e) => handleAddTag(parseInt((e as DropdownOption).value))}
         defaultOptions
         placeholder={"Search for a class..."}
       />
@@ -186,10 +178,7 @@ export default function ProfileSearchFilter({
                 <TagLabel>{d.courseAbrName}</TagLabel>
                 <TagCloseButton
                   className="ml-auto"
-                  onClick={debounce(
-                    () => handleDeleteTag(d.courseAbrName),
-                    100,
-                  )}
+                  onClick={() => handleDeleteTag(d.courseAbrName)}
                 />
               </Tag>
             );

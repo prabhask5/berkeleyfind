@@ -30,12 +30,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { asyncInputStyling } from "@/theme/input";
 import { DropdownOption } from "@/types/MiscTypes";
-import {
-  debounce,
-  handleError,
-  resolveProfileImageLink,
-  stopLoading,
-} from "@/lib/utils";
+import { handleError, resolveProfileImageLink, stopLoading } from "@/lib/utils";
 import { turnStringIntoDropdownOption } from "@/lib/utils";
 import { saveUserBasicInfo } from "@/app/actions/UserInfoModifyActions";
 import ButtonLayout from "@/app/_components/ButtonLayout";
@@ -348,7 +343,7 @@ export function ProfileEditForm({
   };
 
   return (
-    <form onSubmit={debounce(handleSubmit(handleSubmitForm), 100)}>
+    <form onSubmit={handleSubmit(handleSubmitForm)}>
       <Stack spacing={[5, 5, 5, 5, 5, 7]} className="px-2">
         <Heading size="lg">My Profile</Heading>
         <Stack spacing={[2, 3, 3, 3, 3, 5]}>
@@ -364,7 +359,7 @@ export function ProfileEditForm({
               >
                 <div
                   className="rounded-full w-20 h-20 sm:w-32 sm:h-32 cursor-pointer"
-                  onClick={debounce(onOpen, 100)}
+                  onClick={onOpen}
                 >
                   <Image
                     fill
@@ -378,10 +373,7 @@ export function ProfileEditForm({
               <div className="absolute top-[-10px] right-[-15px]">
                 {watch("profileImageFile") && (
                   <CloseButton
-                    onClick={debounce(
-                      () => setValue("profileImageFile", ""),
-                      100,
-                    )}
+                    onClick={() => setValue("profileImageFile", "")}
                   />
                 )}
               </div>
@@ -404,14 +396,12 @@ export function ProfileEditForm({
                   size={["xs", "sm", "sm", "sm", "sm", "sm"]}
                   placeholder="Major"
                   onBlur={(_e) => trigger("major")}
-                  onChange={debounce(
-                    (e: any) =>
-                      setValue(
-                        "major",
-                        e === null ? "" : (e as DropdownOption).value,
-                      ),
-                    100,
-                  )}
+                  onChange={(e) =>
+                    setValue(
+                      "major",
+                      e === null ? "" : (e as DropdownOption).value,
+                    )
+                  }
                   className="text-[#1c1c1c]"
                 />
                 {!!errors?.major ? (
@@ -436,7 +426,7 @@ export function ProfileEditForm({
               </FormControl>
             </Stack>
           </Stack>
-          <Modal isOpen={isOpen} onClose={debounce(onClose, 100)} isCentered>
+          <Modal isOpen={isOpen} onClose={onClose} isCentered>
             <ModalOverlay />
             <ModalContent className="w-9/12 p-2">
               <ModalBody>
@@ -558,14 +548,12 @@ export function ProfileEditForm({
                 value={turnStringIntoDropdownOption(watch("pronouns"))}
                 isClearable
                 options={pronounsOptions}
-                onChange={debounce(
-                  (e: any) =>
-                    setValue(
-                      "pronouns",
-                      e === null ? "" : (e as DropdownOption).value,
-                    ),
-                  100,
-                )}
+                onChange={(e) =>
+                  setValue(
+                    "pronouns",
+                    e === null ? "" : (e as DropdownOption).value,
+                  )
+                }
                 // @ts-ignore
                 size={["xs", "sm", "sm", "sm", "sm", "sm"]}
                 placeholder={"Pronouns"}

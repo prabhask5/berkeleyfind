@@ -1,12 +1,7 @@
 "use client";
 
 import berkeleyData from "@/data/berkeleydata";
-import {
-  debounce,
-  handleError,
-  promiseOptions,
-  stopLoading,
-} from "@/lib/utils";
+import { handleError, promiseOptions, stopLoading } from "@/lib/utils";
 import { asyncInputStyling } from "@/theme/input";
 import { Course } from "@/types/CourseModelTypes";
 import { Stack, Text, useToast, ToastId, Heading } from "@chakra-ui/react";
@@ -146,7 +141,7 @@ export default function CourseEditForm({
   };
 
   return (
-    <form onSubmit={debounce(handleSubmit(handleSubmitForm), 100)}>
+    <form onSubmit={handleSubmit(handleSubmitForm)}>
       <Stack spacing={[5, 5, 5, 5, 5, 7]} className="px-2">
         <Stack spacing={[2, 3, 3, 5, 5, 5]} className="w-full">
           <AsyncSelect
@@ -157,11 +152,9 @@ export default function CourseEditForm({
             chakraStyles={asyncInputStyling}
             cacheOptions
             loadOptions={promiseOptions}
-            onChange={debounce(
-              (e: any) =>
-                handleAddCourse(parseInt((e as DropdownOption).value)),
-              100,
-            )}
+            onChange={(e) =>
+              handleAddCourse(parseInt((e as DropdownOption).value))
+            }
             defaultOptions
             placeholder={"Type to search for a class..."}
           />

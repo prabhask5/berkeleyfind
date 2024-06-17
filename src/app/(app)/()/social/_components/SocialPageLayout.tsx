@@ -1,6 +1,6 @@
 "use client";
 
-import { debounce, handleError, useBetterMediaQuery } from "@/lib/utils";
+import { handleError, useBetterMediaQuery } from "@/lib/utils";
 import { FriendUserType, StrangerUserType } from "@/types/UserModelTypes";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
@@ -226,25 +226,13 @@ export default function SocialPageLayout({
         </Button>
         <MenuList>
           <div>
-            <MenuItem
-              onClick={debounce(
-                () => setRequestsState("Incoming Requests"),
-                100,
-              )}
-            >
+            <MenuItem onClick={() => setRequestsState("Incoming Requests")}>
               Incoming Requests
             </MenuItem>
-            <MenuItem
-              onClick={debounce(() => setRequestsState("Friends"), 100)}
-            >
+            <MenuItem onClick={() => setRequestsState("Friends")}>
               Friends
             </MenuItem>
-            <MenuItem
-              onClick={debounce(
-                () => setRequestsState("Outgoing Requests"),
-                100,
-              )}
-            >
+            <MenuItem onClick={() => setRequestsState("Outgoing Requests")}>
               Outgoing Requests
             </MenuItem>
           </div>

@@ -18,7 +18,7 @@ import React from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
-import { debounce, stopLoading } from "@/lib/utils";
+import { stopLoading } from "@/lib/utils";
 
 interface IUserSignup {
   email: string;
@@ -166,7 +166,7 @@ export default function SignUp() {
       <Heading variant="logo" size={["md", "lg", "lg", "lg", "lg", "lg"]}>
         BerkeleyFind
       </Heading>
-      <form onSubmit={debounce(handleSubmit(handleSubmitForm), 100)}>
+      <form onSubmit={handleSubmit(handleSubmitForm)}>
         <Stack spacing={[3, 3, 5, 5, 5, 5]}>
           <Heading size={["xl", "2xl", "2xl", "2xl", "2xl", "2xl"]}>
             Create your account.
@@ -222,7 +222,7 @@ export default function SignUp() {
                     "1.75rem",
                   ]}
                   size={["xs", "xs", "sm", "sm", "sm", "sm"]}
-                  onClick={debounce(() => setShow(!show), 100)}
+                  onClick={() => setShow(!show)}
                 >
                   {show ? "Hide" : "Show"}
                 </Button>
@@ -263,7 +263,7 @@ export default function SignUp() {
                     "1.75rem",
                   ]}
                   size={["xs", "xs", "sm", "sm", "sm", "sm"]}
-                  onClick={debounce(() => setConfirmShow(!confirmShow), 100)}
+                  onClick={() => setConfirmShow(!confirmShow)}
                 >
                   {confirmShow ? "Hide" : "Show"}
                 </Button>
@@ -277,7 +277,7 @@ export default function SignUp() {
             type="submit"
             className="w-11/12 sm:w-3/4 mx-auto"
             variant="websiteTheme"
-            onClick={debounce(checkForErrors, 100)}
+            onClick={checkForErrors}
             size={["sm", "sm", "md", "md", "md", "md"]}
           >
             Sign Up
