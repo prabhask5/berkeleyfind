@@ -1,3 +1,5 @@
+"use client";
+
 import berkeleyData from "@/data/berkeleydata";
 import { DropdownOption } from "@/types/MiscTypes";
 import { ToastId } from "@chakra-ui/react";
