@@ -46,8 +46,8 @@ export default function CourseEditForm({
 
   const handleAddCourse = (courseIndex: number) => {
     const addedCourse: Course = {
-      courseAbrName: berkeleyData.courseList[courseIndex].abr,
-      courseLongName: berkeleyData.courseList[courseIndex].name,
+      courseAbrName: berkeleyData.courseList[courseIndex].courseAbrName,
+      courseLongName: berkeleyData.courseList[courseIndex].courseLongName,
     };
 
     let included: boolean = watch("courseList").some(

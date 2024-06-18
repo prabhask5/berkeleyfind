@@ -88,7 +88,7 @@ export default function ProfileSearchFilter({
 
   const handleAddTag = (courseIndex: number) => {
     const addedTag: FilterTag = {
-      courseAbrName: berkeleyData.courseList[courseIndex].abr,
+      courseAbrName: berkeleyData.courseList[courseIndex].courseAbrName,
       color: filterTagColors[courseIndex % filterTagColors.length],
     };
 

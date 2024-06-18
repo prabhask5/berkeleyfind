@@ -7,12 +7,18 @@ import { ModifyRequestsRequestData } from "@/types/RequestDataTypes";
 import { ObjectId } from "mongodb";
 import { getAllRequests } from "./OtherUserInfoGetActions";
 
-export async function acceptFriendRequest(dataString: string): Promise<string> {
+export async function acceptFriendRequest(
+  dataString: string,
+  inAdminMode: boolean = false,
+): Promise<string> {
   const data: ModifyRequestsRequestData = JSON.parse(dataString);
 
-  const sesssionCheck: SessionCheckResponse = await checkSession();
+  const sessionCheck: SessionCheckResponse = await checkSession(
+    ["explore"],
+    inAdminMode,
+  );
 
-  if (!sesssionCheck.ok)
+  if (!sessionCheck.ok)
     return JSON.stringify({
       status: 401,
       responseData: { error: "Not authorized" },
@@ -27,7 +33,7 @@ export async function acceptFriendRequest(dataString: string): Promise<string> {
       incomingRequestsList: ObjectId[];
       friendsList: ObjectId[];
     } = (await User.findById(
-      sesssionCheck._id,
+      sessionCheck._id,
       "incomingRequestsList friendsList",
     ).lean()) ?? { incomingRequestsList: [], friendsList: [] };
     const newFriendRequestLists: {
@@ -43,14 +49,14 @@ export async function acceptFriendRequest(dataString: string): Promise<string> {
     myRequestLists.friendsList = [...myRequestLists.friendsList, otherUserId];
     newFriendRequestLists.outgoingRequestsList =
       newFriendRequestLists.outgoingRequestsList.filter(
-        (d) => d != sesssionCheck._id,
+        (d) => d != sessionCheck._id,
       );
     newFriendRequestLists.friendsList = [
       ...newFriendRequestLists.friendsList,
-      sesssionCheck._id as ObjectId,
+      sessionCheck._id as ObjectId,
     ];
 
-    await User.findByIdAndUpdate(sesssionCheck._id, {
+    await User.findByIdAndUpdate(sessionCheck._id, {
       $set: {
         incomingRequestsList: myRequestLists.incomingRequestsList,
         friendsList: myRequestLists.friendsList,
@@ -72,9 +78,15 @@ export async function acceptFriendRequest(dataString: string): Promise<string> {
   }
 }
 
-export async function deleteFriend(dataString: string): Promise<string> {
+export async function deleteFriend(
+  dataString: string,
+  inAdminMode: boolean = false,
+): Promise<string> {
   const data: ModifyRequestsRequestData = JSON.parse(dataString);
-  const sessionCheck: SessionCheckResponse = await checkSession();
+  const sessionCheck: SessionCheckResponse = await checkSession(
+    ["explore"],
+    inAdminMode,
+  );
 
   if (!sessionCheck.ok)
     return JSON.stringify({
@@ -123,12 +135,16 @@ export async function deleteFriend(dataString: string): Promise<string> {
 
 export async function deleteIncomingFriendRequest(
   dataString: string,
+  inAdminMode: boolean = false,
 ): Promise<string> {
   const data: ModifyRequestsRequestData = JSON.parse(dataString);
 
-  const sesssionCheck: SessionCheckResponse = await checkSession();
+  const sessionCheck: SessionCheckResponse = await checkSession(
+    ["explore"],
+    inAdminMode,
+  );
 
-  if (!sesssionCheck.ok)
+  if (!sessionCheck.ok)
     return JSON.stringify({
       status: 401,
       responseData: { error: "Not authorized" },
@@ -141,7 +157,7 @@ export async function deleteIncomingFriendRequest(
 
     const myRequestList: { incomingRequestsList: ObjectId[] } =
       (await User.findById(
-        sesssionCheck._id,
+        sessionCheck._id,
         "incomingRequestsList",
       ).lean()) ?? {
         incomingRequestsList: [],
@@ -150,7 +166,7 @@ export async function deleteIncomingFriendRequest(
     myRequestList.incomingRequestsList =
       myRequestList.incomingRequestsList.filter((d) => d != otherUserId);
 
-    await User.findByIdAndUpdate(sesssionCheck._id, {
+    await User.findByIdAndUpdate(sessionCheck._id, {
       $set: {
         incomingRequestsList: myRequestList.incomingRequestsList,
       },
@@ -165,12 +181,18 @@ export async function deleteIncomingFriendRequest(
   }
 }
 
-export async function sendFriendRequest(dataString: string): Promise<string> {
+export async function sendFriendRequest(
+  dataString: string,
+  inAdminMode: boolean = false,
+): Promise<string> {
   const data: ModifyRequestsRequestData = JSON.parse(dataString);
 
-  const sesssionCheck: SessionCheckResponse = await checkSession();
+  const sessionCheck: SessionCheckResponse = await checkSession(
+    ["explore"],
+    inAdminMode,
+  );
 
-  if (!sesssionCheck.ok)
+  if (!sessionCheck.ok)
     return JSON.stringify({
       status: 401,
       responseData: { error: "Not authorized" },
@@ -184,7 +206,7 @@ export async function sendFriendRequest(dataString: string): Promise<string> {
     const myRequestList: {
       outgoingRequestsList: ObjectId[];
     } = (await User.findById(
-      sesssionCheck._id,
+      sessionCheck._id,
       "outgoingRequestsList",
     ).lean()) ?? {
       outgoingRequestsList: [],
@@ -201,10 +223,10 @@ export async function sendFriendRequest(dataString: string): Promise<string> {
     ];
     receivingUserRequestList.incomingRequestsList = [
       ...receivingUserRequestList.incomingRequestsList,
-      sesssionCheck._id as ObjectId,
+      sessionCheck._id as ObjectId,
     ];
 
-    await User.findByIdAndUpdate(sesssionCheck._id, {
+    await User.findByIdAndUpdate(sessionCheck._id, {
       $set: {
         outgoingRequestsList: myRequestList.outgoingRequestsList,
       },
@@ -226,12 +248,16 @@ export async function sendFriendRequest(dataString: string): Promise<string> {
 
 export async function deleteOutgoingFriendRequest(
   dataString: string,
+  inAdminMode: boolean = false,
 ): Promise<string> {
   const data: ModifyRequestsRequestData = JSON.parse(dataString);
 
-  const sesssionCheck: SessionCheckResponse = await checkSession();
+  const sessionCheck: SessionCheckResponse = await checkSession(
+    ["explore"],
+    inAdminMode,
+  );
 
-  if (!sesssionCheck.ok)
+  if (!sessionCheck.ok)
     return JSON.stringify({
       status: 401,
       responseData: { error: "Not authorized" },
@@ -244,7 +270,7 @@ export async function deleteOutgoingFriendRequest(
 
     const myRequestList: { outgoingRequestsList: ObjectId[] } =
       (await User.findById(
-        sesssionCheck._id,
+        sessionCheck._id,
         "outgoingRequestsList",
       ).lean()) ?? {
         outgoingRequestsList: [],
@@ -258,10 +284,10 @@ export async function deleteOutgoingFriendRequest(
       myRequestList.outgoingRequestsList.filter((d) => d != otherUserId);
     otherUserRequestList.incomingRequestsList =
       otherUserRequestList.incomingRequestsList.filter(
-        (d) => d != sesssionCheck._id,
+        (d) => d != sessionCheck._id,
       );
 
-    await User.findByIdAndUpdate(sesssionCheck._id, {
+    await User.findByIdAndUpdate(sessionCheck._id, {
       $set: {
         outgoingRequestsList: myRequestList.outgoingRequestsList,
       },

@@ -81,3 +81,33 @@ export const handleError = (toast: any, response: ActionResponse) => {
     isClosable: false,
   });
 };
+
+export const serverActionToAPI = async (serverAction: Function, data?: any) => {
+  let actionResponse: ActionResponse;
+
+  if (data) {
+    actionResponse = JSON.parse(await serverAction(JSON.stringify(data), true));
+  } else {
+    actionResponse = JSON.parse(await serverAction(true));
+  }
+
+  return Response.json(actionResponse.responseData, {
+    status: actionResponse.status,
+  });
+};
+
+export function sample<T>(array: Array<T>, numSamples: number) {
+  const usedIndices: Array<number> = [];
+  for (let i = 0; i < numSamples; i++) {
+    let found = false;
+    while (!found) {
+      const index = Math.floor(Math.random() * array.length);
+      if (!usedIndices.includes(index)) {
+        usedIndices.push(index);
+        found = true;
+      }
+    }
+  }
+
+  return array.filter((_value, index) => usedIndices.includes(index));
+}

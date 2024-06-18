@@ -13,10 +13,15 @@ import {
 } from "@/types/UserModelTypes";
 import { ObjectId } from "mongoose";
 
-export async function getExploreUsers(): Promise<string> {
-  const sesssionCheck: SessionCheckResponse = await checkSession();
+export async function getExploreUsers(
+  inAdminMode: boolean = false,
+): Promise<string> {
+  const sessionCheck: SessionCheckResponse = await checkSession(
+    ["explore"],
+    inAdminMode,
+  );
 
-  if (!sesssionCheck.ok)
+  if (!sessionCheck.ok)
     return JSON.stringify({
       status: 401,
       responseData: { error: "Not authorized" },
@@ -26,7 +31,7 @@ export async function getExploreUsers(): Promise<string> {
     await dbConnect();
 
     const me: ProfileMatchMyData | null = await User.findById(
-      sesssionCheck._id,
+      sessionCheck._id,
       "major pronouns courseList userStudyPreferences friendsList outgoingRequestsList incomingRequestsList",
     ).lean();
 
@@ -39,7 +44,7 @@ export async function getExploreUsers(): Promise<string> {
     const users: StrangerUserType[] | null = await User.find(
       {
         _id: {
-          $ne: sesssionCheck._id,
+          $ne: sessionCheck._id,
           $nin: [
             ...me.friendsList,
             ...me.outgoingRequestsList,
@@ -67,8 +72,13 @@ export async function getExploreUsers(): Promise<string> {
   }
 }
 
-export async function getAllRequests(): Promise<string> {
-  const sessionCheck: SessionCheckResponse = await checkSession();
+export async function getAllRequests(
+  inAdminMode: boolean = false,
+): Promise<string> {
+  const sessionCheck: SessionCheckResponse = await checkSession(
+    ["explore"],
+    inAdminMode,
+  );
 
   if (!sessionCheck.ok)
     return JSON.stringify({

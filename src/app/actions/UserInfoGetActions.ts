@@ -7,10 +7,15 @@ import { Course } from "@/types/CourseModelTypes";
 import { UserBasicInfoType, UserType } from "@/types/UserModelTypes";
 import { StudyPreferences } from "@/types/UserPreferenceModelTypes";
 
-export async function getUserCompleteInfo(): Promise<string> {
-  const sesssionCheck: SessionCheckResponse = await checkSession();
+export async function getUserCompleteInfo(
+  inAdminMode: boolean = false,
+): Promise<string> {
+  const sessionCheck: SessionCheckResponse = await checkSession(
+    ["explore"],
+    inAdminMode,
+  );
 
-  if (!sesssionCheck.ok)
+  if (!sessionCheck.ok)
     return JSON.stringify({
       status: 401,
       responseData: { error: "Not authorized" },
@@ -19,7 +24,7 @@ export async function getUserCompleteInfo(): Promise<string> {
   try {
     await dbConnect();
 
-    const user: UserType | null = await User.findById(sesssionCheck._id).lean();
+    const user: UserType | null = await User.findById(sessionCheck._id).lean();
 
     if (!user)
       return JSON.stringify({
@@ -36,13 +41,15 @@ export async function getUserCompleteInfo(): Promise<string> {
   }
 }
 
-export async function getUserBasicInfo(): Promise<string> {
-  const sesssionCheck: SessionCheckResponse = await checkSession([
-    "explore",
-    "startprofile",
-  ]);
+export async function getUserBasicInfo(
+  inAdminMode: boolean = false,
+): Promise<string> {
+  const sessionCheck: SessionCheckResponse = await checkSession(
+    ["explore", "startprofile"],
+    inAdminMode,
+  );
 
-  if (!sesssionCheck.ok)
+  if (!sessionCheck.ok)
     return JSON.stringify({
       status: 401,
       responseData: { error: "Not authorized" },
@@ -52,7 +59,7 @@ export async function getUserBasicInfo(): Promise<string> {
     await dbConnect();
 
     const user: UserBasicInfoType | null = await User.findById(
-      sesssionCheck._id,
+      sessionCheck._id,
       "email profileImage profileImagePublicID firstName lastName major gradYear userBio pronouns fbURL igURL userStatus",
     ).lean();
 
@@ -71,12 +78,15 @@ export async function getUserBasicInfo(): Promise<string> {
   }
 }
 
-export async function getUserCourseInfo(): Promise<string> {
-  const sesssionCheck: SessionCheckResponse = await checkSession([
-    "startcourses",
-  ]);
+export async function getUserCourseInfo(
+  inAdminMode: boolean = false,
+): Promise<string> {
+  const sessionCheck: SessionCheckResponse = await checkSession(
+    ["startcourses"],
+    inAdminMode,
+  );
 
-  if (!sesssionCheck.ok)
+  if (!sessionCheck.ok)
     return JSON.stringify({
       status: 401,
       responseData: { error: "Not authorized" },
@@ -86,7 +96,7 @@ export async function getUserCourseInfo(): Promise<string> {
     await dbConnect();
 
     const courseList: Course[] | null = await User.findById(
-      sesssionCheck._id,
+      sessionCheck._id,
       "courseList",
     ).lean();
 
@@ -105,12 +115,15 @@ export async function getUserCourseInfo(): Promise<string> {
   }
 }
 
-export async function getUserStudyPreferences(): Promise<string> {
-  const sesssionCheck: SessionCheckResponse = await checkSession([
-    "startstudypref",
-  ]);
+export async function getUserStudyPreferences(
+  inAdminMode: boolean = false,
+): Promise<string> {
+  const sessionCheck: SessionCheckResponse = await checkSession(
+    ["startstudypref"],
+    inAdminMode,
+  );
 
-  if (!sesssionCheck.ok)
+  if (!sessionCheck.ok)
     return JSON.stringify({
       status: 401,
       responseData: { error: "Not authorized" },
@@ -120,7 +133,7 @@ export async function getUserStudyPreferences(): Promise<string> {
     await dbConnect();
 
     const userStudyPreferences: StudyPreferences | null = await User.findById(
-      sesssionCheck._id,
+      sessionCheck._id,
       "userStudyPreferences",
     ).lean();
 

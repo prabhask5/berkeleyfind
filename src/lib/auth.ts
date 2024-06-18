@@ -11,20 +11,23 @@ import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "@/lib/mongoDBAdapter";
 import { Adapter } from "next-auth/adapters";
 
-export interface AuthResSuccess {
+interface AuthResSuccess {
   user: NextAuthUser;
   status: number;
 }
 
-export interface AuthResError {
+interface AuthResError {
   error: string;
   status: number;
 }
 
-type LoginFn = (
-  _email: string,
-  _password: string,
-) => Promise<AuthResSuccess | AuthResError>;
+interface AuthRes {
+  user?: NextAuthUser;
+  status: number;
+  error?: string;
+}
+
+type LoginFn = (_email: string, _password: string) => Promise<AuthRes>;
 
 export const authOptions: NextAuthOptions = {
   adapter: MongoDBAdapter(clientPromise) as Adapter,
@@ -46,7 +49,7 @@ export const authOptions: NextAuthOptions = {
         await dbConnect();
         const user: UserType | null = await User.findOne({
           email: session.user?.email,
-        });
+        }).lean();
 
         if (!user) return session;
 
@@ -55,6 +58,7 @@ export const authOptions: NextAuthOptions = {
           session.user.name = user.firstName + " " + user.lastName;
         session.user.image = user.profileImage;
         session.user.userStatus = user.userStatus;
+        session.user.userRole = user.userRole;
 
         return session;
       } catch (error: any) {
@@ -121,13 +125,13 @@ export const authOptions: NextAuthOptions = {
 export const login: LoginFn = async (email, password) => {
   try {
     await dbConnect();
-    const foundUser = await User.findOne({ email });
+    const foundUser: UserType | null = await User.findOne({ email }).lean();
 
     if (!foundUser) return { error: "User not found", status: 404 };
     if (!(await compare(password, foundUser.password)))
       return { error: "Incorrect password", status: 401 };
 
-    return { user: foundUser, status: 200 };
+    return { user: foundUser as unknown as NextAuthUser, status: 200 };
   } catch (error: any) {
     return { error: error.message, status: 500 };
   }
@@ -136,7 +140,7 @@ export const login: LoginFn = async (email, password) => {
 export const signup: LoginFn = async (email, password) => {
   try {
     await dbConnect();
-    const foundUser = await User.findOne({ email });
+    const foundUser = await User.findOne({ email }).lean();
 
     if (foundUser) return { error: "User already exists", status: 409 };
 
@@ -146,7 +150,6 @@ export const signup: LoginFn = async (email, password) => {
     const newUser = await new User({
       email,
       password: hashedPassword,
-      userStatus: "startprofile",
     }).save();
 
     return { user: newUser, status: 200 };
@@ -162,10 +165,23 @@ export interface SessionCheckResponse {
 }
 
 export const checkSession = async (
-  allowedStatuses: UserType["userStatus"][] = ["explore"],
+  allowedStatuses: UserType["userStatus"][] | undefined,
+  inAdminMode: boolean,
 ): Promise<SessionCheckResponse> => {
   const session = await getServerSession(authOptions);
-  if (!session || !allowedStatuses.includes(session.user.userStatus))
+
+  if (
+    !session ||
+    !(
+      allowedStatuses ?? [
+        "explore",
+        "startcourses",
+        "startprofile",
+        "startstudypref",
+      ]
+    ).includes(session.user.userStatus) ||
+    (inAdminMode && session.user.userRole != "admin")
+  )
     return new Promise((resolve, _reject) => resolve({ ok: false }));
 
   return new Promise((resolve, _reject) =>

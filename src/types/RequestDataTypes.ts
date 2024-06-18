@@ -27,6 +27,15 @@ export interface ModifyRequestsRequestData {
   otherUserId: ObjectId;
 }
 
+export interface ModifyAdminRolesRequestData {
+  email: string;
+  role: string;
+}
+
+export interface GenerateUsersRequestData {
+  numUsers: number;
+}
+
 export interface ActionResponse {
   responseData: any;
   status: number;

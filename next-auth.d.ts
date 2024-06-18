@@ -9,6 +9,7 @@ declare module "next-auth" {
         | "startcourses"
         | "startstudypref"
         | "explore";
+      userRole: "admin" | "user";
     } & DefaultSession["user"];
   }
 }

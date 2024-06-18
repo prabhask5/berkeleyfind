@@ -29,6 +29,7 @@ export interface UserType {
   incomingRequestsList: ObjectId[];
   outgoingRequestsList: ObjectId[];
   userStatus: "startprofile" | "startcourses" | "startstudypref" | "explore";
+  userRole: "admin" | "user";
   createdAt: Date;
 }
 

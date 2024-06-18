@@ -19,15 +19,18 @@ cloudinary.config({
   api_secret: process.env.API_SECRET,
 });
 
-export async function saveUserBasicInfo(dataString: string): Promise<string> {
+export async function saveUserBasicInfo(
+  dataString: string,
+  inAdminMode: boolean = false,
+): Promise<string> {
   const data: POSTMyBasicInfoRequestData = JSON.parse(dataString);
 
-  const sesssionCheck: SessionCheckResponse = await checkSession([
-    "explore",
-    "startprofile",
-  ]);
+  const sessionCheck: SessionCheckResponse = await checkSession(
+    ["explore", "startprofile"],
+    inAdminMode,
+  );
 
-  if (!sesssionCheck.ok)
+  if (!sessionCheck.ok)
     return JSON.stringify({
       status: 401,
       responseData: { error: "Not authorized" },
@@ -95,12 +98,12 @@ export async function saveUserBasicInfo(dataString: string): Promise<string> {
     if (pronouns !== oldUser.pronouns) updateData.pronouns = pronouns;
     if (fbURL !== oldUser.fbURL) updateData.fbURL = fbURL;
     if (igURL !== oldUser.igURL) updateData.igURL = igURL;
-    if (sesssionCheck.userStatus === "startprofile")
+    if (sessionCheck.userStatus === "startprofile")
       updateData.userStatus = "startcourses";
 
     await dbConnect();
 
-    await User.findByIdAndUpdate(sesssionCheck._id, {
+    await User.findByIdAndUpdate(sessionCheck._id, {
       $set: updateData,
     }).lean();
 
@@ -121,15 +124,18 @@ export async function saveUserBasicInfo(dataString: string): Promise<string> {
   }
 }
 
-export async function saveUserCourseInfo(dataString: string): Promise<string> {
+export async function saveUserCourseInfo(
+  dataString: string,
+  inAdminMode: boolean = false,
+): Promise<string> {
   const data: POSTCoursesRequestData = JSON.parse(dataString);
 
-  const sesssionCheck: SessionCheckResponse = await checkSession([
-    "explore",
-    "startcourses",
-  ]);
+  const sessionCheck: SessionCheckResponse = await checkSession(
+    ["explore", "startcourses"],
+    inAdminMode,
+  );
 
-  if (!sesssionCheck.ok)
+  if (!sessionCheck.ok)
     return JSON.stringify({
       status: 401,
       responseData: { error: "Not authorized" },
@@ -139,12 +145,12 @@ export async function saveUserCourseInfo(dataString: string): Promise<string> {
 
   try {
     const updateData: any = { courseList };
-    if (sesssionCheck.userStatus === "startcourses")
+    if (sessionCheck.userStatus === "startcourses")
       updateData.userStatus = "startstudypref";
 
     await dbConnect();
 
-    await User.findByIdAndUpdate(sesssionCheck._id, {
+    await User.findByIdAndUpdate(sessionCheck._id, {
       $set: updateData,
     }).lean();
 
@@ -159,15 +165,16 @@ export async function saveUserCourseInfo(dataString: string): Promise<string> {
 
 export async function saveUserStudyPreferences(
   dataString: string,
+  inAdminMode: boolean = false,
 ): Promise<string> {
   const data: POSTStudyPrefRequestData = JSON.parse(dataString);
 
-  const sesssionCheck: SessionCheckResponse = await checkSession([
-    "explore",
-    "startstudypref",
-  ]);
+  const sessionCheck: SessionCheckResponse = await checkSession(
+    ["explore", "startstudypref"],
+    inAdminMode,
+  );
 
-  if (!sesssionCheck.ok)
+  if (!sessionCheck.ok)
     return JSON.stringify({
       status: 401,
       responseData: { error: "Not authorized" },
@@ -177,12 +184,12 @@ export async function saveUserStudyPreferences(
 
   try {
     const updateData: any = { userStudyPreferences };
-    if (sesssionCheck.userStatus === "startstudypref")
+    if (sessionCheck.userStatus === "startstudypref")
       updateData.userStatus = "explore";
 
     await dbConnect();
 
-    await User.findByIdAndUpdate(sesssionCheck._id, {
+    await User.findByIdAndUpdate(sessionCheck._id, {
       $set: updateData,
     }).lean();
 

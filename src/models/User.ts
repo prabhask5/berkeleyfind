@@ -78,6 +78,12 @@ const UserSchema = new mongoose.Schema({
     default: "startprofile",
     required: true,
   },
+  userRole: {
+    type: String,
+    enum: ["admin", "user"],
+    default: "user",
+    required: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now(),
