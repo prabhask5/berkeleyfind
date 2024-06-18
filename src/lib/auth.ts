@@ -1,4 +1,4 @@
-import { User as NextAuthUser } from "next-auth";
+import { User as NextAuthUser, Session } from "next-auth";
 import { getServerSession } from "next-auth/next";
 import { compare, genSalt, hash } from "bcrypt";
 import dbConnect from "@/lib/dbConnect";
@@ -10,6 +10,7 @@ import { NextAuthOptions } from "next-auth";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "@/lib/mongoDBAdapter";
 import { Adapter } from "next-auth/adapters";
+import { createClient } from "@vercel/kv";
 
 interface AuthResSuccess {
   user: NextAuthUser;
@@ -46,19 +47,40 @@ export const authOptions: NextAuthOptions = {
       try {
         if (!session.user?.email) return session;
 
-        await dbConnect();
-        const user: UserType | null = await User.findOne({
-          email: session.user?.email,
-        }).lean();
+        const sessions = createClient({
+          url: process.env.KV_REST_API_URL,
+          token: process.env.KV_REST_API_TOKEN,
+        });
 
-        if (!user) return session;
+        const cachedSessionInfo = await sessions.get<Session["user"]>(
+          session.user?.email,
+        );
+        if (!cachedSessionInfo) {
+          await dbConnect();
+          const user: UserType | null = await User.findOne({
+            email: session.user?.email,
+          }).lean();
 
-        session.user._id = user._id;
-        if (user.firstName && user.lastName)
-          session.user.name = user.firstName + " " + user.lastName;
-        session.user.image = user.profileImage;
-        session.user.userStatus = user.userStatus;
-        session.user.userRole = user.userRole;
+          if (!user) return session;
+
+          session.user._id = user._id;
+          if (user.firstName && user.lastName)
+            session.user.name = user.firstName + " " + user.lastName;
+          session.user.image = user.profileImage;
+          session.user.userStatus = user.userStatus;
+          session.user.userRole = user.userRole;
+
+          await sessions.set(session.user?.email, session.user, {
+            ex: 100,
+            nx: true,
+          });
+        } else {
+          session.user._id = cachedSessionInfo._id;
+          session.user.name = cachedSessionInfo.name;
+          session.user.image = cachedSessionInfo.image;
+          session.user.userStatus = cachedSessionInfo.userStatus;
+          session.user.userRole = cachedSessionInfo.userRole;
+        }
 
         return session;
       } catch (error: any) {
