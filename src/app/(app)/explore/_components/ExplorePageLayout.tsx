@@ -2,7 +2,8 @@
 
 import { FilterTag, RelevantSessionProps } from "@/types/MiscTypes";
 import ProfileSearchFilter from "./ProfileSearchFilter";
-import { handleError, useBetterMediaQuery } from "@/lib/utils";
+import { handleError } from "@/lib/utils";
+import { useBetterMediaQuery } from "@/lib/reactUtils";
 import NavBar from "@/app/(app)/_components/Navbar";
 import { useForm } from "react-hook-form";
 import { ExploreUserType } from "@/types/UserModelTypes";

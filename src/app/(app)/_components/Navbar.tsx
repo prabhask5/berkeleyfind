@@ -21,7 +21,8 @@ import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { resolveProfileImageLink, useBetterMediaQuery } from "@/lib/utils";
+import { resolveProfileImageLink } from "@/lib/utils";
+import { useBetterMediaQuery } from "@/lib/reactUtils";
 import { RelevantSessionProps } from "@/types/MiscTypes";
 import React from "react";
 

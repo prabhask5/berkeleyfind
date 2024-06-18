@@ -1,6 +1,6 @@
 "use client";
 
-import { useBetterMediaQuery } from "@/lib/utils";
+import { useBetterMediaQuery } from "@/lib/reactUtils";
 import {
   Tabs,
   TabList,

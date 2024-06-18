@@ -1,6 +1,6 @@
 "use client";
 
-import { useBetterMediaQuery } from "@/lib/utils";
+import { useBetterMediaQuery } from "@/lib/reactUtils";
 import NavBar from "./Navbar";
 import { RelevantSessionProps } from "@/types/MiscTypes";
 

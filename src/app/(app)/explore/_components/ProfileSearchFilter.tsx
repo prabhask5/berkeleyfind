@@ -23,7 +23,7 @@ import { DropdownOption, FilterTag } from "@/types/MiscTypes";
 import { asyncInputStyling } from "@/theme/input";
 import { promiseOptions } from "@/lib/utils";
 import berkeleyData from "@/data/berkeleydata";
-import { useBetterMediaQuery } from "@/lib/utils";
+import { useBetterMediaQuery } from "@/lib/reactUtils";
 import { useEffect, useRef } from "react";
 import {
   UseFormResetField,

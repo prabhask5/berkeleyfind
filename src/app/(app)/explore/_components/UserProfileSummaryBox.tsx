@@ -12,7 +12,7 @@ import {
   Icon,
   IconButton,
 } from "@chakra-ui/react";
-import { useBetterMediaQuery } from "@/lib/utils";
+import { useBetterMediaQuery } from "@/lib/reactUtils";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { AiFillHeart } from "react-icons/ai";
 
