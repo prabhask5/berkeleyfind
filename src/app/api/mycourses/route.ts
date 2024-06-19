@@ -1,5 +1,5 @@
-import { getUserCourseInfo } from "@/app/actions/UserInfoGetActions";
-import { saveUserCourseInfo } from "@/app/actions/UserInfoModifyActions";
+import { getUserCourseInfo } from "@/actions/UserInfoGetActions";
+import { saveUserCourseInfo } from "@/actions/UserInfoModifyActions";
 import { serverActionToAPI } from "@/lib/utils";
 
 export async function GET() {

@@ -32,7 +32,7 @@ import { asyncInputStyling } from "@/theme/input";
 import { DropdownOption } from "@/types/MiscTypes";
 import { handleError, resolveProfileImageLink, stopLoading } from "@/lib/utils";
 import { turnStringIntoDropdownOption } from "@/lib/utils";
-import { saveUserBasicInfo } from "@/app/actions/UserInfoModifyActions";
+import { saveUserBasicInfo } from "@/actions/UserInfoModifyActions";
 import ButtonLayout from "@/app/_components/ButtonLayout";
 import { ActionResponse } from "@/types/RequestDataTypes";
 import { FaFacebook, FaInstagram } from "react-icons/fa";

@@ -11,7 +11,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { DropdownOption } from "@/types/MiscTypes";
-import { saveUserCourseInfo } from "@/app/actions/UserInfoModifyActions";
+import { saveUserCourseInfo } from "@/actions/UserInfoModifyActions";
 import ButtonLayout from "@/app/_components/ButtonLayout";
 import { ActionResponse } from "@/types/RequestDataTypes";
 import Courses from "@/app/(app)/_components/Courses";

@@ -1,6 +1,6 @@
 import { UserType } from "@/types/UserModelTypes";
 import ProfilePageLayout from "./_components/ProfilePageLayout";
-import { getUserCompleteInfo } from "@/app/actions/UserInfoGetActions";
+import { getUserCompleteInfo } from "@/actions/UserInfoGetActions";
 import { ActionResponse } from "@/types/RequestDataTypes";
 
 export default async function Profile() {

@@ -12,6 +12,7 @@ import {
 } from "@/types/RequestDataTypes";
 import { UserBasicInfoType } from "@/types/UserModelTypes";
 import { SessionCheckResponse, checkSession } from "@/lib/auth";
+import { createClient } from "@vercel/kv";
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -53,6 +54,7 @@ export async function saveUserBasicInfo(
     const getOldUserResponse: ActionResponse = JSON.parse(
       await getUserBasicInfo(),
     );
+
     if (getOldUserResponse.status >= 400) {
       if (getOldUserResponse.status === 500)
         return JSON.stringify({
@@ -68,6 +70,13 @@ export async function saveUserBasicInfo(
     }
 
     const oldUser: UserBasicInfoType = getOldUserResponse.responseData.user;
+
+    const sessions = createClient({
+      url: process.env.KV_REST_API_URL,
+      token: process.env.KV_REST_API_TOKEN,
+    });
+
+    sessions.getdel(oldUser.email);
 
     const updateData: any = {};
 

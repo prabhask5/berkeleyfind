@@ -1,5 +1,5 @@
-import { getUserStudyPreferences } from "@/app/actions/UserInfoGetActions";
-import { saveUserStudyPreferences } from "@/app/actions/UserInfoModifyActions";
+import { getUserStudyPreferences } from "@/actions/UserInfoGetActions";
+import { saveUserStudyPreferences } from "@/actions/UserInfoModifyActions";
 import { serverActionToAPI } from "@/lib/utils";
 
 export async function GET() {

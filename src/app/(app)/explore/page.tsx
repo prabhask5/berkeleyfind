@@ -3,7 +3,7 @@ import { ExploreUserType, statusToURL } from "@/types/UserModelTypes";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import ExplorePageLayout from "./_components/ExplorePageLayout";
-import { getExploreUsers } from "@/app/actions/OtherUserInfoGetActions";
+import { getExploreUsers } from "@/actions/OtherUserInfoGetActions";
 import { ActionResponse } from "@/types/RequestDataTypes";
 
 export default async function Explore() {

@@ -1,4 +1,4 @@
-import { changeRole } from "@/app/actions/AdminActions";
+import { changeRole } from "@/actions/AdminActions";
 import { serverActionToAPI } from "@/lib/utils";
 
 export async function POST(request: Request) {

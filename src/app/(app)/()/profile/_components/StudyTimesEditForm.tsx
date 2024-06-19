@@ -5,7 +5,7 @@ import { Stack, Text, ToastId, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { saveUserStudyPreferences } from "@/app/actions/UserInfoModifyActions";
+import { saveUserStudyPreferences } from "@/actions/UserInfoModifyActions";
 import ButtonLayout from "@/app/_components/ButtonLayout";
 import { ActionResponse } from "@/types/RequestDataTypes";
 import StudyTimes from "@/app/(app)/_components/StudyTimes";

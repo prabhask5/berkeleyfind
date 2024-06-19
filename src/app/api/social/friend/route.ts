@@ -1,7 +1,7 @@
 import {
   acceptFriendRequest,
   deleteFriend,
-} from "@/app/actions/RequestsModifyActions";
+} from "@/actions/RequestsModifyActions";
 import { serverActionToAPI } from "@/lib/utils";
 
 export async function POST(request: Request) {

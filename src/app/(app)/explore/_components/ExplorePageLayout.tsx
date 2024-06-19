@@ -10,7 +10,7 @@ import { ExploreUserType } from "@/types/UserModelTypes";
 import { useToast, ToastId } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import UserProfileSummaryBox from "./UserProfileSummaryBox";
-import { sendFriendRequest } from "@/app/actions/RequestsModifyActions";
+import { sendFriendRequest } from "@/actions/RequestsModifyActions";
 import { ActionResponse } from "@/types/RequestDataTypes";
 
 interface ExplorePageLayoutProps extends RelevantSessionProps {

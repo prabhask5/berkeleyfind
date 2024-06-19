@@ -27,7 +27,7 @@ import {
   deleteFriend,
   deleteIncomingFriendRequest,
   deleteOutgoingFriendRequest,
-} from "@/app/actions/RequestsModifyActions";
+} from "@/actions/RequestsModifyActions";
 import FriendRequestListItem from "./FriendRequestListItem";
 import FriendListItem from "./FriendListItem";
 

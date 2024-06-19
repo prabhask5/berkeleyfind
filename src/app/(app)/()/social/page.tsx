@@ -1,6 +1,6 @@
 import { FriendUserType, StrangerUserType } from "@/types/UserModelTypes";
 import SocialPageLayout from "./_components/SocialPageLayout";
-import { getAllRequests } from "@/app/actions/OtherUserInfoGetActions";
+import { getAllRequests } from "@/actions/OtherUserInfoGetActions";
 import { ActionResponse } from "@/types/RequestDataTypes";
 
 export default async function Social() {

@@ -1,4 +1,4 @@
-import { getExploreUsers } from "@/app/actions/OtherUserInfoGetActions";
+import { getExploreUsers } from "@/actions/OtherUserInfoGetActions";
 import { serverActionToAPI } from "@/lib/utils";
 
 export async function GET() {
