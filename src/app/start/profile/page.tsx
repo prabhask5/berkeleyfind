@@ -10,5 +10,5 @@ export default async function StartProfile() {
   if (session.user.userStatus && session.user.userStatus !== "startprofile")
     return redirect(statusToURL[session.user.userStatus]);
 
-  return <StartProfilePageLayout email={session.user?.email ?? ""} />;
+  return <StartProfilePageLayout email={session.user.email} />;
 }

@@ -12,7 +12,7 @@ import {
   Icon,
   IconButton,
 } from "@chakra-ui/react";
-import { useBetterMediaQuery } from "@/lib/reactUtils";
+import { useBetterMediaQuery } from "@/lib/hooks";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { AiFillHeart } from "react-icons/ai";
 
@@ -46,7 +46,7 @@ export default function UserProfileSummaryBox({
   });
 
   const mobileLayout = () => (
-    <div className="border-2 border-[#D8D8D8] rounded-3xl bg-white p-[5%] w-full">
+    <div className="border-2 border-[#D8D8D8] rounded-3xl bg-white w-full p-10">
       <div className="flex flex-col">
         <Stack className="m-auto" spacing={2} direction="row">
           <CircularProgress value={match} size="50px" color="#A73CFC">
@@ -109,36 +109,40 @@ export default function UserProfileSummaryBox({
   );
 
   const desktopLayout = () => (
-    <div className="border-2 border-[#D8D8D8] rounded-3xl m-5 bg-white">
+    <div className="border-2 border-[#D8D8D8] rounded-3xl bg-white">
       <UserProfileSummary
         profileReadViewComponent={
-          <div>
-            <CircularProgress
-              className="mb-5"
-              value={match}
-              size="75px"
-              color="#A73CFC"
-            >
-              <Tooltip
-                openDelay={300}
-                label={match + "% profile match"}
-                aria-label="Match tooltip"
-              >
-                <CircularProgressLabel className="font-[510]">
-                  {match + "%"}
-                </CircularProgressLabel>
-              </Tooltip>
-            </CircularProgress>
-            <ProfileReadView
-              profileImage={profileImage}
-              firstName={firstName}
-              lastName={lastName}
-              major={major}
-              gradYear={gradYear}
-              userBio={userBio}
-              pronouns={pronouns}
-            />
-            <Stack className="mt-5" spacing={2} direction="row">
+          <div className="h-full flex flex-col">
+            <div className="my-auto">
+              <div className="block">
+                <CircularProgress
+                  className="mb-5"
+                  value={match}
+                  size="75px"
+                  color="#A73CFC"
+                >
+                  <Tooltip
+                    openDelay={300}
+                    label={match + "% profile match"}
+                    aria-label="Match tooltip"
+                  >
+                    <CircularProgressLabel className="font-[510]">
+                      {match + "%"}
+                    </CircularProgressLabel>
+                  </Tooltip>
+                </CircularProgress>
+              </div>
+              <ProfileReadView
+                profileImage={profileImage}
+                firstName={firstName}
+                lastName={lastName}
+                major={major}
+                gradYear={gradYear}
+                userBio={userBio}
+                pronouns={pronouns}
+              />
+            </div>
+            <Stack className="mt-auto" spacing={2} direction="row">
               <Tooltip
                 openDelay={300}
                 label="Send friend request"

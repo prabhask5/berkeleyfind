@@ -79,6 +79,7 @@ export default function FriendListItem({
                 className="rounded-full"
                 draggable="false"
                 src={resolveProfileImageLink(profileImage)}
+                sizes="100vw"
                 alt="Profile picture"
               />
             </div>

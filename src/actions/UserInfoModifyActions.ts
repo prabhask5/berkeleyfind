@@ -12,7 +12,7 @@ import {
 } from "@/types/RequestDataTypes";
 import { UserBasicInfoType } from "@/types/UserModelTypes";
 import { SessionCheckResponse, checkSession } from "@/lib/auth";
-import { createClient } from "@vercel/kv";
+import { destroyCachedUserInfo } from "@/lib/utils";
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -71,13 +71,6 @@ export async function saveUserBasicInfo(
 
     const oldUser: UserBasicInfoType = getOldUserResponse.responseData.user;
 
-    const sessions = createClient({
-      url: process.env.KV_REST_API_URL,
-      token: process.env.KV_REST_API_TOKEN,
-    });
-
-    sessions.getdel(oldUser.email);
-
     const updateData: any = {};
 
     if (profileImageFile && profileImageFile !== oldUser.profileImage) {
@@ -115,6 +108,8 @@ export async function saveUserBasicInfo(
     await User.findByIdAndUpdate(sessionCheck._id, {
       $set: updateData,
     }).lean();
+
+    destroyCachedUserInfo(sessionCheck.email as string);
 
     return JSON.stringify({
       status: 200,
@@ -163,6 +158,8 @@ export async function saveUserCourseInfo(
       $set: updateData,
     }).lean();
 
+    destroyCachedUserInfo(sessionCheck.email as string);
+
     return JSON.stringify({ status: 200, responseData: { courseList } });
   } catch (e) {
     return JSON.stringify({
@@ -201,6 +198,8 @@ export async function saveUserStudyPreferences(
     await User.findByIdAndUpdate(sessionCheck._id, {
       $set: updateData,
     }).lean();
+
+    destroyCachedUserInfo(sessionCheck.email as string);
 
     return JSON.stringify({
       status: 200,

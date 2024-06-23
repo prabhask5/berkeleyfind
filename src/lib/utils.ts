@@ -3,6 +3,8 @@ import { DropdownOption } from "@/types/MiscTypes";
 import { ToastId } from "@chakra-ui/react";
 import placeholder from "@/media/avatar_placeholder.svg";
 import { ActionResponse } from "@/types/RequestDataTypes";
+import { UserCacheResponse } from "@/types/CacheModalTypes";
+import { kv } from "@vercel/kv";
 
 export const stopLoading = (
   toast: any,
@@ -96,3 +98,31 @@ export function sample<T>(array: Array<T>, numSamples: number) {
 
   return array.filter((_value, index) => usedIndices.includes(index));
 }
+
+export function makeSentence(raw: string) {
+  return raw[0].toUpperCase() + raw.slice(1) + ".";
+}
+
+export async function destroyCachedUserInfo(email: string) {
+  const cachedInfo = await kv.get<UserCacheResponse>(email);
+  if (cachedInfo) {
+    const newCachedInfo: UserCacheResponse = {
+      sessionUserInfo: null,
+      exploreFeed: cachedInfo.exploreFeed,
+    };
+    await kv.set(email, newCachedInfo, {
+      ex: 3600,
+    });
+  }
+}
+
+// wait in milliseconds
+export const debounce = (callback: Function, wait: number) => {
+  let timeoutId: number | undefined = undefined;
+  return (...args: any[]) => {
+    window.clearTimeout(timeoutId);
+    timeoutId = window.setTimeout(() => {
+      callback(...args);
+    }, wait);
+  };
+};

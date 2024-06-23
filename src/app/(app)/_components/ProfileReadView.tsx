@@ -54,13 +54,14 @@ export default function ProfileReadView({
 
   return (
     <Stack spacing={5}>
-      <div className="flex flex-row gap-2 m-auto">
+      <div className="flex flex-row gap-2">
         <div className="relative min-w-20 h-20 sm:min-w-28 sm:h-28">
           <Image
             fill
             className="rounded-full"
             draggable="false"
             src={resolveProfileImageLink(profileImage)}
+            sizes="100vw"
             alt="Profile picture"
           />
         </div>

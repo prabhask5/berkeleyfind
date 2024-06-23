@@ -3,20 +3,30 @@
 import { FilterTag, RelevantSessionProps } from "@/types/MiscTypes";
 import ProfileSearchFilter from "./ProfileSearchFilter";
 import { handleError } from "@/lib/utils";
-import { useBetterMediaQuery } from "@/lib/reactUtils";
+import { useBetterMediaQuery, useWindowDimensions } from "@/lib/hooks";
 import NavBar from "@/app/(app)/_components/Navbar";
 import { useForm } from "react-hook-form";
 import { ExploreUserType } from "@/types/UserModelTypes";
 import { useToast, ToastId } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState, memo } from "react";
 import UserProfileSummaryBox from "./UserProfileSummaryBox";
 import { sendFriendRequest } from "@/actions/RequestsModifyActions";
 import { ActionResponse } from "@/types/RequestDataTypes";
+import {
+  ListChildComponentProps,
+  VariableSizeList as VirtualizedList,
+  areEqual,
+} from "react-window";
+import InfiniteLoader from "react-window-infinite-loader";
+import { UserCacheResponse } from "@/types/CacheModalTypes";
+import { kv } from "@vercel/kv";
+import { EXPLORE_PAGE_SLICE_SIZE } from "@/lib/constants";
 
 interface ExplorePageLayoutProps extends RelevantSessionProps {
-  users: ExploreUserType[] | null;
+  users: ExploreUserType[];
   success: boolean;
   error: string | null;
+  nextUnfetchedIndex: number;
 }
 
 interface ISessionTagInfo {
@@ -30,10 +40,39 @@ export default function ExplorePageLayout({
   success,
   users,
   error,
+  nextUnfetchedIndex,
 }: ExplorePageLayoutProps) {
   const toast = useToast();
   const toastRef = React.useRef<ToastId>();
-  const [usersState, setUsersState] = useState<ExploreUserType[]>(users ?? []);
+  const [usersState, setUsersState] = useState<ExploreUserType[]>(users);
+  const [filteredUsersState, setFilteredUsersState] =
+    useState<ExploreUserType[]>(users);
+  const [nextIndex, setNextIndex] = useState<number>(nextUnfetchedIndex);
+  const [isMoreDataAvailable, setIsMoreDataAvailable] = useState<boolean>(true);
+  const windowDimensions = useWindowDimensions();
+
+  const loadMoreUsers = async () => {
+    const cachedInfo = await kv.get<UserCacheResponse>(email);
+
+    if (!cachedInfo || !cachedInfo.exploreFeed) {
+      toast({
+        title: "User info out of date",
+        description: "Please refresh the page to get updated user info.",
+        status: "error",
+        duration: 2000,
+        isClosable: false,
+      });
+    } else if (nextIndex >= cachedInfo.exploreFeed.length) {
+      setIsMoreDataAvailable(false);
+    } else {
+      const nextUsersSlice = cachedInfo.exploreFeed.slice(
+        nextIndex,
+        nextIndex + EXPLORE_PAGE_SLICE_SIZE,
+      );
+      setUsersState((prevUsersState) => prevUsersState.concat(nextUsersSlice));
+      setNextIndex((prevNextIndex) => prevNextIndex + EXPLORE_PAGE_SLICE_SIZE);
+    }
+  };
 
   useEffect(() => {
     if (toastRef.current) return;
@@ -57,16 +96,19 @@ export default function ExplorePageLayout({
       tagList: [],
     },
   });
+  const tagListState = useRef(watch("tagList"));
 
-  const tagFilter = (user: ExploreUserType) => {
-    const tagListState = watch("tagList");
-
+  const tagFilter = useCallback((user: ExploreUserType) => {
     return (
-      tagListState.every((e) =>
+      tagListState.current.every((e) =>
         user.courseList.map((c) => c.courseAbrName).includes(e.courseAbrName),
-      ) || tagListState.length === 0
+      ) || tagListState.current.length === 0
     );
-  };
+  }, []);
+
+  useEffect(() => {
+    setFilteredUsersState(usersState.filter((user) => tagFilter(user)));
+  }, [tagFilter, tagListState, usersState]);
 
   const handleDeleteCallback = (otherUser: ExploreUserType) =>
     setUsersState(usersState.filter((user) => user._id != otherUser._id));
@@ -88,27 +130,6 @@ export default function ExplorePageLayout({
     } else handleError(toast, response);
   };
 
-  const profileCardLayouts = usersState
-    .filter((user) => tagFilter(user))
-    .map((user, index) => (
-      <div key={index} className={index > 0 ? "mt-20" : ""}>
-        <UserProfileSummaryBox
-          profileMatch={user.profileMatch}
-          profileImage={user.profileImage}
-          major={user.major}
-          gradYear={user.gradYear}
-          firstName={user.firstName}
-          lastName={user.lastName}
-          userBio={user.userBio}
-          pronouns={user.pronouns}
-          courseList={user.courseList}
-          userStudyPreferences={user.userStudyPreferences}
-          sendFriendRequestCallback={() => sendFriendRequestCallback(user)}
-          handleTempDeleteCallback={() => handleDeleteCallback(user)}
-        />
-      </div>
-    ));
-
   const mobileLayout = () => (
     <div className="w-screen flex bg-[#F2F2F2]">
       <div className="fixed bg-[#F2F2F2] rounded-full z-10 top-[4.166667%] left-[4.166667%] lg:top-[1.25%] lg:left-[1.25%]">
@@ -122,7 +143,67 @@ export default function ExplorePageLayout({
       <div className="fixed bg-[#F2F2F2] rounded-full z-10 top-[4.166667%] right-[4.166667%] lg:top-[1.25%] lg:right-[1.25%]">
         <NavBar profilePic={profilePic} email={email} name={name} />
       </div>
-      <div className="w-11/12 my-[10%] mx-auto">{profileCardLayouts}</div>
+      <div className="mx-auto">
+        <InfiniteLoader
+          isItemLoaded={(index) => index < filteredUsersState.length}
+          itemCount={filteredUsersState.length + 1}
+          loadMoreItems={isMoreDataAvailable ? loadMoreUsers : () => {}}
+          threshold={4}
+        >
+          {({ onItemsRendered, ref }) => (
+            <VirtualizedList
+              height={windowDimensions.height}
+              width={windowDimensions.width * (11 / 12)}
+              itemCount={filteredUsersState.length}
+              itemSize={(index) => 823 + (index == 0 ? 35 : 0)}
+              ref={ref}
+              onItemsRendered={onItemsRendered}
+            >
+              {memo(function mobileFeed({
+                index,
+                style,
+              }: ListChildComponentProps) {
+                const user = filteredUsersState[index];
+
+                style =
+                  index == 0
+                    ? {
+                        ...style,
+                        top: `${parseFloat(style.top as string) + 35}px`,
+                      }
+                    : style;
+
+                return (
+                  <div
+                    key={index}
+                    style={style}
+                    className={`w-${windowDimensions.width * (11 / 12)}px`}
+                  >
+                    <UserProfileSummaryBox
+                      profileMatch={user.profileMatch}
+                      profileImage={user.profileImage}
+                      major={user.major}
+                      gradYear={user.gradYear}
+                      firstName={user.firstName}
+                      lastName={user.lastName}
+                      userBio={user.userBio}
+                      pronouns={user.pronouns}
+                      courseList={user.courseList}
+                      userStudyPreferences={user.userStudyPreferences}
+                      sendFriendRequestCallback={() =>
+                        sendFriendRequestCallback(user)
+                      }
+                      handleTempDeleteCallback={() =>
+                        handleDeleteCallback(user)
+                      }
+                    />
+                  </div>
+                );
+              }, areEqual)}
+            </VirtualizedList>
+          )}
+        </InfiniteLoader>
+      </div>
     </div>
   );
 
@@ -138,10 +219,62 @@ export default function ExplorePageLayout({
             register={register}
           />
         </div>
-        <div className="w-[80%]">
-          <div className="overflow-y-auto overflow-x-hidden w-full h-full bg-[#F2F2F2]">
-            {profileCardLayouts}
-          </div>
+        <div className="bg-[#F2F2F2] px-8">
+          <InfiniteLoader
+            isItemLoaded={(index) => index < filteredUsersState.length}
+            itemCount={filteredUsersState.length + 1}
+            loadMoreItems={isMoreDataAvailable ? loadMoreUsers : () => {}}
+            threshold={4}
+          >
+            {({ onItemsRendered, ref }) => (
+              <VirtualizedList
+                height={windowDimensions.height - 80}
+                width={windowDimensions.width * 0.8 - 64}
+                itemCount={filteredUsersState.length}
+                itemSize={(index) => 766 + (index == 0 ? 32 : 0)}
+                ref={ref}
+                onItemsRendered={onItemsRendered}
+              >
+                {memo(function desktopFeed({
+                  index,
+                  style,
+                }: ListChildComponentProps) {
+                  const user = filteredUsersState[index];
+
+                  style =
+                    index == 0
+                      ? {
+                          ...style,
+                          top: `${parseFloat(style.top as string) + 32}px`,
+                        }
+                      : style;
+
+                  return (
+                    <div key={index} style={style}>
+                      <UserProfileSummaryBox
+                        profileMatch={user.profileMatch}
+                        profileImage={user.profileImage}
+                        major={user.major}
+                        gradYear={user.gradYear}
+                        firstName={user.firstName}
+                        lastName={user.lastName}
+                        userBio={user.userBio}
+                        pronouns={user.pronouns}
+                        courseList={user.courseList}
+                        userStudyPreferences={user.userStudyPreferences}
+                        sendFriendRequestCallback={() =>
+                          sendFriendRequestCallback(user)
+                        }
+                        handleTempDeleteCallback={() =>
+                          handleDeleteCallback(user)
+                        }
+                      />
+                    </div>
+                  );
+                }, areEqual)}
+              </VirtualizedList>
+            )}
+          </InfiniteLoader>
         </div>
       </div>
     </div>

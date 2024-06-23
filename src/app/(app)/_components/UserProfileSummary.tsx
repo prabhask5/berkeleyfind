@@ -1,6 +1,6 @@
 "use client";
 
-import { useBetterMediaQuery } from "@/lib/reactUtils";
+import { useBetterMediaQuery } from "@/lib/hooks";
 import {
   Tabs,
   TabList,
@@ -58,8 +58,8 @@ export default function UserProfileSummary({
   );
 
   const desktopLayout = () => (
-    <div className="flex flex-row m-[5%] gap-4 h-full">
-      <div className="w-2/5 my-auto">{profileReadViewComponent}</div>
+    <div className="flex flex-row m-10 gap-4">
+      <div className="w-2/5 h-[650px]">{profileReadViewComponent}</div>
       <Tabs align="center" className="w-3/5 h-[650px]" variant="unstyled">
         <TabList>
           <Tab className="text-[#414141] font-medium sm:font-[520] md:font-[550] lg:font-[590] text-sm sm:text-[15px] md:text-[16px] lg:text-[18px]">

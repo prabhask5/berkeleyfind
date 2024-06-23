@@ -161,8 +161,8 @@ export function ProfileEditForm({
 
   register("userBio", {
     validate: (val: string) => {
-      if (val.split(" ").length > 50) {
-        return "Please keep your bio under 50 words.";
+      if (val.length > 400 || val.split(" ").length > 50) {
+        return "Please shorten your bio.";
       }
     },
   });
@@ -366,6 +366,7 @@ export function ProfileEditForm({
                     className="w-20 max-h-20 sm:w-32 sm:max-h-32 rounded-full my-auto"
                     draggable="false"
                     src={resolveProfileImageLink(watch("profileImageFile"))}
+                    sizes="100vw"
                     alt="Profile picture"
                   />
                 </div>

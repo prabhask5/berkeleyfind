@@ -11,7 +11,7 @@ import { UserType } from "@/types/UserModelTypes";
 import { genSalt, hash } from "bcrypt";
 import berkeleyData from "@/data/berkeleydata";
 import { LoremIpsum } from "lorem-ipsum";
-import { sample } from "@/lib/utils";
+import { makeSentence, sample } from "@/lib/utils";
 import { Course } from "@/types/CourseModelTypes";
 
 export async function changeRole(
@@ -93,14 +93,14 @@ async function getRandomUser() {
     password: hashedPassword,
     profileImage: apiUser.picture.medium,
     major: sample(berkeleyData.majors, 1)[0].major,
-    gradYear: (Math.random() * (2101 - 2000) + 2000).toString(),
+    gradYear: Math.floor(Math.random() * (2101 - 2000) + 2000).toString(),
     firstName: apiUser.name.first,
     lastName: apiUser.name.last,
-    userBio: lorem.generateWords(150),
+    userBio: makeSentence(lorem.generateWords(50)),
     pronouns,
     fbURL: "https://www.facebook.com/ConvergentatBerk/",
     igURL: "https://www.instagram.com/thewanderingwidower/",
-    courseList: sample(berkeleyData.courseList as Course[], 10),
+    courseList: sample(berkeleyData.courseList as Course[], 20),
     userStudyPreferences: { weekTimes: sample(berkeleyData.studyTimes, 60) },
     friendsList: [],
     incomingRequestsList: [],

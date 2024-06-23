@@ -22,7 +22,7 @@ import { signOut } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { resolveProfileImageLink } from "@/lib/utils";
-import { useBetterMediaQuery } from "@/lib/reactUtils";
+import { useBetterMediaQuery } from "@/lib/hooks";
 import { RelevantSessionProps } from "@/types/MiscTypes";
 import React from "react";
 
@@ -73,6 +73,7 @@ export default function NavBar({ profilePic, email, name }: NavBarProps) {
     <div className="relative w-16 h-16">
       <Image
         fill
+        sizes="100vw"
         className="rounded-full"
         draggable="false"
         src={resolveProfileImageLink(profilePic)}

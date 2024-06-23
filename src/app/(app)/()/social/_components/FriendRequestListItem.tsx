@@ -72,6 +72,7 @@ export default function FriendRequestListItem({
             <div className="relative w-12 h-12 my-auto">
               <Image
                 fill
+                sizes="100vw"
                 className="rounded-full"
                 draggable="false"
                 src={resolveProfileImageLink(profileImage)}

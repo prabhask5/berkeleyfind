@@ -1,4 +1,4 @@
-import { User as NextAuthUser, Session } from "next-auth";
+import { User as NextAuthUser } from "next-auth";
 import { getServerSession } from "next-auth/next";
 import { compare, genSalt, hash } from "bcrypt";
 import dbConnect from "@/lib/dbConnect";
@@ -10,7 +10,8 @@ import { NextAuthOptions } from "next-auth";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "@/lib/mongoDBAdapter";
 import { Adapter } from "next-auth/adapters";
-import { createClient } from "@vercel/kv";
+import { kv } from "@vercel/kv";
+import { UserCacheResponse } from "@/types/CacheModalTypes";
 
 interface AuthResSuccess {
   user: NextAuthUser;
@@ -39,26 +40,17 @@ export const authOptions: NextAuthOptions = {
 
   session: {
     strategy: "jwt",
-    maxAge: 60 * 60 * 2,
   },
 
   callbacks: {
     async session({ session }) {
       try {
-        if (!session.user?.email) return session;
-
-        const sessions = createClient({
-          url: process.env.KV_REST_API_URL,
-          token: process.env.KV_REST_API_TOKEN,
-        });
-
-        const cachedSessionInfo = await sessions.get<Session["user"]>(
-          session.user?.email,
-        );
-        if (!cachedSessionInfo) {
+        const cachedInfo = await kv.get<UserCacheResponse>(session.user.email);
+        if (!cachedInfo || !cachedInfo.sessionUserInfo) {
           await dbConnect();
+
           const user: UserType | null = await User.findOne({
-            email: session.user?.email,
+            email: session.user.email,
           }).lean();
 
           if (!user) return session;
@@ -70,16 +62,20 @@ export const authOptions: NextAuthOptions = {
           session.user.userStatus = user.userStatus;
           session.user.userRole = user.userRole;
 
-          await sessions.set(session.user?.email, session.user, {
-            ex: 100,
-            nx: true,
+          const newCachedInfo: UserCacheResponse = {
+            sessionUserInfo: session.user,
+            exploreFeed: cachedInfo?.exploreFeed ?? null,
+          };
+
+          await kv.set(session.user.email, newCachedInfo, {
+            ex: 3600,
           });
         } else {
-          session.user._id = cachedSessionInfo._id;
-          session.user.name = cachedSessionInfo.name;
-          session.user.image = cachedSessionInfo.image;
-          session.user.userStatus = cachedSessionInfo.userStatus;
-          session.user.userRole = cachedSessionInfo.userRole;
+          session.user._id = cachedInfo.sessionUserInfo._id;
+          session.user.name = cachedInfo.sessionUserInfo.name;
+          session.user.image = cachedInfo.sessionUserInfo.image;
+          session.user.userStatus = cachedInfo.sessionUserInfo.userStatus;
+          session.user.userRole = cachedInfo.sessionUserInfo.userRole;
         }
 
         return session;
@@ -183,6 +179,7 @@ export const signup: LoginFn = async (email, password) => {
 export interface SessionCheckResponse {
   ok: boolean;
   _id?: ObjectId;
+  email?: string;
   userStatus?: "startprofile" | "startcourses" | "startstudypref" | "explore";
 }
 
@@ -210,6 +207,7 @@ export const checkSession = async (
     resolve({
       ok: true,
       _id: session.user._id,
+      email: session.user.email,
       userStatus: session.user.userStatus,
     }),
   );

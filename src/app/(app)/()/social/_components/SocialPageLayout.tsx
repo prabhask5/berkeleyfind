@@ -1,6 +1,6 @@
 "use client";
 
-import { useBetterMediaQuery } from "@/lib/reactUtils";
+import { useBetterMediaQuery } from "@/lib/hooks";
 import { handleError } from "@/lib/utils";
 import { FriendUserType, StrangerUserType } from "@/types/UserModelTypes";
 import { ChevronDownIcon } from "@chakra-ui/icons";

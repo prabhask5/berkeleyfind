@@ -1,0 +1,1 @@
+export const EXPLORE_PAGE_SLICE_SIZE = 10;
