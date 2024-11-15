@@ -18,7 +18,7 @@
     "@emotion/styled": "^11.11.0",
     "@types/react-window": "^1.8.8",
     "@types/react-window-infinite-loader": "^1.0.9",
-    "@vercel/kv": "^2.0.0",
+    "@upstash/redis": "^1.34.3",
     "autoprefixer": "^10.4.19",
     "bcrypt": "^5.1.1",
     "chakra-react-select": "^4.7.6",

@@ -19,8 +19,8 @@ import {
 } from "react-window";
 import InfiniteLoader from "react-window-infinite-loader";
 import { UserCacheResponse } from "@/types/CacheModalTypes";
-import { kv } from "@vercel/kv";
 import { EXPLORE_PAGE_SLICE_SIZE } from "@/lib/constants";
+import { Redis } from "@upstash/redis";
 
 interface ExplorePageLayoutProps extends RelevantSessionProps {
   users: ExploreUserType[];
@@ -53,7 +53,8 @@ export default function ExplorePageLayout({
   const toastLoadingRef = React.useRef<ToastId>();
 
   const loadMoreUsers = async () => {
-    const cachedInfo = await kv.get<UserCacheResponse>(email);
+    const redis = Redis.fromEnv();
+    const cachedInfo = await redis.get<UserCacheResponse>(email);
 
     if (!cachedInfo || !cachedInfo.exploreFeed) {
       toast({

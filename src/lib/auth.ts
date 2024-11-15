@@ -10,8 +10,8 @@ import { NextAuthOptions } from "next-auth";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "@/lib/mongoDBAdapter";
 import { Adapter } from "next-auth/adapters";
-import { kv } from "@vercel/kv";
 import { UserCacheResponse } from "@/types/CacheModalTypes";
+import { Redis } from "@upstash/redis";
 
 interface AuthResSuccess {
   user: NextAuthUser;
@@ -45,7 +45,11 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async session({ session }) {
       try {
-        const cachedInfo = await kv.get<UserCacheResponse>(session.user.email);
+        const redis = Redis.fromEnv();
+
+        const cachedInfo = await redis.get<UserCacheResponse>(
+          session.user.email,
+        );
         if (!cachedInfo || !cachedInfo.sessionUserInfo) {
           await dbConnect();
 
@@ -67,7 +71,7 @@ export const authOptions: NextAuthOptions = {
             exploreFeed: cachedInfo?.exploreFeed ?? null,
           };
 
-          await kv.set(session.user.email, newCachedInfo, {
+          await redis.set(session.user.email, newCachedInfo, {
             ex: 3600,
           });
         } else {

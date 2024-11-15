@@ -6,7 +6,7 @@ import ExplorePageLayout from "./_components/ExplorePageLayout";
 import { getExploreUsers } from "@/actions/OtherUserInfoGetActions";
 import { ActionResponse } from "@/types/RequestDataTypes";
 import { UserCacheResponse } from "@/types/CacheModalTypes";
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 import { EXPLORE_PAGE_SLICE_SIZE } from "@/lib/constants";
 
 export default async function Explore() {
@@ -19,7 +19,9 @@ export default async function Explore() {
   let allUsers: ExploreUserType[];
   let error: string | null;
 
-  const cachedInfo = await kv.get<UserCacheResponse>(session.user.email);
+  const redis = Redis.fromEnv();
+
+  const cachedInfo = await redis.get<UserCacheResponse>(session.user.email);
   const res: ActionResponse = JSON.parse(await getExploreUsers());
   success = res.status === 200;
   const data: any = res.responseData;
@@ -30,7 +32,7 @@ export default async function Explore() {
     sessionUserInfo: cachedInfo?.sessionUserInfo ?? null,
     exploreFeed: allUsers,
   };
-  await kv.set(session.user.email, newCachedInfo, { ex: 3600 });
+  await redis.set(session.user.email, newCachedInfo, { ex: 3600 });
 
   const initialRenderedUsers = allUsers.slice(0, EXPLORE_PAGE_SLICE_SIZE);
 

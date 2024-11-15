@@ -4,7 +4,7 @@ import { ToastId } from "@chakra-ui/react";
 import placeholder from "@/media/avatar_placeholder.svg";
 import { ActionResponse } from "@/types/RequestDataTypes";
 import { UserCacheResponse } from "@/types/CacheModalTypes";
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 
 export const stopLoading = (
   toast: any,
@@ -104,13 +104,15 @@ export function makeSentence(raw: string) {
 }
 
 export async function destroyCachedUserInfo(email: string) {
-  const cachedInfo = await kv.get<UserCacheResponse>(email);
+  const redis = Redis.fromEnv();
+
+  const cachedInfo = await redis.get<UserCacheResponse>(email);
   if (cachedInfo) {
     const newCachedInfo: UserCacheResponse = {
       sessionUserInfo: null,
       exploreFeed: cachedInfo.exploreFeed,
     };
-    await kv.set(email, newCachedInfo, {
+    await redis.set(email, newCachedInfo, {
       ex: 3600,
     });
   }
