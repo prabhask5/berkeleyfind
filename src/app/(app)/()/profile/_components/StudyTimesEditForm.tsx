@@ -43,7 +43,7 @@ export default function StudyTimesEditForm({
   useEffect(() => {
     setAnyChanges(
       watch("weekTimes").length !== defaultValues.weekTimes.length ||
-        watch("weekTimes").filter((v) => defaultValues.weekTimes.includes(v))
+        watch("weekTimes").filter((v) => !defaultValues.weekTimes.includes(v))
           .length > 0,
     );
   }, [watch, defaultValues.weekTimes, currFormState]);

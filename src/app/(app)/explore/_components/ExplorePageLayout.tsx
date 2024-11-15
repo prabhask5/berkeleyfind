@@ -2,7 +2,7 @@
 
 import { FilterTag, RelevantSessionProps } from "@/types/MiscTypes";
 import ProfileSearchFilter from "./ProfileSearchFilter";
-import { handleError } from "@/lib/utils";
+import { handleError, stopLoading } from "@/lib/utils";
 import { useBetterMediaQuery, useWindowDimensions } from "@/lib/hooks";
 import NavBar from "@/app/(app)/_components/Navbar";
 import { useForm } from "react-hook-form";
@@ -50,6 +50,7 @@ export default function ExplorePageLayout({
   const [nextIndex, setNextIndex] = useState<number>(nextUnfetchedIndex);
   const [isMoreDataAvailable, setIsMoreDataAvailable] = useState<boolean>(true);
   const windowDimensions = useWindowDimensions();
+  const toastLoadingRef = React.useRef<ToastId>();
 
   const loadMoreUsers = async () => {
     const cachedInfo = await kv.get<UserCacheResponse>(email);
@@ -110,17 +111,35 @@ export default function ExplorePageLayout({
     setFilteredUsersState(usersState.filter((user) => tagFilter(user)));
   }, [tagFilter, tagListState, usersState]);
 
-  const handleDeleteCallback = (otherUser: ExploreUserType) =>
+  const handleDelete = (otherUser: ExploreUserType) =>
     setUsersState(usersState.filter((user) => user._id != otherUser._id));
 
+  const handleDeleteCallback = (otherUser: ExploreUserType) => {
+    handleDelete(otherUser);
+    toast({
+      title: "Profile temporarily hidden",
+      description: "Refresh the page to see this profile again",
+      status: "success",
+      duration: 2000,
+      isClosable: true,
+    });
+  };
+
   const sendFriendRequestCallback = async (otherUser: ExploreUserType) => {
+    toastLoadingRef.current = toast({
+      title: "Processing...",
+      status: "loading",
+      duration: null,
+    });
+
     const response: ActionResponse = JSON.parse(
       await sendFriendRequest(JSON.stringify({ otherUserId: otherUser._id })),
     );
 
-    if (response.status === 200) {
-      handleDeleteCallback(otherUser);
+    stopLoading(toast, toastLoadingRef);
 
+    if (response.status === 200) {
+      handleDelete(otherUser);
       toast({
         title: "Friend request sent",
         status: "success",

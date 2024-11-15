@@ -141,7 +141,7 @@ export default function FriendListItem({
       <DetailedViewModal isModalOpen={isModalOpen} onModalClose={onModalClose}>
         <UserProfileSummary
           profileReadViewComponent={
-            <Stack spacing={7}>
+            <Stack className="my-auto" spacing={7}>
               <ProfileReadView
                 profileImage={profileImage}
                 firstName={firstName}

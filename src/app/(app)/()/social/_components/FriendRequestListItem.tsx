@@ -153,15 +153,17 @@ export default function FriendRequestListItem({
       <DetailedViewModal isModalOpen={isModalOpen} onModalClose={onModalClose}>
         <UserProfileSummary
           profileReadViewComponent={
-            <ProfileReadView
-              profileImage={profileImage}
-              firstName={firstName}
-              lastName={lastName}
-              major={major}
-              gradYear={gradYear}
-              userBio={userBio}
-              pronouns={pronouns}
-            />
+            <div className="my-auto">
+              <ProfileReadView
+                profileImage={profileImage}
+                firstName={firstName}
+                lastName={lastName}
+                major={major}
+                gradYear={gradYear}
+                userBio={userBio}
+                pronouns={pronouns}
+              />
+            </div>
           }
           courseList={courseList}
           userStudyPreferences={userStudyPreferences}

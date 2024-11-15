@@ -1,7 +1,7 @@
 "use client";
 
 import { useBetterMediaQuery } from "@/lib/hooks";
-import { handleError } from "@/lib/utils";
+import { handleError, stopLoading } from "@/lib/utils";
 import { FriendUserType, StrangerUserType } from "@/types/UserModelTypes";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
@@ -61,6 +61,7 @@ export default function SocialPageLayout({
 
   const toast = useToast();
   const toastRef = React.useRef<ToastId>();
+  const toastLoadingRef = React.useRef<ToastId>();
 
   const isMobile = useBetterMediaQuery({
     query: "(max-width: 768px)",
@@ -99,9 +100,16 @@ export default function SocialPageLayout({
     otherUser: StrangerUserType | FriendUserType,
     successText: string,
   ) => {
+    toastLoadingRef.current = toast({
+      title: "Processing...",
+      status: "loading",
+      duration: null,
+    });
+
     const response: ActionResponse = JSON.parse(
       await backendFunction(JSON.stringify({ otherUserId: otherUser._id })),
     );
+    stopLoading(toast, toastLoadingRef);
 
     if (response.status === 200) {
       updateAllListStates(response);
