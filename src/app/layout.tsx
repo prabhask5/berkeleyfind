@@ -10,12 +10,14 @@ export const metadata: Metadata = {
     "A social platform to help Berkeley students create study groups and find friends in their classes.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  const cookiesList = cookies();
+export default async function RootLayout(
+  {
+    children,
+  }: Readonly<{
+    children: React.ReactNode;
+  }>
+) {
+  const cookiesList = await cookies();
   const colorMode = cookiesList.get("chakra-ui-color-mode");
 
   return (

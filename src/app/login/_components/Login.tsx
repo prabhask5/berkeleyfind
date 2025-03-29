@@ -30,7 +30,7 @@ export default function Login() {
 
   const router = useRouter();
   const toast = useToast();
-  const toastLoadingRef = React.useRef<ToastId>();
+  const toastLoadingRef = React.useRef<ToastId>(undefined);
 
   useEffect(() => {
     router.prefetch("/temp");

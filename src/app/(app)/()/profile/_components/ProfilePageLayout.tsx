@@ -30,7 +30,7 @@ export default function ProfilePageLayout({
   success,
 }: ProfilePageLayoutProps) {
   const toast = useToast();
-  const toastRef = React.useRef<ToastId>();
+  const toastRef = React.useRef<ToastId>(undefined);
 
   useEffect(() => {
     if (toastRef.current) return;

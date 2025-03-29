@@ -10,7 +10,7 @@ import { ExploreUserType } from "@/types/UserModelTypes";
 import { useToast, ToastId } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useRef, useState, memo } from "react";
 import UserProfileSummaryBox from "./UserProfileSummaryBox";
-import { sendFriendRequest } from "@/actions/RequestsModifyActions";
+import { sendFriendRequest } from "@/actions/FriendRequestActions";
 import { ActionResponse } from "@/types/RequestDataTypes";
 import {
   ListChildComponentProps,
@@ -18,7 +18,7 @@ import {
   areEqual,
 } from "react-window";
 import InfiniteLoader from "react-window-infinite-loader";
-import { UserCacheResponse } from "@/types/CacheModalTypes";
+import { UserCacheResponse } from "@/types/CacheModelTypes";
 import { EXPLORE_PAGE_SLICE_SIZE } from "@/lib/constants";
 import { Redis } from "@upstash/redis";
 
@@ -43,14 +43,14 @@ export default function ExplorePageLayout({
   nextUnfetchedIndex,
 }: ExplorePageLayoutProps) {
   const toast = useToast();
-  const toastRef = React.useRef<ToastId>();
+  const toastRef = React.useRef<ToastId>(undefined);
   const [usersState, setUsersState] = useState<ExploreUserType[]>(users);
   const [filteredUsersState, setFilteredUsersState] =
     useState<ExploreUserType[]>(users);
   const [nextIndex, setNextIndex] = useState<number>(nextUnfetchedIndex);
   const [isMoreDataAvailable, setIsMoreDataAvailable] = useState<boolean>(true);
   const windowDimensions = useWindowDimensions();
-  const toastLoadingRef = React.useRef<ToastId>();
+  const toastLoadingRef = React.useRef<ToastId>(undefined);
 
   const loadMoreUsers = async () => {
     const redis = Redis.fromEnv();

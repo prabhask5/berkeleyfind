@@ -65,7 +65,10 @@ interface IUserBasicInfo {
 }
 
 const majorOptions: DropdownOption[] = berkeleyData.majors.map(
-  (m) => ({ label: m.major, value: m.major }) as DropdownOption,
+  (m) => (({
+    label: m.major,
+    value: m.major
+  }) as DropdownOption),
 );
 
 const pronounsOptions: DropdownOption[] = berkeleyData.pronouns;
@@ -85,7 +88,7 @@ export function ProfileEditForm({
 }: ProfileEditFormProps) {
   const router = useRouter();
   const toast = useToast();
-  const toastLoadingRef = React.useRef<ToastId>();
+  const toastLoadingRef = React.useRef<ToastId>(undefined);
   const [anyChanges, setAnyChanges] = useState<boolean>(false);
   const [defaultValues, setDefaultValues] = useState<IUserBasicInfo>({
     profileImageFile: profileImage,

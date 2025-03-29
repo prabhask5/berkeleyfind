@@ -1,4 +1,4 @@
-import { deleteIncomingFriendRequest } from "@/actions/RequestsModifyActions";
+import { deleteIncomingFriendRequest } from "@/actions/FriendRequestActions";
 import { serverActionToAPI } from "@/lib/utils";
 
 export async function DELETE(request: Request) {

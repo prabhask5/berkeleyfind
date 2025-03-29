@@ -3,7 +3,7 @@ import { DropdownOption } from "@/types/MiscTypes";
 import { ToastId } from "@chakra-ui/react";
 import placeholder from "@/media/avatar_placeholder.svg";
 import { ActionResponse } from "@/types/RequestDataTypes";
-import { UserCacheResponse } from "@/types/CacheModalTypes";
+import { UserCacheResponse } from "@/types/CacheModelTypes";
 import { Redis } from "@upstash/redis";
 
 export const stopLoading = (

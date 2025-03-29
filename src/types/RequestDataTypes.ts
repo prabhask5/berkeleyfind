@@ -27,6 +27,18 @@ export interface ModifyRequestsRequestData {
   otherUserId: ObjectId;
 }
 
+export interface SendStudySessionRequestData {
+  studyPartners: ObjectId[];
+  coursesToStudy: Course[];
+  studyTimeRange: Date[];
+  libraryName: String;
+  message: String;
+}
+
+export interface ModifyStudySessionRequestData {
+  studySessionId: ObjectId;
+}
+
 export interface ModifyAdminRolesRequestData {
   email: string;
   role: string;

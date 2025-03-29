@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import ExplorePageLayout from "./_components/ExplorePageLayout";
 import { getExploreUsers } from "@/actions/OtherUserInfoGetActions";
 import { ActionResponse } from "@/types/RequestDataTypes";
-import { UserCacheResponse } from "@/types/CacheModalTypes";
+import { UserCacheResponse } from "@/types/CacheModelTypes";
 import { Redis } from "@upstash/redis";
 import { EXPLORE_PAGE_SLICE_SIZE } from "@/lib/constants";
 

@@ -10,7 +10,7 @@ import { NextAuthOptions } from "next-auth";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "@/lib/mongoDBAdapter";
 import { Adapter } from "next-auth/adapters";
-import { UserCacheResponse } from "@/types/CacheModalTypes";
+import { UserCacheResponse } from "@/types/CacheModelTypes";
 import { Redis } from "@upstash/redis";
 
 interface AuthResSuccess {

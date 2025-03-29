@@ -13,7 +13,7 @@ export default function LoginSignUpPageLayout({
   fromRedirect,
 }: LoginSignUpViewProps) {
   const [viewState, setViewState] = useState<"login" | "signup">("login");
-  const toastRef = React.useRef<ToastId>();
+  const toastRef = React.useRef<ToastId>(undefined);
 
   const toast = useToast();
 

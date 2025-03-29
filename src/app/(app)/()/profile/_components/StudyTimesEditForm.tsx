@@ -24,7 +24,7 @@ export default function StudyTimesEditForm({
 }: StudyTimesEditFormProps) {
   const router = useRouter();
   const toast = useToast();
-  const toastLoadingRef = React.useRef<ToastId>();
+  const toastLoadingRef = React.useRef<ToastId>(undefined);
   const [anyChanges, setAnyChanges] = useState<boolean>(false);
   const [defaultValues, setDefaultValues] = useState<IUserStudyTimesInfo>({
     weekTimes: weekTimes,

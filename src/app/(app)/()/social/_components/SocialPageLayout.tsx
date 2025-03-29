@@ -27,7 +27,7 @@ import {
   deleteFriend,
   deleteIncomingFriendRequest,
   deleteOutgoingFriendRequest,
-} from "@/actions/RequestsModifyActions";
+} from "@/actions/FriendRequestActions";
 import FriendRequestListItem from "./FriendRequestListItem";
 import FriendListItem from "./FriendListItem";
 
@@ -60,8 +60,8 @@ export default function SocialPageLayout({
   );
 
   const toast = useToast();
-  const toastRef = React.useRef<ToastId>();
-  const toastLoadingRef = React.useRef<ToastId>();
+  const toastRef = React.useRef<ToastId>(undefined);
+  const toastLoadingRef = React.useRef<ToastId>(undefined);
 
   const isMobile = useBetterMediaQuery({
     query: "(max-width: 768px)",

@@ -32,7 +32,7 @@ export default function SignUp() {
 
   const router = useRouter();
   const toast = useToast();
-  const toastLoadingRef = React.useRef<ToastId>();
+  const toastLoadingRef = React.useRef<ToastId>(undefined);
 
   const {
     register,
