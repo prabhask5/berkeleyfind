@@ -35,7 +35,7 @@ export async function getMyStudySessions(
       status: 200,
       responseData: { myStudySessions: myStudySessions ?? [] },
     });
-  } catch (e) {
+  } catch {
     return JSON.stringify({
       status: 500,
       responseData: { error: "Error in fetching requests" },
@@ -80,7 +80,7 @@ export async function sendStudySessionRequest(
     }).save();
 
     return await getMyStudySessions();
-  } catch (e) {
+  } catch {
     return JSON.stringify({
       status: 500,
       responseData: { error: "Error in sending study session request" },
@@ -136,7 +136,7 @@ export async function deleteStudySession(
     }
 
     return await getMyStudySessions();
-  } catch (e) {
+  } catch {
     return JSON.stringify({
       status: 500,
       responseData: { error: "Error in deleting study session" },

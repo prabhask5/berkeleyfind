@@ -64,7 +64,7 @@ export async function getExploreUsers(
       status: 200,
       responseData: { users: sortedExploreUsers },
     });
-  } catch (e) {
+  } catch {
     return JSON.stringify({
       status: 500,
       responseData: { error: "Error in fetching users" },
@@ -122,7 +122,7 @@ export async function getAllRequests(
       status: 200,
       responseData: { friendsList, outgoingRequestsList, incomingRequestsList },
     });
-  } catch (e) {
+  } catch {
     return JSON.stringify({
       status: 500,
       responseData: { error: "Error in fetching requests" },

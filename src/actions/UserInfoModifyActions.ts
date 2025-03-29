@@ -120,7 +120,7 @@ export async function saveUserBasicInfo(
             : oldUser.profileImage,
       },
     });
-  } catch (e) {
+  } catch {
     return JSON.stringify({
       status: 500,
       responseData: { error: "Error in modifying user basic info." },
@@ -161,7 +161,7 @@ export async function saveUserCourseInfo(
     destroyCachedUserInfo(sessionCheck.email as string);
 
     return JSON.stringify({ status: 200, responseData: { courseList } });
-  } catch (e) {
+  } catch {
     return JSON.stringify({
       status: 500,
       responseData: { error: "Error in modifying user course list" },
@@ -205,7 +205,7 @@ export async function saveUserStudyPreferences(
       status: 200,
       responseData: { userStudyPreferences },
     });
-  } catch (e) {
+  } catch {
     return JSON.stringify({
       status: 500,
       responseData: { error: "Error in modifying user course list" },

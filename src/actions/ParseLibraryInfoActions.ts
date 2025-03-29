@@ -56,7 +56,7 @@ export async function fetchLibraryInfo(inAdminMode: boolean = false) {
       status: 200,
       responseData: { libraries },
     });
-  } catch (error) {
+  } catch {
     return JSON.stringify({
       status: 500,
       responseData: { error: "Error in fetching library info" },

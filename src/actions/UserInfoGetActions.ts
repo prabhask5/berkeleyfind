@@ -33,7 +33,7 @@ export async function getUserCompleteInfo(
       });
 
     return JSON.stringify({ status: 200, responseData: { user } });
-  } catch (e) {
+  } catch {
     return JSON.stringify({
       status: 500,
       responseData: { error: "Error in fetching user" },
@@ -70,7 +70,7 @@ export async function getUserBasicInfo(
       });
 
     return JSON.stringify({ status: 200, responseData: { user } });
-  } catch (e) {
+  } catch {
     return JSON.stringify({
       status: 500,
       responseData: { error: "Error in fetching user" },
@@ -107,7 +107,7 @@ export async function getUserCourseInfo(
       });
 
     return JSON.stringify({ status: 200, responseData: { courseList } });
-  } catch (e) {
+  } catch {
     return JSON.stringify({
       status: 500,
       responseData: { error: "Error in fetching course list" },
@@ -147,7 +147,7 @@ export async function getUserStudyPreferences(
       status: 200,
       responseData: { userStudyPreferences },
     });
-  } catch (e) {
+  } catch {
     return JSON.stringify({
       status: 500,
       responseData: { error: "Error in fetching user study preferences" },

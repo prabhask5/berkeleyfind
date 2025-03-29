@@ -55,7 +55,7 @@ export async function changeRole(
       status: 200,
       responseData: { user: newOtherUser },
     });
-  } catch (e) {
+  } catch {
     return JSON.stringify({
       status: 500,
       responseData: { error: "Error in changing user role." },
@@ -130,7 +130,7 @@ export async function generateRandomUsers(
 
   try {
     for (let i = 0; i < numUsers; i++) await getRandomUser();
-  } catch (e) {
+  } catch {
     return JSON.stringify({
       status: 500,
       responseData: { error: "Error in generating users." },

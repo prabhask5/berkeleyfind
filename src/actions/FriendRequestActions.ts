@@ -70,7 +70,7 @@ export async function acceptFriendRequest(
     }).lean();
 
     return await getAllRequests();
-  } catch (e) {
+  } catch {
     return JSON.stringify({
       status: 500,
       responseData: { error: "Error in accepting friend request" },
@@ -125,7 +125,7 @@ export async function deleteFriend(
     }).lean();
 
     return await getAllRequests();
-  } catch (e) {
+  } catch {
     return JSON.stringify({
       status: 500,
       responseData: { error: "Error in deleting friend" },
@@ -173,7 +173,7 @@ export async function deleteIncomingFriendRequest(
     }).lean();
 
     return await getAllRequests();
-  } catch (e) {
+  } catch {
     return JSON.stringify({
       status: 500,
       responseData: { error: "Error in deleting incoming request" },
@@ -238,7 +238,7 @@ export async function sendFriendRequest(
     }).lean();
 
     return await getAllRequests();
-  } catch (e) {
+  } catch {
     return JSON.stringify({
       status: 500,
       responseData: { error: "Error in sending friend request" },
@@ -299,7 +299,7 @@ export async function deleteOutgoingFriendRequest(
     }).lean();
 
     return await getAllRequests();
-  } catch (e) {
+  } catch {
     return JSON.stringify({
       status: 500,
       responseData: { error: "Error in deleting incoming request" },
