@@ -83,7 +83,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         return session;
-      } catch (error: any) {
+      } catch {
         return session;
       }
     },
