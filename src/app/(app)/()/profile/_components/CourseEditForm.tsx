@@ -5,7 +5,7 @@ import { handleError, promiseOptions, stopLoading } from "@/lib/utils";
 import { asyncInputStyling } from "@/theme/input";
 import { Course } from "@/types/CourseModelTypes";
 import { Stack, Text, useToast, ToastId, Heading } from "@chakra-ui/react";
-import { AsyncSelect, SingleValue } from "chakra-react-select";
+import { AsyncSelect } from "chakra-react-select";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useState } from "react";
