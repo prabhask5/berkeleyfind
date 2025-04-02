@@ -5,7 +5,7 @@ import { handleError, promiseOptions, stopLoading } from "@/lib/utils";
 import { asyncInputStyling } from "@/theme/input";
 import { Course } from "@/types/CourseModelTypes";
 import { Stack, Text, useToast, ToastId, Heading } from "@chakra-ui/react";
-import { AsyncSelect } from "chakra-react-select";
+import { AsyncSelect, SingleValue } from "chakra-react-select";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useState } from "react";
@@ -31,7 +31,7 @@ export default function CourseEditForm({
 }: CourseEditFormProps) {
   const router = useRouter();
   const toast = useToast();
-  const toastLoadingRef = React.useRef<ToastId>(undefined);
+  const toastLoadingRef = React.useRef<ToastId>(123);
   const [anyChanges, setAnyChanges] = useState<boolean>(false);
   const [defaultValues, setDefaultValues] = useState<IUserCourseInfo>({
     courseList: courseList,
@@ -152,7 +152,7 @@ export default function CourseEditForm({
             chakraStyles={asyncInputStyling}
             cacheOptions
             loadOptions={promiseOptions}
-            onChange={(e) =>
+            onChange={(e: unknown) =>
               handleAddCourse(parseInt((e as DropdownOption).value))
             }
             defaultOptions
